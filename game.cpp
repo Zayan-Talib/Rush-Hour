@@ -13,240 +13,248 @@
 #include "util.h"
 #include <iostream>
 #include <string>
-#include <cmath> // for basic math functions such as cos, sin, sqrt
+#include <cmath>
 using namespace std;
 
 
+void SetCanvasSize (int width, int height) {
+	
+	// Arguments: width and height (in pixels)
+	// Use this function to set the size of your game window
+	// Note that the bottom-left coordinate has value (0,0) and top-right coordinate has value (width-1, height-1)
 
-// seed the random numbers generator by current time (see the documentation of srand for further help)...
-
-/* Function sets canvas size (drawing area) in pixels...
- *  that is what dimensions (x and y) your game will have
- *  Note that the bottom-left coordinate has value (0,0) and top-right coordinate has value (width-1,height-1)
- * */
-void SetCanvasSize(int width, int height) {
 	glMatrixMode (GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, width, 0, height, -1, 1); // set the screen size to given width and height.
+	glLoadIdentity ();
+	glOrtho (0, width, 0, height, -1, 1);
 	glMatrixMode (GL_MODELVIEW);
-	glLoadIdentity();
-}
+	glLoadIdentity ();
 
+}
 
 int xI = 400, yI = 400;
 
-void drawCar() {
-	DrawSquare(xI, yI, 20, colors[WHITE]);
-	glutPostRedisplay();
-}
+void drawCar () {
+	
+	DrawSquare (xI, yI, 20, colors [WHITE]);
+	glutPostRedisplay ();
 
+}
 
 bool flag = true;
-void moveCar() {
+
+void moveCar () {
 	
 	if (xI > 10 && flag) {
+
 		xI -= 10;
+
 		cout << "going left";
-		if(xI < 100)
-			
+		
+		if (xI < 100) {
 			flag = false;
+		}
 
 	}
+
 	else if (xI < 1010 && !flag) {
+		
 		cout << "go right";
+		
 		xI += 10;
-		if (xI > 900)
+		
+		if (xI > 900) {
 			flag = true;
+		}
+			
 	}
-}
-
-/*
- * Main Canvas drawing function.
- * */
-
-void GameDisplay()/**/{
-	// set the background color using function glClearColor.
-	// to change the background play with the red, green and blue values below.
-	// Note that r, g and b values must be in the range [0,1] where 0 means dim rid and 1 means pure red and so on.
-
-	glClearColor(0/*Red Component*/, 0,	//148.0/255/*Green Component*/,
-			0.0/*Blue Component*/, 0 /*Alpha component*/); // Red==Green==Blue==1 --> White Colour
-	glClear (GL_COLOR_BUFFER_BIT); //Update the colors
-	//Red Square
-	DrawSquare(400, 20, 40, colors[RED]);
-	
-	//Green Square
-	DrawSquare( 250 , 250 ,20,colors[GREEN]); 
-	
-	//Display Score
-	DrawString( 50, 800, "Score=0", colors[MISTY_ROSE]);
-	
-	// Trianlge Vertices v1(300,50) , v2(500,50) , v3(400,250)
-	DrawTriangle( 300, 450 , 340, 450 , 320 , 490, colors[MISTY_ROSE] ); 
-	
-
-
-	//DrawLine(int x1, int y1, int x2, int y2, int lwidth, float *color)
-	DrawLine( 550 , 50 ,  550 , 480 , 10 , colors[MISTY_ROSE] );	
-	
-	DrawCircle(50,670,10,colors[RED]);
-	DrawCircle(70,670,10,colors[RED]);
-	DrawCircle(90,670,10,colors[RED]);
-	DrawRoundRect(500,200,50,100,colors[DARK_SEA_GREEN],70);
-	DrawRoundRect(100,200,100,50,colors[DARK_OLIVE_GREEN],20);	
-	DrawRoundRect(100,100,50,100,colors[DARK_OLIVE_GREEN],30);
-	DrawRoundRect(200,100,100,50,colors[LIME_GREEN],40);
-	DrawRoundRect(350,100,100,50,colors[LIME_GREEN],20);
-	
-	drawCar();
-	glutSwapBuffers(); // do not modify this line..
 
 }
 
+// Draw Canvas
 
+void GameDisplay () {
 
-/*This function is called (automatically) whenever any non-printable key (such as up-arrow, down-arraw)
- * is pressed from the keyboard
- *
- * You will have to add the necessary code here when the arrow keys are pressed or any other key is pressed...
- *
- * This function has three argument variable key contains the ASCII of the key pressed, while x and y tells the
- * program coordinates of mouse pointer when key was pressed.
- *
- * */
+	// Set Background Color
+	// Range: 0 to 1
 
-void NonPrintableKeys(int key, int x, int y) {
-	if (key
-			== GLUT_KEY_LEFT /*GLUT_KEY_LEFT is constant and contains ASCII for left arrow key*/) {
-		// what to do when left key is pressed...
+	glClearColor 
+	(0, // Red 
+	 0, // Green
+	 0, // Blue
+     0  // Alpha
+    );  
+	
+	// R=G=B=1 -> White
+	// R=G=B=0 -> Black
+	// R=G=B=0.5 -> Gray
+	
+	// Update Colors
+	glClear (GL_COLOR_BUFFER_BIT);
+	
+	// Red Square
+	DrawSquare (400, 20, 40, colors [RED]);
+	
+	// Green Square
+	DrawSquare (250, 250, 20, colors [GREEN]); 
+	
+	// Display Score
+	DrawString (50, 800, "Score=0", colors [MISTY_ROSE]);
+	
+	// Trianlge Vertices v1 (300,50), v2 (500,50), v3 (400,250)
+	DrawTriangle (300, 450, 340, 450, 320, 490, colors [MISTY_ROSE]); 
+	
+	// DrawLine (int x1, int y1, int x2, int y2, int lwidth, float *color)
+	DrawLine (550, 50, 550, 480, 10, colors [MISTY_ROSE]);	
+	
+	DrawCircle (50, 670, 10, colors [RED]);
+	DrawCircle (70, 670, 10, colors [RED]);
+	DrawCircle (90, 670, 10, colors [RED]);
+	
+	DrawRoundRect (500, 200, 50, 100, colors [DARK_SEA_GREEN], 70);
+	DrawRoundRect (100, 200, 100, 50, colors [DARK_OLIVE_GREEN], 20);	
+	DrawRoundRect (100, 100, 50, 100, colors [DARK_OLIVE_GREEN], 30);
+	DrawRoundRect (200, 100, 100, 50, colors [LIME_GREEN], 40);
+	DrawRoundRect (350, 100, 100, 50, colors [LIME_GREEN], 20);
+	
+	drawCar ();
+	glutSwapBuffers (); // Do Not Modify
+
+}
+
+void NonPrintableKeys (int key, int x, int y) {
+	
+	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
+
+	if (key == GLUT_KEY_LEFT) {
+		
 		xI -= 10;
 
-	} else if (key
-			== GLUT_KEY_RIGHT /*GLUT_KEY_RIGHT is constant and contains ASCII for right arrow key*/) {
+	} 
+	
+	else if (key == GLUT_KEY_RIGHT) {
+	
 		xI += 10;
-	} else if (key
-			== GLUT_KEY_UP/*GLUT_KEY_UP is constant and contains ASCII for up arrow key*/) {
+	
+	} 
+	
+	else if (key == GLUT_KEY_UP) {
+
 		yI += 10;
+	
 	}
 
-	else if (key
-			== GLUT_KEY_DOWN/*GLUT_KEY_DOWN is constant and contains ASCII for down arrow key*/) {
+	else if (key == GLUT_KEY_DOWN) {
+	
 		yI -= 10;
+	
 	}
 
-	/* This function calls the Display function to redo the drawing. Whenever you need to redraw just call
-	 * this function*/
+	// Call the function whenever you want to redraw the screen
 
-	glutPostRedisplay();
+	glutPostRedisplay ();
 
 }
 
-/*This function is called (automatically) whenever any printable key (such as x,b, enter, etc.)
- * is pressed from the keyboard
- * This function has three argument variable key contains the ASCII of the key pressed, while x and y tells the
- * program coordinates of mouse pointer when key was pressed.
- * */
-void PrintableKeys(unsigned char key, int x, int y) {
-	if (key == 27/* Escape key ASCII*/) {
-		exit(1); // exit the program when escape key is pressed.
+void PrintableKeys (unsigned char key, int x, int y) {
+	
+	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
+
+	if (key == 27 /* Escape key ASCII */) {
+
+		exit (1);
+
 	}
 
-	if (key == 'b' || key == 'B') //Key for placing the bomb
-			{
-		//do something if b is pressed
+	if (key == 'b' || key == 'B') {
+
 		cout << "b pressed" << endl;
 
 	}
-	glutPostRedisplay();
+
+	glutPostRedisplay ();
+
 }
 
+void Timer (int m) {
 
+	// Implement Functionality Here
+	
+	moveCar ();
 
-/*
- * This function is called after every 1000.0/FPS milliseconds
- * (FPS is defined on in the beginning).
- * You can use this function to animate objects and control the
- * speed of different moving objects by varying the constant FPS.
- *
- * */
-void Timer(int m) {
+	glutTimerFunc (100, Timer, 0);
 
-	// implement your functionality here
-	moveCar();
-
-	// once again we tell the library to call our Timer function after next 1000/FPS
-	glutTimerFunc(100, Timer, 0);
 }
+ 
+void MousePressedAndMoved (int x, int y) {
+	
+	// Auto Called When Mouse is moved inside the window
+	// Arguments: x and y (coordinates of mouse pointer)
+	// Use this function to find the direction of shooting
 
-/*This function is called (automatically) whenever your mouse moves witin inside the game window
- *
- * You will have to add the necessary code here for finding the direction of shooting
- *
- * This function has two arguments: x & y that tells the coordinate of current position of move mouse
- *
- * */
-void MousePressedAndMoved(int x, int y) {
 	cout << x << " " << y << endl;
-	glutPostRedisplay();
+	glutPostRedisplay ();
+
 }
-void MouseMoved(int x, int y) {
+
+void MouseMoved (int x, int y) {
+	
 	//cout << x << " " << y << endl;
-	glutPostRedisplay();
+	glutPostRedisplay ();
+
 }
 
-/*This function is called (automatically) whenever your mouse button is clicked witin inside the game window
- *
- * You will have to add the necessary code here for shooting, etc.
- *
- * This function has four arguments: button (Left, Middle or Right), state (button is pressed or released),
- * x & y that tells the coordinate of current position of move mouse
- *
- * */
-void MouseClicked(int button, int state, int x, int y) {
+void MouseClicked (int button, int state, int x, int y) {
 
-	if (button == GLUT_LEFT_BUTTON) // dealing only with left button
-			{
+	// Auto Called When Mouse is clicked inside the window
+	// Arguments: button (Left, Middle or Right), state (button is pressed or released), x and y (coordinates of mouse pointer)
+
+	if (button == GLUT_LEFT_BUTTON) {
+	
 		cout << GLUT_DOWN << " " << GLUT_UP << endl;
 
-	} else if (button == GLUT_RIGHT_BUTTON) // dealing with right button
-			{
-			cout<<"Right Button Pressed"<<endl;
+	} 
+	
+	else if (button == GLUT_RIGHT_BUTTON) {
+		
+		cout<<"Right Button Pressed"<<endl;
 
 	}
-	glutPostRedisplay();
+
+	glutPostRedisplay ();
+
 }
-/*
- * our gateway main function
- * */
-int main(int argc, char*argv[]) {
 
-	int width = 1020, height = 840; // i have set my window size to be 800 x 600
+int main (int argc, char*argv []) {
 
-	InitRandomizer(); // seed the random number generator...
-	glutInit(&argc, argv); // initialize the graphics library...
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA); // we will be using color display mode
-	glutInitWindowPosition(50, 50); // set the initial position of our window
-	glutInitWindowSize(width, height); // set the size of our window
-	glutCreateWindow("OOP Project"); // set the title of our game window
-	SetCanvasSize(width, height); // set the number of pixels...
+	int width = 1020, height = 840; 				
 
-	// Register your functions to the library,
-	// you are telling the library names of function to call for different tasks.
-	//glutDisplayFunc(display); // tell library which function to call for drawing Canvas.
+	InitRandomizer (); 								// Seed the RNG by current time
+	
+	glutInit (&argc, argv); 						// Initialize Graphics Library
+	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA); 	// Color Display Mode
+	glutInitWindowPosition (50, 50); 				// Initial Window Position
+	glutInitWindowSize (width, height); 			// Window Size
+	glutCreateWindow ("Rush Hour"); 				// Title
+	SetCanvasSize (width, height); 					// Pixels
 
-	glutDisplayFunc(GameDisplay); // tell library which function to call for drawing Canvas.
-	glutSpecialFunc(NonPrintableKeys); // tell library which function to call for non-printable ASCII characters
-	glutKeyboardFunc(PrintableKeys); // tell library which function to call for printable ASCII characters
-	// This function tells the library to call our Timer function after 1000.0/FPS milliseconds...
-	glutTimerFunc(1000.0, Timer, 0);
+	// Register your functions to the library
 
-	glutMouseFunc(MouseClicked);
-	glutPassiveMotionFunc(MouseMoved); // Mouse
-	glutMotionFunc(MousePressedAndMoved); // Mouse
+	glutDisplayFunc (GameDisplay);
+	glutSpecialFunc (NonPrintableKeys);
+	glutKeyboardFunc (PrintableKeys);
+	
+	// Timer function called every 1000.0 / FPS milliseconds
 
-	// now handle the control to library and it will call our registered functions when
-	// it deems necessary...
-	glutMainLoop();
+	glutTimerFunc (1000.0, Timer, 0);
+
+	glutMouseFunc (MouseClicked);
+	glutPassiveMotionFunc (MouseMoved);
+	glutMotionFunc (MousePressedAndMoved);
+
+	glutMainLoop ();
+
 	return 1;
+
 }
+
 #endif /* RushHour_CPP_ */

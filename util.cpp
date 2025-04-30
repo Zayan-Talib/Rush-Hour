@@ -8,6 +8,8 @@
 
 #include "util.h"
 
+//================================= Helper Functions =================================
+
 // Converts degrees to radians
 float Deg2Rad (float degree) {
 	return (degree / 180.0) * M_PI;
@@ -16,31 +18,6 @@ float Deg2Rad (float degree) {
 // Converts radians to degrees
 float Rad2Deg (float angle) {
 	return angle * (180.0 / M_PI);
-}
-
-// Draws a square at the given coordinates (sx, sy) with given size and color
-void DrawSquare (int sx, int sy, int size, float color []) {
-
-	int mx = size, my = size;
-
-	//cout << endl << "Coord  " << sx << " " << sy << " " << mx << " " << my << flush;
-
-	glColor3fv (color); // Color of the Brick
-	glBegin (GL_TRIANGLES);
-	glVertex4f (sx, sy, 0, 1);
-	glVertex4f (sx + mx - 1, sy, 0, 1);
-	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
-	glVertex4f (sx, sy, 0, 1);
-	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
-	glVertex4f (sx, sy + my - 1, 0, 1);
-	glEnd ();
-
-}
-
-// Seeds the RNG based on current time
-void InitRandomizer () {
-	srand ((unsigned int) time (0)); 
-	// time (0) return number of seconds elapsed since January 1, 1970.
 }
 
 // Returns a random value within the specified range of [rmin, rmax]
@@ -54,48 +31,153 @@ long GetRandInRange (const long &rmin, const long &rmax) {
 	return value;
 }
 
-/*To draw a triangle we need three vertices with each vertex having 2-coordinates [x, y] and a color for the triangle.
-* This function takes 4 arguments first three arguments (3 vertices + 1 color) to
-* draw the triangle with the given color.
-* */
-void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,
-	float color[]) {
-	glColor3fv(color); // Set the triangle colour
-	// ask library to draw triangle at given position...
-
-	glBegin(GL_TRIANGLES);
-	/*Draw triangle using given three vertices...*/
-	glVertex4i(x1, y1, 0, 1);
-	glVertex4i(x2, y2, 0, 1);
-	glVertex4i(x3, y3, 0, 1);
-	glEnd();
+// Converts an integer to a string
+string Num2Str (int t) {
+	stringstream s;
+	s << t;
+	return s.str ();
 }
 
+//================================= Drawing Functions =================================
+
 const int nvertices = 722;
-GLfloat vertices[nvertices][2];
-void InitCircleVertices(float radius) {
+GLfloat vertices [nvertices][2];
+
+// Initializes the vertices of a circle with a given radius
+void InitCircleVertices (float radius) {
 
 	float hdegree = M_PI / 360.0;
 	float angle = 0;
+
 	for (int i = 0; i < nvertices; ++i) {
-		vertices[i][0] = radius * cos(angle);
-		vertices[i][1] = radius * sin(angle);
+	
+		vertices [i][0] = radius * cos (angle);
+		vertices [i][1] = radius * sin (angle);
 		angle += hdegree;
+	
 	}
 }
-/*To draw a Circle we need a center point (sx, sy) and the radius, along with the color of circle.
-* This function takes 4 arguments first two arguments (3 vertices + 1 color) to
-* draw the triangle with the given color.
-* */
-void DrawCircle(float sx, float sy, float radius, float*color) {
-	glColor3fv(color); // set the circle color
-	InitCircleVertices(radius);
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex4f(sx, sy, 0, 1);
-	for (int i = 0; i < nvertices; ++i)
-		glVertex4f(sx + vertices[i][0], sy + vertices[i][1], 0, 1);
-	glEnd();
+
+// Draws a Square - Coordinates (sx, sy) with given size and color
+void DrawSquare (int sx, int sy, int size, float color []) {
+
+	int mx = size, my = size;
+
+	//cout << endl << "Coord  " << sx << " " << sy << " " << mx << " " << my << flush;
+
+	glColor3fv (color);
+	glBegin (GL_TRIANGLES);
+	glVertex4f (sx, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
+	glVertex4f (sx, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
+	glVertex4f (sx, sy + my - 1, 0, 1);
+
+	glEnd ();
+
 }
+
+// Draw a Triangle - Three Vertices with 2-coordinates [x, y] and a color for the triangle.
+void DrawTriangle (int x1, int y1, int x2, int y2, int x3, int y3, float color []) {
+	
+	glColor3fv (color);
+
+	glBegin (GL_TRIANGLES);
+
+	glVertex4i (x1, y1, 0, 1);
+	glVertex4i (x2, y2, 0, 1);
+	glVertex4i (x3, y3, 0, 1);
+
+	glEnd ();
+}
+
+// Draw a Circle - Center point (sx, sy) and radius, along with the color of circle.
+void DrawCircle (float sx, float sy, float radius, float*color) {
+
+	glColor3fv (color);
+	InitCircleVertices (radius);
+	glBegin (GL_TRIANGLE_FAN);
+	glVertex4f (sx, sy, 0, 1);
+	
+	for (int i = 0; i < nvertices; ++i) {
+		glVertex4f (sx + vertices [i][0], sy + vertices [i][1], 0, 1);
+	}
+
+	glEnd ();
+
+}
+
+// Draw a Line - Between two points P1 (x1,y1) and P2 (x2,y2)
+void DrawLine (int x1, int y1, int x2, int y2, int lwidth, float *color) {
+	
+	glLineWidth (lwidth);
+	if (color)
+		glColor3fv (color);
+	glBegin (GL_LINES);
+	glVertex3f (x1, y1, 0.0);
+	glVertex3f (x2, y2, 0);
+	glEnd ();
+
+}
+
+// Draw a Rectangle - Coordinates (sx, sy) with given width and height and color
+void DrawRectangle (int sx, int sy, int mx, int my, float *color) {
+
+	glColor3fv (color);
+	glBegin (GL_TRIANGLES);
+	glVertex4f (sx, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
+	glVertex4f (sx, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
+	glVertex4f (sx, sy + my - 1, 0, 1);
+	glEnd ();
+
+}
+
+//================================= Miscellaneous =================================
+
+// Seeds the RNG based on current time
+void InitRandomizer () {
+	srand ((unsigned int) time (0)); 
+	// time (0) return number of seconds elapsed since January 1, 1970.
+}
+
+// Reads an image from a file and stores it in a vector
+void ReadImage (string imgname, vector<unsigned char> &imgArray) {
+	
+	using namespace cimg_library;
+	CImg<unsigned char> img(imgname.c_str());
+	imgArray.resize (img.height() * img.width() * 3, 0);
+	
+	int k = 0;
+	unsigned char *rp = img.data();
+	unsigned char *gp = img.data() + img.height() * img.width();
+	unsigned char *bp = gp + img.height() * img.width();
+
+	for (int j = 0; j < img.width(); ++j) {
+		
+		int t = j;
+		
+		for (int i = 0; i < img.height(); ++i, t += img.width()) {
+			imgArray[k++] = rp[t];
+			imgArray[k++] = gp[t];
+			imgArray[k++] = bp[t];
+		}
+		
+		// imgArray[i][j] = img[k++];
+	}
+
+}
+
+
+
+
+
+
+
+
 // function used to draw curves...
 void Torus2d(int x /*Starting position x*/, int y /*Starting position Y*/,
 	float angle, // starting angle in degrees
@@ -121,16 +203,7 @@ void Torus2d(int x /*Starting position x*/, int y /*Starting position Y*/,
 	glEnd();
 }
 
-// Draw lines between two points P1(x1,y1) and P2(x2,y2)
-void DrawLine(int x1, int y1, int x2, int y2, int lwidth, float *color) {
-	glLineWidth(lwidth);
-	if (color)
-		glColor3fv(color);
-	glBegin(GL_LINES);
-	glVertex3f(x1, y1, 0.0);
-	glVertex3f(x2, y2, 0);
-	glEnd();
-}
+
 
 // used for normalized coordinates
 void DrawString(int x, int y, int width, int height, const string &score,
@@ -454,39 +527,7 @@ void RoundRect(int x, int y, int width, int height, int radius,
 	free(bottom_right);
 }
 
-void DrawRectangle(int sx, int sy, int mx, int my, float *color) {
-	glColor3fv(color); // specify the color of the rectangle
-	glBegin(GL_TRIANGLES);
-	glVertex4f(sx, sy, 0, 1);
-	glVertex4f(sx + mx - 1, sy, 0, 1);
-	glVertex4f(sx + mx - 1, sy + my - 1, 0, 1);
-	glVertex4f(sx, sy, 0, 1);
-	glVertex4f(sx + mx - 1, sy + my - 1, 0, 1);
-	glVertex4f(sx, sy + my - 1, 0, 1);
-	glEnd();
-}
-string Num2Str(int t) {
-	stringstream s;
-	s << t;
-	return s.str();
-}
 
-void ReadImage(string imgname, vector<unsigned char> &imgArray) {
-	using namespace cimg_library;
-	CImg<unsigned char> img(imgname.c_str());
-	imgArray.resize(img.height() * img.width() * 3, 0);
-	int k = 0;
-	unsigned char *rp = img.data();
-	unsigned char *gp = img.data() + img.height() * img.width();
-	unsigned char *bp = gp + img.height() * img.width();
 
-	for (int j = 0; j < img.width(); ++j) {
-		int t = j;
-		for (int i = 0; i < img.height(); ++i, t += img.width()) {
-			imgArray[k++] = rp[t];
-			imgArray[k++] = gp[t];
-			imgArray[k++] = bp[t];
-		}
-		//imgArray[i][j] = img[k++];
-	}
-}
+
+
