@@ -1,18 +1,22 @@
 //============================================================================
-// Name        : .cpp
-// Author      : Dr. Sibt Ul Hussain
-// Version     :
-// Copyright   : (c) Reserved
-// Description : Basic 2D game...
+// Zayan Talib
+// 24i-6514
+// Data Science (A)
+// OOP - 2nd Semester 
+// Final Project - Rush Hour
 //============================================================================
+
+// Definitions
 
 #ifndef RushHour_CPP_
 #define RushHour_CPP_
 #include "util.h"
 #include <iostream>
-#include<string>
-#include<cmath> // for basic math functions such as cos, sin, sqrt
+#include <string>
+#include <cmath> // for basic math functions such as cos, sin, sqrt
 using namespace std;
+
+
 
 // seed the random numbers generator by current time (see the documentation of srand for further help)...
 

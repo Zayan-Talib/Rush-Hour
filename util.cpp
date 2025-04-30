@@ -1,39 +1,56 @@
-/*
- * util.cpp
- *
- */
+//============================================================================
+// Zayan Talib
+// 24i-6514
+// Data Science (A)
+// OOP - 2nd Semester 
+// Final Project - Rush Hour
+//============================================================================
+
 #include "util.h"
-/*
- * This function converts an input angle from degree to radians */
-float Deg2Rad(float degree) {
+
+// Converts degrees to radians
+float Deg2Rad (float degree) {
 	return (degree / 180.0) * M_PI;
 }
-float Rad2Deg(float angle) {
+
+// Converts radians to degrees
+float Rad2Deg (float angle) {
 	return angle * (180.0 / M_PI);
 }
-void DrawSquare(int sx, int sy, int size,float color[]) {
-	int mx=size,my=size;
-	//cout<<endl<<"Coord  "<<sx<<" "<<sy<<" "<<mx<<" "<<my<<flush;
-		glColor3fv(color); // specify the color of the brick
-		glBegin(GL_TRIANGLES);
-		glVertex4f(sx, sy, 0, 1);
-		glVertex4f(sx + mx - 1, sy, 0, 1);
-		glVertex4f(sx + mx - 1, sy + my - 1, 0, 1);
-		glVertex4f(sx, sy, 0, 1);
-		glVertex4f(sx + mx - 1, sy + my - 1, 0, 1);
-		glVertex4f(sx, sy + my - 1, 0, 1);
-		glEnd();
-	}
-// seed the random numbers generator by current time (see the documentation of srand for further help)...
-void InitRandomizer() {
-	srand((unsigned int)time(0)); // time(0) returns number of seconds elapsed since January 1, 1970.
+
+// Draws a square at the given coordinates (sx, sy) with given size and color
+void DrawSquare (int sx, int sy, int size, float color []) {
+
+	int mx = size, my = size;
+
+	//cout << endl << "Coord  " << sx << " " << sy << " " << mx << " " << my << flush;
+
+	glColor3fv (color); // Color of the Brick
+	glBegin (GL_TRIANGLES);
+	glVertex4f (sx, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
+	glVertex4f (sx, sy, 0, 1);
+	glVertex4f (sx + mx - 1, sy + my - 1, 0, 1);
+	glVertex4f (sx, sy + my - 1, 0, 1);
+	glEnd ();
+
 }
 
-//This function returns a random value within the specified range of [rmin, rmax] ...
-long GetRandInRange(const long &rmin, const long &rmax) {
-	long range = rmax - rmin; // find the range
-	long value = (rand() % (long)range) + rmin; // translate the generated number ...
+// Seeds the RNG based on current time
+void InitRandomizer () {
+	srand ((unsigned int) time (0)); 
+	// time (0) return number of seconds elapsed since January 1, 1970.
+}
+
+// Returns a random value within the specified range of [rmin, rmax]
+long GetRandInRange (const long &rmin, const long &rmax) {
+	
+	long range = rmax - rmin;
+	long value = (rand () % (long) range) + rmin;
+	
 	//	cout << value << endl << flush;
+	
 	return value;
 }
 

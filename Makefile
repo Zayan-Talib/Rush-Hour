@@ -1,4 +1,4 @@
-CXXFLAGS =	-g3 -Wall -fmessage-length=0 #-Werror
+CXXFLAGS =	-g3 -fmessage-length=0 -Wno-narrowing #-Wall -Werror
 
 OBJS =		 util.o game.o
 
