@@ -128,7 +128,7 @@ void DrawTriangle (int x1, int y1, int x2, int y2, int x3, int y3, float color [
 }
 
 // Draw a Circle - Center point (sx, sy) and radius, along with the color of circle.
-void DrawCircle (float sx, float sy, float radius, float*color) {
+void DrawCircle (float sx, float sy, float radius, float * color) {
 
 	glColor3fv (color);
 	InitCircleVertices (radius);
@@ -157,7 +157,7 @@ void DrawLine (int x1, int y1, int x2, int y2, int lwidth, float *color) {
 }
 
 // Draw a Rectangle - Coordinates (sx, sy) with given width and height and color
-void DrawRectangle (int sx, int sy, int mx, int my, float *color) {
+void DrawRectangle (int sx, int sy, int mx, int my, float * color) {
 
 	glColor3fv (color);
 	glBegin (GL_TRIANGLES);

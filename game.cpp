@@ -102,7 +102,7 @@ void SetCanvasSize (int width, int height) {
 
 }
 
-int xI = 400, yI = 400;
+int xI = gameBoard -> getLeft () + 5, yI = gameBoard -> getTop () - 4; // 24
 
 void drawCar () {
 	
@@ -149,25 +149,41 @@ void NonPrintableKeys (int key, int x, int y) {
 
 	if (key == GLUT_KEY_LEFT) {
 		
-		xI -= 10;
+		if (xI - 30 >= gameBoard -> getLeft ()) {
+		
+			xI -= 30;
+		
+		}
 
 	} 
 	
 	else if (key == GLUT_KEY_RIGHT) {
 	
-		xI += 10;
+		if (xI + 30 <= gameBoard -> getRight ()) {
+		
+			xI += 30;
+		
+		}
 	
 	} 
 	
 	else if (key == GLUT_KEY_UP) {
 
-		yI += 10;
+		if (yI + 30 <= gameBoard -> getTop ()) {
+		
+			yI += 30;
+		
+		}
 	
 	}
 
 	else if (key == GLUT_KEY_DOWN) {
 	
-		yI -= 10;
+		if (yI - 30 >= gameBoard -> getBottom ()) {
+		
+			yI -= 30;
+		
+		}
 	
 	}
 
@@ -222,13 +238,13 @@ void MouseClicked (int button, int state, int x, int y) {
 
 	if (button == GLUT_LEFT_BUTTON) {
 	
-		cout << GLUT_DOWN << " " << GLUT_UP << endl;
+		// cout << GLUT_DOWN << " " << GLUT_UP << endl;
 
 	} 
 	
 	else if (button == GLUT_RIGHT_BUTTON) {
 		
-		cout << "Right Button Pressed" << endl;
+		cout << "Current Coords of Car: " << xI << ", " << yI << endl;
 
 	}
 
