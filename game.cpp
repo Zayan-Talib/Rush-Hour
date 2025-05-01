@@ -187,6 +187,13 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 	}
 
+	if (key == 'r' || key == 'R') {
+
+		gameBoard -> ClearBoard ();
+		gameBoard -> GenerateBuildings ();
+
+	}
+
 	glutPostRedisplay ();
 
 }

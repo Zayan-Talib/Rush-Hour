@@ -20,6 +20,20 @@ class Board {
         
         int ** grid;
 
+        // Grid values:
+        // 0 = Road
+        // 1 = Building
+        // 2 = Fuel Station
+        // 3 = Delivery Point
+
+        // Map Generation
+        
+        static const int BUILDING_PERCENT = 35;
+
+        bool isValidRoad (int row, int col);    // Check if a road placement is valid
+        bool canReachAllCorners ();             // Verify all corners are reachable
+        void floodFill (bool visited [][24], int row, int col);
+
     public:
 
         // Constructor
@@ -32,11 +46,8 @@ class Board {
                 grid [a] = new int [CELL_COUNT];
             }
 
-            for (int a = 0; a < CELL_COUNT; a++) {
-                for (int b = 0; b < CELL_COUNT; b++) {
-                    grid [a][b] = 0;
-                }
-            }
+            ClearBoard ();
+            GenerateBuildings ();
 
         }
 
@@ -56,9 +67,12 @@ class Board {
 
         // Drawing the Board
 
+        void ClearBoard ();
         void DrawGrid ();
 
+        void GenerateBuildings ();
         void DrawBuildings ();
+        bool isRoad (int row, int col) const { return grid [row][col] == 0; }
 
         // Getters
         

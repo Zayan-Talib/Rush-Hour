@@ -2,7 +2,7 @@
 
 void Vehicle::DrawCar () {
     
-    DrawSquare (x, y, 20, colors [BLACK]);
+    DrawSquare (x, y, 20, colors [RED]);
     glutPostRedisplay ();
 
 }
