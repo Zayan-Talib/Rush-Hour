@@ -26,7 +26,7 @@ class Board {
         // 2 = Fuel Station
         // 3 = Delivery Point
 
-        // Map Generation
+        // Buildings
         
         static const int BUILDING_PERCENT = 35;
 
@@ -46,8 +46,7 @@ class Board {
                 grid [a] = new int [CELL_COUNT];
             }
 
-            ClearBoard ();
-            GenerateBuildings ();
+            ResetBoard ();
 
         }
 
@@ -67,12 +66,20 @@ class Board {
 
         // Drawing the Board
 
-        void ClearBoard ();
+        void ResetBoard ();
         void DrawGrid ();
+
+        // Buildings
 
         void GenerateBuildings ();
         void DrawBuildings ();
         bool isRoad (int row, int col) const { return grid [row][col] == 0; }
+
+        // Fuel Stations
+
+        void PlaceFuelStations ();
+        void DrawFuelStations ();
+        bool isFuelStation (int x, int y) const;
 
         // Getters
         
@@ -83,6 +90,9 @@ class Board {
         int getRight () const { return GRID_RIGHT; }
         int getTop () const { return GRID_TOP; }
         int getBottom () const { return GRID_BOTTOM; }
+        
+        int getCellValue (int row, int col) const;
+        bool isValidMove (int x, int y) const; 
 
 };
 

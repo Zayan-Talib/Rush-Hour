@@ -2,7 +2,7 @@
 
 // Drawing the Board
 
-void Board::ClearBoard () {
+void Board::ResetBoard () {
 
     for (int a = 0; a < CELL_COUNT; a++) {
 
@@ -13,6 +13,9 @@ void Board::ClearBoard () {
         }
 
     }
+
+    GenerateBuildings ();
+    PlaceFuelStations ();
 
 }
 
@@ -59,6 +62,7 @@ void Board::DrawGrid () {
     }
     
     DrawBuildings ();
+    DrawFuelStations ();
     
 }
 
@@ -195,5 +199,81 @@ void Board::floodFill (bool visited [][24], int row, int col) {
     floodFill (visited, row - 1, col); // Up
     floodFill (visited, row, col + 1); // Right
     floodFill (visited, row, col - 1); // Left
+
+}
+
+// Fuel Stations
+
+void Board::PlaceFuelStations () {
+    
+    int stationsPlaced = 0;
+    int maxStations = GetRandInRange (2, 3);
+    
+    while (stationsPlaced <= maxStations) {
+
+        int row = GetRandInRange (0, CELL_COUNT);
+        int col = GetRandInRange (0, CELL_COUNT);
+        
+        if (grid [row][col] == 0 && isValidRoad (row, col)) {
+    
+            grid [row][col] = 2;
+            stationsPlaced++;
+    
+        }
+    
+    }
+
+}
+
+void Board::DrawFuelStations () {
+
+    for (int row = 0; row < CELL_COUNT; row++) {
+
+        for (int col = 0; col < CELL_COUNT; col++) {
+
+            if (grid [row][col] == 2) {
+
+                int x = GRID_LEFT + (col * CELL_SIZE);
+                int y = GRID_TOP + 21 - (row * CELL_SIZE);
+
+                DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [GREEN]);
+
+            }
+
+        }
+
+    }
+
+}
+
+bool Board::isFuelStation (int x, int y) const {
+
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+
+    return getCellValue (row, col) == 2;
+
+}
+
+// Helpers
+
+int Board::getCellValue (int row, int col) const { 
+
+    if (row >= 0 && row < CELL_COUNT && col >= 0 && col < CELL_COUNT) {
+    
+        return grid [row][col];
+    
+    }
+
+    return -1;
+
+}
+
+bool Board::isValidMove (int x, int y) const {
+    
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    
+    return getCellValue (row, col) == 0;
 
 }

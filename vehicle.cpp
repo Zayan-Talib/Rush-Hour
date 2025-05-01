@@ -7,41 +7,92 @@ void Vehicle::DrawCar () {
 
 }
 
+// Movement
+
 void Vehicle::moveLeft () {
 
-    if (x - 30 >= gameBoard -> getLeft ()) {
+    if (canMove () && x - 30 >= gameBoard -> getLeft () && (gameBoard -> isValidMove (x - 30, y) || gameBoard -> isFuelStation (x - 30, y))) {
+        
         x -= 30;
+
+        consumeFuel ();
+
+        if (gameBoard -> isFuelStation (x, y)) {
+
+            refillFuel ();
+
+        }
+
     }
 
 }
 
 void Vehicle::moveRight () {
 
-    if (x + 30 <= gameBoard -> getRight ()) {
-    
+    if (canMove () && x + 30 <= gameBoard -> getRight () && (gameBoard -> isValidMove (x + 30, y) || gameBoard -> isFuelStation (x + 30, y))) {
+        
         x += 30;
-    
+
+        consumeFuel ();
+
+        if (gameBoard -> isFuelStation (x, y)) {
+
+            refillFuel ();
+
+        }
+
     }
 
 }
 
 void Vehicle::moveUp () {
 
-    if (y + 30 <= gameBoard -> getTop ()) {
-    
+    if (canMove () && y + 30 <= gameBoard -> getTop () && (gameBoard -> isValidMove (x, y + 30) || gameBoard -> isFuelStation (x, y + 30))) {
+        
         y += 30;
-    
+
+        consumeFuel ();
+
+        if (gameBoard -> isFuelStation (x, y)) {
+
+            refillFuel ();
+
+        }
+
     }
 
 }
 
 void Vehicle::moveDown () {
 
-    if (y - 30 >= gameBoard -> getBottom ()) {
-    
+    if (canMove () && y - 30 >= gameBoard -> getBottom () && (gameBoard -> isValidMove (x, y - 30) || gameBoard -> isFuelStation (x, y - 30))) {
+        
         y -= 30;
-    
+
+        consumeFuel ();
+
+        if (gameBoard -> isFuelStation (x, y)) {
+
+            refillFuel ();
+
+        }
+
     }
+
+}
+
+
+// Fuel
+
+void Vehicle::consumeFuel () {
+
+    currentFuel = MAX (0, currentFuel - FUEL_CONSUMPTION);
+
+}
+
+void Vehicle::refillFuel () {
+
+    currentFuel = MIN (MAX_FUEL, currentFuel + REFILL_AMOUNT);
 
 }
 
@@ -86,3 +137,4 @@ void Vehicle::printCurrentCell () const {
     cout << "Current Cell of Car: [" << getCellY () + 1 << "][" << getCellX () + 1 << "]" << endl;
 
 }
+

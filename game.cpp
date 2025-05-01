@@ -52,7 +52,11 @@ void GameDisplay () {
 	glClear (GL_COLOR_BUFFER_BIT);
 	
 	// Display Score
-	DrawString (50, 800, "Score = 0", colors [RED]);
+	DrawString (20, 800, "Score = 0", colors [RED]);
+
+	// Display fuel level
+	string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
+	DrawString (20, 750, fuelStr, colors [RED]);
 
 	DrawCircle (50, 670, 10, colors [RED]);
 	DrawCircle (70, 670, 10, colors [RED]);
@@ -189,8 +193,13 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 	if (key == 'r' || key == 'R') {
 
-		gameBoard -> ClearBoard ();
-		gameBoard -> GenerateBuildings ();
+		gameBoard -> ResetBoard ();
+
+	}
+
+	if (key == 'f' || key == 'F') {
+
+		playerCar -> fullFuel ();
 
 	}
 
