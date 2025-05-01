@@ -19,31 +19,35 @@ class Vehicle {
         static const int REFILL_AMOUNT = 50;
         
         int currentFuel;
-    
+
+        // Mode Switching
+
+        static const int MODE_TAXI = 0;
+        static const int MODE_DELIVERY = 1;
+        int currentMode;
+
+        // Passengers and Packages
+
+        int score;
+
+        bool hasPassenger;
+        bool hasPackage;
+
+  
     public:
 
         // Constructor
     
-        Vehicle (Board* board) : gameBoard (board), x (board -> getLeft () + 5), y (board -> getTop () - 4), currentFuel (MAX_FUEL) {}
+        Vehicle (Board* board) : 
+        gameBoard (board), 
+        x (board -> getLeft () + 5), 
+        y (board -> getTop () - 4), 
+        currentFuel (MAX_FUEL),
+        currentMode (MODE_TAXI),
+        score (0),
+        hasPassenger (false),
+        hasPackage (false) {}
         
-        // Drawing
-
-        void DrawCar ();
-        
-        // Movement
-        
-        void moveLeft ();
-        void moveRight ();
-        void moveUp ();
-        void moveDown ();
-
-        // Fuel
-
-        void refillFuel ();
-        void consumeFuel ();
-
-        int getFuelLevel () const { return currentFuel; }
-        bool canMove () const { return currentFuel > 0; }
 
         // Getters
 
@@ -58,6 +62,41 @@ class Vehicle {
         // Setters
 
         void fullFuel () { currentFuel = MAX_FUEL; }
+        
+        // Drawing
+
+        void DrawCar ();
+        
+        // Movement
+        
+        void moveLeft ();
+        void moveRight ();
+        void moveUp ();
+        void moveDown ();
+
+        // Mode Switching
+
+        void switchMode ();
+        int getCurrentMode () const { return currentMode; }
+
+        // Fuel
+
+        void refillFuel ();
+        void consumeFuel ();
+
+        int getFuelLevel () const { return currentFuel; }
+        bool canMove () const { return currentFuel > 0; }
+
+        // Carrying
+
+        void pickupOrDropoff ();
+        bool isCarrying () const { return hasPassenger || hasPackage; }
+
+        bool isCarryingPassenger () const { return hasPassenger; }
+        bool isCarryingPackage () const { return hasPackage; }
+        int getScore () const { return score; }
+        void addScore (int points) { score += points; }
+
 
 };
 

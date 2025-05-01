@@ -1,5 +1,28 @@
 #include "board.h"
 
+// Helpers
+
+int Board::getCellValue (int row, int col) const { 
+
+    if (row >= 0 && row < CELL_COUNT && col >= 0 && col < CELL_COUNT) {
+    
+        return grid [row][col];
+    
+    }
+
+    return -1;
+
+}
+
+bool Board::isValidMove (int x, int y) const {
+    
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    
+    return getCellValue (row, col) != 1;
+
+}
+
 // Drawing the Board
 
 void Board::ResetBoard () {
@@ -16,6 +39,9 @@ void Board::ResetBoard () {
 
     GenerateBuildings ();
     PlaceFuelStations ();
+    PlaceModeStation ();
+    PlacePassengers ();
+    PlaceDeliveryPoints ();
 
 }
 
@@ -63,6 +89,8 @@ void Board::DrawGrid () {
     
     DrawBuildings ();
     DrawFuelStations ();
+    DrawModeStation ();
+    DrawPassengersAndPackages ();
     
 }
 
@@ -184,9 +212,8 @@ void Board::floodFill (bool visited [][24], int row, int col) {
 
     // Base cases - out of bounds or already visited or is a building
 
-    if (row < 0 || row >= CELL_COUNT || col < 0 || col >= CELL_COUNT || 
-    
-        visited [row][col] || grid [row][col] != 0) {
+    if (row < 0 || row >= CELL_COUNT || col < 0 || col >= CELL_COUNT || visited [row][col] || grid [row][col] != 0) {
+        
         return;
     
     }
@@ -208,17 +235,21 @@ void Board::PlaceFuelStations () {
     
     int stationsPlaced = 0;
     int maxStations = GetRandInRange (2, 3);
+
+    // Check which cells are reachable from start
+    bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
+    floodFill (visited, 0, 0);
     
     while (stationsPlaced <= maxStations) {
 
         int row = GetRandInRange (0, CELL_COUNT);
         int col = GetRandInRange (0, CELL_COUNT);
         
-        if (grid [row][col] == 0 && isValidRoad (row, col)) {
-    
+        if (grid [row][col] == 0 && visited [row][col] && isValidRoad (row, col)) {
+        
             grid [row][col] = 2;
             stationsPlaced++;
-    
+        
         }
     
     }
@@ -255,25 +286,180 @@ bool Board::isFuelStation (int x, int y) const {
 
 }
 
-// Helpers
+// Mode Station
 
-int Board::getCellValue (int row, int col) const { 
+void Board::PlaceModeStation () {
 
-    if (row >= 0 && row < CELL_COUNT && col >= 0 && col < CELL_COUNT) {
-    
-        return grid [row][col];
-    
-    }
-
-    return -1;
+    grid [CELL_COUNT - 1][0] = 3;
 
 }
 
-bool Board::isValidMove (int x, int y) const {
+void Board::DrawModeStation () {
+
+    int x = GRID_LEFT;
+    int y = GRID_TOP + 21 - ((CELL_COUNT - 1) * CELL_SIZE);
     
+    DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [GRAY]);
+
+}
+
+bool Board::isModeStation (int x, int y) const {
+
     int row = (GRID_TOP - y) / CELL_SIZE;
     int col = (x - GRID_LEFT) / CELL_SIZE;
     
-    return getCellValue (row, col) == 0;
+    return getCellValue (row, col) == 3;
+
+}
+
+// Passengers and Packages
+
+void Board::PlacePassengers() {
+
+    int placed = 0;
+    bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
+    floodFill (visited, 0, 0);
+    
+    int MaxPassengers = GetRandInRange (2, 4);
+
+    while (placed <= MaxPassengers) {
+
+        int row = GetRandInRange (0, CELL_COUNT);
+        int col = GetRandInRange (0, CELL_COUNT);
+        
+        if (grid [row][col] == 0 && visited [row][col]) {
+            
+            grid [row][col] = 4; 
+            
+            // Place destination
+            bool destPlaced = false;
+            while(!destPlaced) {
+                int destRow = GetRandInRange(0, CELL_COUNT);
+                int destCol = GetRandInRange(0, CELL_COUNT);
+                
+                if(grid[destRow][destCol] == 0 && visited[destRow][destCol]) {
+                    grid[destRow][destCol] = 5; // Destination
+                    destPlaced = true;
+
+                }
+
+            }
+
+            placed++;
+
+        }
+
+    }
+
+}
+
+void Board::PlaceDeliveryPoints() {
+    int placed = 0;
+    bool visited[CELL_COUNT][CELL_COUNT] = {{false}};
+    floodFill(visited, 0, 0);
+
+    int MaxPackages = GetRandInRange (2, 4);
+    
+    while(placed <= MaxPackages) {
+        // Place package
+        int row = GetRandInRange(0, CELL_COUNT);
+        int col = GetRandInRange(0, CELL_COUNT);
+        
+        if(grid[row][col] == 0 && visited[row][col]) {
+            grid[row][col] = 6; // Package
+            
+            // Place destination
+            bool destPlaced = false;
+            while(!destPlaced) {
+                int destRow = GetRandInRange(0, CELL_COUNT);
+                int destCol = GetRandInRange(0, CELL_COUNT);
+                
+                if(grid[destRow][destCol] == 0 && visited[destRow][destCol]) {
+                    grid[destRow][destCol] = 7; // Destination
+                    destPlaced = true;
+                }
+            }
+            placed++;
+        }
+    }
+}
+
+void Board::DrawPassengersAndPackages() {
+
+    int size = CELL_SIZE;
+
+    for(int row = 0; row < CELL_COUNT; row++) {
+        for(int col = 0; col < CELL_COUNT; col++) {
+            int x = GRID_LEFT + (col * CELL_SIZE);
+            int y = GRID_TOP + 21 - (row * CELL_SIZE);
+            
+            switch(grid[row][col]) {
+                case 4: // Passenger
+                DrawTriangle(
+                    x + size/2, y - 5,           // Top point
+                    x + 5, y - (size - 5),       // Bottom left
+                    x + size - 5, y - (size - 5),// Bottom right
+                    colors[YELLOW]
+                );
+                    break;
+                case 5: // Passenger destination
+                    DrawSquare(x, y - CELL_SIZE, CELL_SIZE, colors[ORANGE]);
+                    break;
+                case 6: // Package
+                DrawRoundRect(
+                    x + 5, y - size + 5,     // Position
+                    size - 10, size - 10,     // Size (slightly smaller than cell)
+                    colors[PURPLE],
+                    5                         // Radius
+                );
+                    break;
+                case 7: // Package destination
+                    DrawSquare(x, y - CELL_SIZE, CELL_SIZE, colors[PINK]);
+                    break;
+            }
+        }
+    }
+}
+
+bool Board::isPassenger(int x, int y) const {
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    return getCellValue(row, col) == 4;
+}
+
+bool Board::isPassengerDestination(int x, int y) const {
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    return getCellValue(row, col) == 5;
+}
+
+bool Board::isPackage(int x, int y) const {
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    return getCellValue(row, col) == 6;
+}
+
+bool Board::isPackageDestination(int x, int y) const {
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    return getCellValue(row, col) == 7;
+}
+
+void Board::removePassenger(int x, int y) {
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    if(grid[row][col] == 4) {
+        grid[row][col] = 0;
+    }
+}
+
+void Board::removePackage (int x, int y) {
+
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    
+    if (grid [row][col] == 6) {
+        grid [row][col] = 0;
+    }
 
 }

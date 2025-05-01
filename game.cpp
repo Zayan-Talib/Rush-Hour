@@ -52,11 +52,24 @@ void GameDisplay () {
 	glClear (GL_COLOR_BUFFER_BIT);
 	
 	// Display Score
-	DrawString (20, 800, "Score = 0", colors [RED]);
+	string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
+    DrawString (20, 800, scoreStr, colors [RED]);
 
 	// Display fuel level
 	string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
 	DrawString (20, 750, fuelStr, colors [RED]);
+
+	string modeStr = "Mode: " + string (playerCar -> getCurrentMode () == 0 ? "TAXI" : "DELIVERY");
+    DrawString (800, 800, modeStr, colors [BLUE]);
+
+	// Display carrying status
+	string carryingStr;
+	if(playerCar->getCurrentMode() == 0) {  // Taxi mode
+		carryingStr = playerCar->isCarryingPassenger() ? "Carrying: Passenger" : "Carrying: Nothing";
+	} else {  // Delivery mode
+		carryingStr = playerCar->isCarryingPackage() ? "Carrying: Package" : "Carrying: Nothing";
+	}
+	DrawString(400, 800, carryingStr, colors[GREEN]);
 
 	DrawCircle (50, 670, 10, colors [RED]);
 	DrawCircle (70, 670, 10, colors [RED]);
@@ -201,6 +214,18 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 		playerCar -> fullFuel ();
 
+	}
+
+	if (key == 'p' || key == 'P') {
+    
+		playerCar -> switchMode ();
+    
+	}
+
+	if (key == 'm' || key == 'M') {
+    
+		playerCar -> pickupOrDropoff ();
+    
 	}
 
 	glutPostRedisplay ();

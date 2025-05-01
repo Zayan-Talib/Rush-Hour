@@ -1,8 +1,17 @@
 #include "vehicle.h"
 
 void Vehicle::DrawCar () {
+
+    float * CarColor = nullptr;
+
+    if (currentMode == MODE_TAXI) {
+        CarColor = colors [RED];
+    } 
+    else {
+        CarColor = colors [BLUE];
+    }
     
-    DrawSquare (x, y, 20, colors [RED]);
+    DrawSquare (x, y, 20, CarColor);
     glutPostRedisplay ();
 
 }
@@ -11,7 +20,7 @@ void Vehicle::DrawCar () {
 
 void Vehicle::moveLeft () {
 
-    if (canMove () && x - 30 >= gameBoard -> getLeft () && (gameBoard -> isValidMove (x - 30, y) || gameBoard -> isFuelStation (x - 30, y))) {
+    if (canMove () && x - 30 >= gameBoard -> getLeft () && gameBoard -> isValidMove (x - 30, y)) {
         
         x -= 30;
 
@@ -29,7 +38,7 @@ void Vehicle::moveLeft () {
 
 void Vehicle::moveRight () {
 
-    if (canMove () && x + 30 <= gameBoard -> getRight () && (gameBoard -> isValidMove (x + 30, y) || gameBoard -> isFuelStation (x + 30, y))) {
+    if (canMove () && x + 30 <= gameBoard -> getRight () && gameBoard -> isValidMove (x + 30, y)) {
         
         x += 30;
 
@@ -47,7 +56,7 @@ void Vehicle::moveRight () {
 
 void Vehicle::moveUp () {
 
-    if (canMove () && y + 30 <= gameBoard -> getTop () && (gameBoard -> isValidMove (x, y + 30) || gameBoard -> isFuelStation (x, y + 30))) {
+    if (canMove () && y + 30 <= gameBoard -> getTop () && gameBoard -> isValidMove (x, y + 30)) {
         
         y += 30;
 
@@ -65,7 +74,7 @@ void Vehicle::moveUp () {
 
 void Vehicle::moveDown () {
 
-    if (canMove () && y - 30 >= gameBoard -> getBottom () && (gameBoard -> isValidMove (x, y - 30) || gameBoard -> isFuelStation (x, y - 30))) {
+    if (canMove () && y - 30 >= gameBoard -> getBottom () && gameBoard -> isValidMove (x, y - 30)) {
         
         y -= 30;
 
@@ -81,6 +90,17 @@ void Vehicle::moveDown () {
 
 }
 
+// Mode Switching
+
+void Vehicle::switchMode () {
+
+    if (gameBoard -> isModeStation (x, y)) {
+    
+        currentMode = (currentMode == MODE_TAXI) ? MODE_DELIVERY : MODE_TAXI;
+    
+    }
+
+}
 
 // Fuel
 
@@ -138,3 +158,28 @@ void Vehicle::printCurrentCell () const {
 
 }
 
+
+// Passengers and Packages
+
+void Vehicle::pickupOrDropoff() {
+    if(currentMode == MODE_TAXI) {
+        if(!hasPassenger && gameBoard->isPassenger(x, y)) {
+            hasPassenger = true;
+            gameBoard->removePassenger(x, y);
+        }
+        else if(hasPassenger && gameBoard->isPassengerDestination(x, y)) {
+            hasPassenger = false;
+            addScore(100);
+        }
+    }
+    else { // Delivery mode
+        if(!hasPackage && gameBoard->isPackage(x, y)) {
+            hasPackage = true;
+            gameBoard->removePackage(x, y);
+        }
+        else if(hasPackage && gameBoard->isPackageDestination(x, y)) {
+            hasPackage = false;
+            addScore(150);
+        }
+    }
+}

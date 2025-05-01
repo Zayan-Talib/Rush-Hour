@@ -24,7 +24,11 @@ class Board {
         // 0 = Road
         // 1 = Building
         // 2 = Fuel Station
-        // 3 = Delivery Point
+        // 3 = Mode Station
+        // 4 = Passenger
+        // 5 = Passenger Destination
+        // 6 = Package
+        // 7 = Package Destination
 
         // Buildings
         
@@ -64,6 +68,19 @@ class Board {
 
         }
 
+        // Getters
+        
+        int getWidth () const { return BOARD_WIDTH; }
+        int getHeight () const { return BOARD_HEIGHT; }
+
+        int getLeft () const { return GRID_LEFT; }
+        int getRight () const { return GRID_RIGHT; }
+        int getTop () const { return GRID_TOP; }
+        int getBottom () const { return GRID_BOTTOM; }
+        
+        int getCellValue (int row, int col) const;
+        bool isValidMove (int x, int y) const; 
+
         // Drawing the Board
 
         void ResetBoard ();
@@ -81,18 +98,24 @@ class Board {
         void DrawFuelStations ();
         bool isFuelStation (int x, int y) const;
 
-        // Getters
-        
-        int getWidth () const { return BOARD_WIDTH; }
-        int getHeight () const { return BOARD_HEIGHT; }
+        // Mode Station
 
-        int getLeft () const { return GRID_LEFT; }
-        int getRight () const { return GRID_RIGHT; }
-        int getTop () const { return GRID_TOP; }
-        int getBottom () const { return GRID_BOTTOM; }
-        
-        int getCellValue (int row, int col) const;
-        bool isValidMove (int x, int y) const; 
+        void PlaceModeStation ();
+        void DrawModeStation ();
+        bool isModeStation (int x, int y) const;
+
+        // Passengers and Packages
+
+        void PlacePassengers ();
+        void PlaceDeliveryPoints ();
+        void DrawPassengersAndPackages ();
+        bool isPassenger (int x, int y) const;
+        bool isPassengerDestination (int x, int y) const;
+        bool isPackage (int x, int y) const;
+        bool isPackageDestination (int x, int y) const;
+        void removePassenger (int x, int y);
+        void removePackage (int x, int y);
+
 
 };
 
