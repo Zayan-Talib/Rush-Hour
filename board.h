@@ -84,7 +84,7 @@ class Board {
         // Drawing the Board
 
         void ResetBoard ();
-        void DrawGrid ();
+        void DrawGrid (int currentMode);
 
         // Buildings
 
@@ -108,7 +108,7 @@ class Board {
 
         void PlacePassengers ();
         void PlaceDeliveryPoints ();
-        void DrawPassengersAndPackages ();
+        void DrawPassengersAndPackages (int currentMode);
         bool isPassenger (int x, int y) const;
         bool isPassengerDestination (int x, int y) const;
         bool isPackage (int x, int y) const;

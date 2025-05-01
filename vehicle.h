@@ -33,6 +33,11 @@ class Vehicle {
         bool hasPassenger;
         bool hasPackage;
 
+        // Time
+
+        static const int GAME_DURATION = 180; // 3 minutes in seconds
+        int remainingTime;
+
   
     public:
 
@@ -46,7 +51,8 @@ class Vehicle {
         currentMode (MODE_TAXI),
         score (0),
         hasPassenger (false),
-        hasPackage (false) {}
+        hasPackage (false),
+        remainingTime (GAME_DURATION) {}
         
 
         // Getters
@@ -96,6 +102,12 @@ class Vehicle {
         bool isCarryingPackage () const { return hasPackage; }
         int getScore () const { return score; }
         void addScore (int points) { score += points; }
+
+        // Time
+
+        void updateTime ();
+        int getRemainingTime () const { return remainingTime; }
+        bool isTimeUp () const { return remainingTime <= 0; }
 
 
 };

@@ -2,6 +2,7 @@
 
 void Vehicle::DrawCar () {
 
+    float* WheelColor = colors [BLACK];
     float * CarColor = nullptr;
 
     if (currentMode == MODE_TAXI) {
@@ -12,6 +13,11 @@ void Vehicle::DrawCar () {
     }
     
     DrawSquare (x, y, 20, CarColor);
+
+    int wheelSize = 5;
+    DrawCircle (x + 5, y, wheelSize, WheelColor);      // Left wheel
+    DrawCircle (x + 15, y, wheelSize, WheelColor);     // Right wheel
+
     glutPostRedisplay ();
 
 }
@@ -169,7 +175,7 @@ void Vehicle::pickupOrDropoff() {
         }
         else if(hasPassenger && gameBoard->isPassengerDestination(x, y)) {
             hasPassenger = false;
-            addScore(100);
+            addScore (10);
         }
     }
     else { // Delivery mode
@@ -179,7 +185,15 @@ void Vehicle::pickupOrDropoff() {
         }
         else if(hasPackage && gameBoard->isPackageDestination(x, y)) {
             hasPackage = false;
-            addScore(150);
+            addScore (20);
         }
+    }
+}
+
+// Time
+
+void Vehicle::updateTime() {
+    if (remainingTime > 0) {
+        remainingTime--;
     }
 }

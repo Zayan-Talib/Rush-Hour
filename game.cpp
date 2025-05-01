@@ -50,6 +50,20 @@ void GameDisplay () {
 	
 	// Update Colors
 	glClear (GL_COLOR_BUFFER_BIT);
+
+	// Display remaining time
+	int minutes = playerCar -> getRemainingTime () / 60;
+	int seconds = playerCar -> getRemainingTime () % 60;
+
+	string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
+	DrawString (150, 800, timeStr, colors [RED]);
+
+	if (playerCar -> isTimeUp ()) {
+    
+		string gameOverStr = "GAME OVER! Final Score: " + Num2Str (playerCar -> getScore ());
+        DrawString (400, 400, gameOverStr, colors [RED]);
+    
+	}
 	
 	// Display Score
 	string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
@@ -64,18 +78,21 @@ void GameDisplay () {
 
 	// Display carrying status
 	string carryingStr;
-	if(playerCar->getCurrentMode() == 0) {  // Taxi mode
-		carryingStr = playerCar->isCarryingPassenger() ? "Carrying: Passenger" : "Carrying: Nothing";
-	} else {  // Delivery mode
-		carryingStr = playerCar->isCarryingPackage() ? "Carrying: Package" : "Carrying: Nothing";
+	
+	if (playerCar -> getCurrentMode () == 0) {
+		carryingStr = playerCar -> isCarryingPassenger () ? "Carrying: Passenger" : "Carrying: Nothing";
+	} 
+	else {
+		carryingStr = playerCar -> isCarryingPackage () ? "Carrying: Package" : "Carrying: Nothing";
 	}
-	DrawString(400, 800, carryingStr, colors[GREEN]);
+	
+	DrawString (400, 800, carryingStr, colors [GREEN]);
 
 	DrawCircle (50, 670, 10, colors [RED]);
 	DrawCircle (70, 670, 10, colors [RED]);
 	DrawCircle (90, 670, 10, colors [RED]);
 
-	gameBoard -> DrawGrid (); 
+	gameBoard -> DrawGrid (playerCar -> getCurrentMode ());
 
 	// // Red Square
 	// DrawSquare (400, 20, 40, colors [RED]);
@@ -121,34 +138,6 @@ int xI = gameBoard -> getLeft () + 5, yI = gameBoard -> getTop () - 4;
 
 bool flag = true;
 
-void moveCar () {
-	
-	// if (xI > 10 && flag) {
-
-	// 	xI -= 10;
-
-	// 	cout << "going left";
-		
-	// 	if (xI < 100) {
-	// 		flag = false;
-	// 	}
-
-	// }
-
-	// else if (xI < 1010 && !flag) {
-		
-	// 	cout << "go right";
-		
-	// 	xI += 10;
-		
-	// 	if (xI > 900) {
-	// 		flag = true;
-	// 	}
-			
-	// }
-
-}
-
 //=================================== Helpers =====================================
 
 
@@ -158,28 +147,32 @@ void NonPrintableKeys (int key, int x, int y) {
 	
 	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
 
-	if (key == GLUT_KEY_LEFT) {
+	if (!playerCar -> isTimeUp ()) {
+     
+		if (key == GLUT_KEY_LEFT) {
+			
+			playerCar -> moveLeft ();
+
+		} 
 		
-		playerCar -> moveLeft ();
+		else if (key == GLUT_KEY_RIGHT) {
+		
+			playerCar -> moveRight ();
+		
+		} 
+		
+		else if (key == GLUT_KEY_UP) {
 
-	} 
-	
-	else if (key == GLUT_KEY_RIGHT) {
-	
-		playerCar -> moveRight ();
-	
-	} 
-	
-	else if (key == GLUT_KEY_UP) {
+			playerCar -> moveUp();
+		
+		}
 
-		playerCar -> moveUp();
-	
-	}
+		else if (key == GLUT_KEY_DOWN) {
+		
+			playerCar -> moveDown ();
+		
+		}
 
-	else if (key == GLUT_KEY_DOWN) {
-	
-		playerCar -> moveDown ();
-	
 	}
 
 	// Call the function whenever you want to redraw the screen
@@ -198,15 +191,11 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 	}
 
-	if (key == 'b' || key == 'B') {
-
-		cout << "b pressed" << endl;
-
-	}
-
 	if (key == 'r' || key == 'R') {
 
 		gameBoard -> ResetBoard ();
+		delete playerCar;
+        playerCar = new Vehicle (gameBoard);
 
 	}
 
@@ -222,7 +211,7 @@ void PrintableKeys (unsigned char key, int x, int y) {
     
 	}
 
-	if (key == 'm' || key == 'M') {
+	if (key == ' ') {
     
 		playerCar -> pickupOrDropoff ();
     
@@ -275,9 +264,17 @@ void MouseClicked (int button, int state, int x, int y) {
 
 void Timer (int m) {
 
-	// Implement Functionality Here
+	    // Update game time every second
+		static int frameCount = 0;
+		frameCount++;
+		
+		if (frameCount >= FPS/10) { // Update every 0.1 seconds (assuming FPS = 80)
+			if (!playerCar->isTimeUp()) {
+				playerCar->updateTime();
+			}
+			frameCount = 0;
+		}
 	
-	moveCar ();
 
 	glutTimerFunc (100, Timer, 0);
 

@@ -45,7 +45,7 @@ void Board::ResetBoard () {
 
 }
 
-void Board::DrawGrid () {
+void Board::DrawGrid (int currentMode) {
 
     float * gridColor = colors [BLACK];
 
@@ -90,7 +90,7 @@ void Board::DrawGrid () {
     DrawBuildings ();
     DrawFuelStations ();
     DrawModeStation ();
-    DrawPassengersAndPackages ();
+    DrawPassengersAndPackages (currentMode);
     
 }
 
@@ -358,7 +358,7 @@ void Board::PlaceDeliveryPoints() {
     bool visited[CELL_COUNT][CELL_COUNT] = {{false}};
     floodFill(visited, 0, 0);
 
-    int MaxPackages = GetRandInRange (2, 4);
+    int MaxPackages = GetRandInRange (2, 3);
     
     while(placed <= MaxPackages) {
         // Place package
@@ -384,8 +384,7 @@ void Board::PlaceDeliveryPoints() {
     }
 }
 
-void Board::DrawPassengersAndPackages() {
-
+void Board::DrawPassengersAndPackages(int currentMode) {
     int size = CELL_SIZE;
 
     for(int row = 0; row < CELL_COUNT; row++) {
@@ -395,26 +394,35 @@ void Board::DrawPassengersAndPackages() {
             
             switch(grid[row][col]) {
                 case 4: // Passenger
-                DrawTriangle(
-                    x + size/2, y - 5,           // Top point
-                    x + 5, y - (size - 5),       // Bottom left
-                    x + size - 5, y - (size - 5),// Bottom right
-                    colors[YELLOW]
-                );
-                    break;
                 case 5: // Passenger destination
-                    DrawSquare(x, y - CELL_SIZE, CELL_SIZE, colors[ORANGE]);
+                    if(currentMode == 0) { // TAXI mode
+                        if(grid[row][col] == 4) {
+                            DrawTriangle(
+                                x + size/2, y - 5,           // Top point
+                                x + 5, y - (size - 5),       // Bottom left
+                                x + size - 5, y - (size - 5),// Bottom right
+                                colors[YELLOW]
+                            );
+                        } else {
+                            DrawSquare(x, y - CELL_SIZE, CELL_SIZE, colors[ORANGE]);
+                        }
+                    }
                     break;
+                    
                 case 6: // Package
-                DrawRoundRect(
-                    x + 5, y - size + 5,     // Position
-                    size - 10, size - 10,     // Size (slightly smaller than cell)
-                    colors[PURPLE],
-                    5                         // Radius
-                );
-                    break;
                 case 7: // Package destination
-                    DrawSquare(x, y - CELL_SIZE, CELL_SIZE, colors[PINK]);
+                    if(currentMode == 1) { // DELIVERY mode
+                        if(grid[row][col] == 6) {
+                            DrawRoundRect(
+                                x + 5, y - size + 5,     // Position
+                                size - 10, size - 10,     // Size
+                                colors[PURPLE],
+                                5                         // Radius
+                            );
+                        } else {
+                            DrawSquare(x, y - CELL_SIZE, CELL_SIZE, colors[PINK]);
+                        }
+                    }
                     break;
             }
         }
@@ -445,7 +453,7 @@ bool Board::isPackageDestination(int x, int y) const {
     return getCellValue(row, col) == 7;
 }
 
-void Board::removePassenger(int x, int y) {
+void Board::removePassenger (int x, int y) {
     int row = (GRID_TOP - y) / CELL_SIZE;
     int col = (x - GRID_LEFT) / CELL_SIZE;
     if(grid[row][col] == 4) {
