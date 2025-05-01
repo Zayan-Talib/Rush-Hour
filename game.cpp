@@ -10,12 +10,83 @@
 
 #ifndef RushHour_CPP_
 #define RushHour_CPP_
+
 #include "util.h"
+#include "board.h"
+
 #include <iostream>
 #include <string>
 #include <cmath>
+
 using namespace std;
 
+//=================================== Game Screen =====================================
+
+// Prototypes because I want the logic to be at the top
+
+void SetCanvasSize (int, int);
+void drawCar ();
+void moveCar ();
+
+// Class Management
+
+Board* gameBoard = nullptr;
+
+// Draw Canvas
+
+void GameDisplay () {
+
+	// Set Background Color
+	// Range: 0 to 1
+
+	glClearColor 
+	(1, // Red 
+	 1, // Green
+	 1, // Blue
+     0  // Alpha
+    );  
+	
+	// R=G=B=1 -> White
+	// R=G=B=0 -> Black
+	// R=G=B=0.5 -> Gray
+	
+	// Update Colors
+	glClear (GL_COLOR_BUFFER_BIT);
+	
+	// Display Score
+	DrawString (50, 800, "Score = 0", colors [RED]);
+
+	DrawCircle (50, 670, 10, colors [RED]);
+	DrawCircle (70, 670, 10, colors [RED]);
+	DrawCircle (90, 670, 10, colors [RED]);
+
+	gameBoard -> DrawGrid (); 
+
+	// // Red Square
+	// DrawSquare (400, 20, 40, colors [RED]);
+	
+	// // Green Square
+	// DrawSquare (250, 250, 20, colors [GREEN]); 
+	
+	// // Trianlge Vertices v1 (300,50), v2 (500,50), v3 (400,250)
+	// DrawTriangle (300, 450, 340, 450, 320, 490, colors [MISTY_ROSE]); 
+	
+	// // DrawLine (int x1, int y1, int x2, int y2, int lwidth, float *color)
+	// DrawLine (550, 50, 550, 480, 10, colors [MISTY_ROSE]);	
+	
+	// DrawRoundRect (500, 200, 50, 100, colors [DARK_SEA_GREEN], 70);
+	// DrawRoundRect (100, 200, 100, 50, colors [DARK_OLIVE_GREEN], 20);	
+	// DrawRoundRect (100, 100, 50, 100, colors [DARK_OLIVE_GREEN], 30);
+	// DrawRoundRect (200, 100, 100, 50, colors [LIME_GREEN], 40);
+	// DrawRoundRect (350, 100, 100, 50, colors [LIME_GREEN], 20);
+	
+	drawCar ();
+
+	glutSwapBuffers (); // Do Not Modify
+
+}
+
+//=================================== Before Game =====================================
 
 void SetCanvasSize (int width, int height) {
 	
@@ -35,7 +106,7 @@ int xI = 400, yI = 400;
 
 void drawCar () {
 	
-	DrawSquare (xI, yI, 20, colors [WHITE]);
+	DrawSquare (xI, yI, 20, colors [BLACK]);
 	glutPostRedisplay ();
 
 }
@@ -44,82 +115,33 @@ bool flag = true;
 
 void moveCar () {
 	
-	if (xI > 10 && flag) {
+	// if (xI > 10 && flag) {
 
-		xI -= 10;
+	// 	xI -= 10;
 
-		cout << "going left";
+	// 	cout << "going left";
 		
-		if (xI < 100) {
-			flag = false;
-		}
+	// 	if (xI < 100) {
+	// 		flag = false;
+	// 	}
 
-	}
+	// }
 
-	else if (xI < 1010 && !flag) {
+	// else if (xI < 1010 && !flag) {
 		
-		cout << "go right";
+	// 	cout << "go right";
 		
-		xI += 10;
+	// 	xI += 10;
 		
-		if (xI > 900) {
-			flag = true;
-		}
+	// 	if (xI > 900) {
+	// 		flag = true;
+	// 	}
 			
-	}
+	// }
 
 }
 
-// Draw Canvas
-
-void GameDisplay () {
-
-	// Set Background Color
-	// Range: 0 to 1
-
-	glClearColor 
-	(0, // Red 
-	 0, // Green
-	 0, // Blue
-     0  // Alpha
-    );  
-	
-	// R=G=B=1 -> White
-	// R=G=B=0 -> Black
-	// R=G=B=0.5 -> Gray
-	
-	// Update Colors
-	glClear (GL_COLOR_BUFFER_BIT);
-	
-	// Red Square
-	DrawSquare (400, 20, 40, colors [RED]);
-	
-	// Green Square
-	DrawSquare (250, 250, 20, colors [GREEN]); 
-	
-	// Display Score
-	DrawString (50, 800, "Score=0", colors [MISTY_ROSE]);
-	
-	// Trianlge Vertices v1 (300,50), v2 (500,50), v3 (400,250)
-	DrawTriangle (300, 450, 340, 450, 320, 490, colors [MISTY_ROSE]); 
-	
-	// DrawLine (int x1, int y1, int x2, int y2, int lwidth, float *color)
-	DrawLine (550, 50, 550, 480, 10, colors [MISTY_ROSE]);	
-	
-	DrawCircle (50, 670, 10, colors [RED]);
-	DrawCircle (70, 670, 10, colors [RED]);
-	DrawCircle (90, 670, 10, colors [RED]);
-	
-	DrawRoundRect (500, 200, 50, 100, colors [DARK_SEA_GREEN], 70);
-	DrawRoundRect (100, 200, 100, 50, colors [DARK_OLIVE_GREEN], 20);	
-	DrawRoundRect (100, 100, 50, 100, colors [DARK_OLIVE_GREEN], 30);
-	DrawRoundRect (200, 100, 100, 50, colors [LIME_GREEN], 40);
-	DrawRoundRect (350, 100, 100, 50, colors [LIME_GREEN], 20);
-	
-	drawCar ();
-	glutSwapBuffers (); // Do Not Modify
-
-}
+//=================================== User Input =====================================
 
 void NonPrintableKeys (int key, int x, int y) {
 	
@@ -175,23 +197,13 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 }
 
-void Timer (int m) {
-
-	// Implement Functionality Here
-	
-	moveCar ();
-
-	glutTimerFunc (100, Timer, 0);
-
-}
- 
 void MousePressedAndMoved (int x, int y) {
 	
 	// Auto Called When Mouse is moved inside the window
 	// Arguments: x and y (coordinates of mouse pointer)
 	// Use this function to find the direction of shooting
 
-	cout << x << " " << y << endl;
+	//cout << x << " " << y << endl;
 	glutPostRedisplay ();
 
 }
@@ -216,13 +228,27 @@ void MouseClicked (int button, int state, int x, int y) {
 	
 	else if (button == GLUT_RIGHT_BUTTON) {
 		
-		cout<<"Right Button Pressed"<<endl;
+		cout << "Right Button Pressed" << endl;
 
 	}
 
 	glutPostRedisplay ();
 
 }
+
+//================================== Miscellaneous ===================================
+
+void Timer (int m) {
+
+	// Implement Functionality Here
+	
+	moveCar ();
+
+	glutTimerFunc (100, Timer, 0);
+
+}
+ 
+//======================================= Main =======================================
 
 int main (int argc, char*argv []) {
 
@@ -232,9 +258,9 @@ int main (int argc, char*argv []) {
 	
 	glutInit (&argc, argv); 						// Initialize Graphics Library
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA); 	// Color Display Mode
-	glutInitWindowPosition (50, 50); 				// Initial Window Position
+	glutInitWindowPosition (430, 70); 				// Initial Window Position
 	glutInitWindowSize (width, height); 			// Window Size
-	glutCreateWindow ("Rush Hour"); 				// Title
+	glutCreateWindow ("Rush Hour - Zayan Talib"); 	// Title
 	SetCanvasSize (width, height); 					// Pixels
 
 	// Register your functions to the library
