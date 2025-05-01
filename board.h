@@ -18,18 +18,47 @@ class Board {
         static const int GRID_TOP = 750;
         static const int GRID_BOTTOM = GRID_TOP - BOARD_HEIGHT + 20;
         
-
-        int grid [BOARD_HEIGHT][BOARD_WIDTH];
+        int ** grid;
 
     public:
 
         // Constructor
 
+        Board () {
+            
+            grid = new int * [CELL_COUNT];
+            
+            for (int a = 0; a < CELL_COUNT; a++) {
+                grid [a] = new int [CELL_COUNT];
+            }
+
+            for (int a = 0; a < CELL_COUNT; a++) {
+                for (int b = 0; b < CELL_COUNT; b++) {
+                    grid [a][b] = 0;
+                }
+            }
+
+        }
+
+        // Destructor
+
+        ~Board () {
+            
+            for (int a = 0; a < CELL_COUNT; a++) {
+
+                delete [] grid [a];
+
+            }
+
+            delete [] grid;
+
+        }
 
         // Drawing the Board
 
         void DrawGrid ();
 
+        void DrawBuildings ();
 
         // Getters
         

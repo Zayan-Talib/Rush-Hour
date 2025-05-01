@@ -1,5 +1,7 @@
 #include "board.h"
 
+// Drawing the Board
+
 void Board::DrawGrid () {
 
     float * gridColor = colors [BLACK];
@@ -42,4 +44,10 @@ void Board::DrawGrid () {
 
     }   
     
+}
+
+void Board::DrawBuildings () {
+
+    
+
 }

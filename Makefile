@@ -1,6 +1,6 @@
 CXXFLAGS =	-g3 -fmessage-length=0 -Wno-narrowing #-Wall -Werror
 
-OBJS = 		util.o game.o board.o
+OBJS = 		util.o game.o board.o vehicle.o
 
 LIBS = 		-L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread
 

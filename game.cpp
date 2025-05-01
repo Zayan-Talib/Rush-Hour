@@ -13,10 +13,7 @@
 
 #include "util.h"
 #include "board.h"
-
-#include <iostream>
-#include <string>
-#include <cmath>
+#include "vehicle.h"
 
 using namespace std;
 
@@ -30,7 +27,8 @@ void moveCar ();
 
 // Class Management
 
-Board* gameBoard = nullptr;
+Board* gameBoard = new Board ();
+Vehicle* playerCar = new Vehicle (gameBoard);
 
 // Draw Canvas
 
@@ -80,7 +78,7 @@ void GameDisplay () {
 	// DrawRoundRect (200, 100, 100, 50, colors [LIME_GREEN], 40);
 	// DrawRoundRect (350, 100, 100, 50, colors [LIME_GREEN], 20);
 	
-	drawCar ();
+	playerCar -> DrawCar ();
 
 	glutSwapBuffers (); // Do Not Modify
 
@@ -102,14 +100,7 @@ void SetCanvasSize (int width, int height) {
 
 }
 
-int xI = gameBoard -> getLeft () + 5, yI = gameBoard -> getTop () - 4; // 24
-
-void drawCar () {
-	
-	DrawSquare (xI, yI, 20, colors [BLACK]);
-	glutPostRedisplay ();
-
-}
+int xI = gameBoard -> getLeft () + 5, yI = gameBoard -> getTop () - 4;
 
 bool flag = true;
 
@@ -141,6 +132,9 @@ void moveCar () {
 
 }
 
+//=================================== Helpers =====================================
+
+
 //=================================== User Input =====================================
 
 void NonPrintableKeys (int key, int x, int y) {
@@ -149,41 +143,25 @@ void NonPrintableKeys (int key, int x, int y) {
 
 	if (key == GLUT_KEY_LEFT) {
 		
-		if (xI - 30 >= gameBoard -> getLeft ()) {
-		
-			xI -= 30;
-		
-		}
+		playerCar -> moveLeft ();
 
 	} 
 	
 	else if (key == GLUT_KEY_RIGHT) {
 	
-		if (xI + 30 <= gameBoard -> getRight ()) {
-		
-			xI += 30;
-		
-		}
+		playerCar -> moveRight ();
 	
 	} 
 	
 	else if (key == GLUT_KEY_UP) {
 
-		if (yI + 30 <= gameBoard -> getTop ()) {
-		
-			yI += 30;
-		
-		}
+		playerCar -> moveUp();
 	
 	}
 
 	else if (key == GLUT_KEY_DOWN) {
 	
-		if (yI - 30 >= gameBoard -> getBottom ()) {
-		
-			yI -= 30;
-		
-		}
+		playerCar -> moveDown ();
 	
 	}
 
@@ -244,7 +222,7 @@ void MouseClicked (int button, int state, int x, int y) {
 	
 	else if (button == GLUT_RIGHT_BUTTON) {
 		
-		cout << "Current Coords of Car: " << xI << ", " << yI << endl;
+		playerCar -> printCurrentCell ();
 
 	}
 
