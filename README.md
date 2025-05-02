@@ -47,7 +47,7 @@ Requires:
 
 To compile on Linux:
 ```bash
-g++ -o rush_hour game.cpp board.cpp vehicle.cpp util.cpp -lGL -lGLU -lglut
+ g++ -o rush_hour game.cpp util.cpp board.cpp vehicle.cpp menu.cpp -L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread
 ```
 
 To run:
