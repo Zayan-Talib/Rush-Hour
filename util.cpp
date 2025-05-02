@@ -1,11 +1,3 @@
-//============================================================================
-// Zayan Talib
-// 24i-6514
-// Data Science (A)
-// OOP - 2nd Semester 
-// Final Project - Rush Hour
-//============================================================================
-
 #include "util.h"
 
 //================================= Helper Functions =================================
@@ -26,46 +18,51 @@ long GetRandInRange (const long &rmin, const long &rmax) {
 	long range = rmax - rmin;
 	long value = (rand () % (long) range) + rmin;
 	
-	//	cout << value << endl << flush;
-	
 	return value;
+
 }
 
 // Converts an integer to a string
 string Num2Str (int t) {
+	
 	stringstream s;
 	s << t;
 	return s.str ();
+
 }
 
 //================================= Miscellaneous =================================
 
 // Seeds the RNG based on current time
 void InitRandomizer () {
+
 	srand ((unsigned int) time (0)); 
 	// time (0) return number of seconds elapsed since January 1, 1970.
+
 }
 
 // Reads an image from a file and stores it in a vector
 void ReadImage (string imgname, vector<unsigned char> &imgArray) {
 	
 	using namespace cimg_library;
-	CImg<unsigned char> img(imgname.c_str());
-	imgArray.resize (img.height() * img.width() * 3, 0);
+	CImg<unsigned char> img (imgname.c_str ());
+	imgArray.resize (img.height () * img.width () * 3, 0);
 	
 	int k = 0;
-	unsigned char *rp = img.data();
-	unsigned char *gp = img.data() + img.height() * img.width();
-	unsigned char *bp = gp + img.height() * img.width();
+	unsigned char *rp = img.data ();
+	unsigned char *gp = img.data () + img.height () * img.width ();
+	unsigned char *bp = gp + img.height () * img.width ();
 
-	for (int j = 0; j < img.width(); ++j) {
+	for (int j = 0; j < img.width (); ++j) {
 		
 		int t = j;
 		
-		for (int i = 0; i < img.height(); ++i, t += img.width()) {
-			imgArray[k++] = rp[t];
-			imgArray[k++] = gp[t];
-			imgArray[k++] = bp[t];
+		for (int i = 0; i < img.height (); ++i, t += img.width ()) {
+			
+			imgArray [k++] = rp [t];
+			imgArray [k++] = gp [t];
+			imgArray [k++] = bp [t];
+		
 		}
 		
 		// imgArray[i][j] = img[k++];
@@ -97,8 +94,6 @@ void InitCircleVertices (float radius) {
 void DrawSquare (int sx, int sy, int size, float color []) {
 
 	int mx = size, my = size;
-
-	//cout << endl << "Coord  " << sx << " " << sy << " " << mx << " " << my << flush;
 
 	glColor3fv (color);
 	glBegin (GL_TRIANGLES);
@@ -147,8 +142,11 @@ void DrawCircle (float sx, float sy, float radius, float * color) {
 void DrawLine (int x1, int y1, int x2, int y2, int lwidth, float *color) {
 	
 	glLineWidth (lwidth);
-	if (color)
+	
+	if (color) {
 		glColor3fv (color);
+	}
+
 	glBegin (GL_LINES);
 	glVertex3f (x1, y1, 0.0);
 	glVertex3f (x2, y2, 0);
@@ -185,7 +183,7 @@ void Torus2d (int x, int y, float angle, float length, float radius, float width
 	number of circle samples >= 3,
 	color
 	
-	*/ 
+	*/
 
 	angle = Deg2Rad (angle);
 	length = Deg2Rad (length);
@@ -242,7 +240,7 @@ void DrawString (float x, float y, const string& score, float * color) {
 	GLUT_BITMAP_HELVETICA_18.
 	*/
 
-	GLvoid *font_style = GLUT_BITMAP_TIMES_ROMAN_24;
+	GLvoid *font_style = GLUT_BITMAP_HELVETICA_18;
 	
 	if (color) {
 		glColor3fv(color);
@@ -398,179 +396,200 @@ void RoundRect (int x, int y, int width, int height, int radius, int resolution)
 
 	int i = 0;
 
-	unsigned int index = 0, segment_count = (int)(resolution / 4);
+	unsigned int index = 0, segment_count = (int) (resolution / 4);
 
-	Vector2f *top_left = (Vector2f *)malloc(segment_count * sizeof(Vector2f)),
-		*bottom_left = (Vector2f *)malloc(
-		segment_count * sizeof(Vector2f)), *top_right =
-		(Vector2f *)malloc(segment_count * sizeof(Vector2f)),
-		*bottom_right = (Vector2f *)malloc(
-		segment_count * sizeof(Vector2f)), bottom_left_corner = { x
-		+ radius, y - height + radius };
+	Vector2f *top_left = (Vector2f *) malloc (segment_count * sizeof (Vector2f)), 
+			 *bottom_left = (Vector2f *) malloc (segment_count * sizeof (Vector2f)), 
+			 *top_right = (Vector2f *) malloc (segment_count * sizeof (Vector2f)),
+			 *bottom_right = (Vector2f *) malloc (segment_count * sizeof (Vector2f)), 
+			  bottom_left_corner = { x + radius, y - height + radius };
 
 	while (i != segment_count) {
-		x_offset = cosf(angle);
-		y_offset = sinf(angle);
 
-		top_left[index].x = bottom_left_corner.x - (x_offset * radius);
-		top_left[index].y = (height - (radius * 2.0f)) + bottom_left_corner.y
-			- (y_offset * radius);
+		x_offset = cosf (angle);
+		y_offset = sinf (angle);
 
-		top_right[index].x = (width - (radius * 2.0f)) + bottom_left_corner.x
-			+ (x_offset * radius);
-		top_right[index].y = (height - (radius * 2.0f)) + bottom_left_corner.y
-			- (y_offset * radius);
+		top_left [index].x = bottom_left_corner.x - (x_offset * radius);
+		top_left [index].y = (height - (radius * 2.0f)) + bottom_left_corner.y - (y_offset * radius);
 
-		bottom_right[index].x = (width - (radius * 2.0f)) + bottom_left_corner.x
-			+ (x_offset * radius);
-		bottom_right[index].y = bottom_left_corner.y + (y_offset * radius);
+		top_right [index].x = (width - (radius * 2.0f)) + bottom_left_corner.x + (x_offset * radius);
+		top_right [index].y = (height - (radius * 2.0f)) + bottom_left_corner.y - (y_offset * radius);
 
-		bottom_left[index].x = bottom_left_corner.x - (x_offset * radius);
-		bottom_left[index].y = bottom_left_corner.y + (y_offset * radius);
+		bottom_right [index].x = (width - (radius * 2.0f)) + bottom_left_corner.x + (x_offset * radius);
+		bottom_right [index].y = bottom_left_corner.y + (y_offset * radius);
 
-		top_left[index].x = roundf(top_left[index].x);
-		top_left[index].y = roundf(top_left[index].y);
+		bottom_left [index].x = bottom_left_corner.x - (x_offset * radius);
+		bottom_left [index].y = bottom_left_corner.y + (y_offset * radius);
 
-		top_right[index].x = roundf(top_right[index].x);
-		top_right[index].y = roundf(top_right[index].y);
+		top_left [index].x = roundf (top_left [index].x);
+		top_left [index].y = roundf (top_left [index].y);
 
-		bottom_right[index].x = roundf(bottom_right[index].x);
-		bottom_right[index].y = roundf(bottom_right[index].y);
+		top_right [index].x = roundf (top_right [index].x);
+		top_right [index].y = roundf (top_right [index].y);
 
-		bottom_left[index].x = roundf(bottom_left[index].x);
-		bottom_left[index].y = roundf(bottom_left[index].y);
+		bottom_right [index].x = roundf (bottom_right [index].x);
+		bottom_right [index].y = roundf (bottom_right [index].y);
+
+		bottom_left [index].x = roundf (bottom_left [index].x);
+		bottom_left [index].y = roundf (bottom_left [index].y);
 
 		angle -= step;
 
 		++index;
 
 		++i;
+
 	}
 
-	glBegin(GL_TRIANGLE_STRIP);
+	glBegin (GL_TRIANGLE_STRIP);
+	
 	{
 		// Top
+		
 		{
+		
 			i = 0;
+		
 			while (i != segment_count) {
+		
 				//glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-				glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-				glVertex2i(top_left[i].x, top_left[i].y);
+				glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+				glVertex2i (top_left [i].x, top_left [i].y);
 
 				//glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-				glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-				glVertex2i(top_right[i].x, top_right[i].y);
+				glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+				glVertex2i (top_right [i].x, top_right [i].y);
 
 				++i;
+		
 			}
+		
 		}
 
 		// In order to stop and restart the strip.
-		glColor4f(0.0f, 1.0f, 0.0f, 1.5f);
-		glVertex2i(top_right[0].x, top_right[0].y);
+		glColor4f (0.0f, 1.0f, 0.0f, 1.5f);
+		glVertex2i (top_right [0].x, top_right [0].y);
 
-		glColor4f(0.0f, 1.0f, 0.0f, 1.5f);
-		glVertex2i(top_right[0].x, top_right[0].y);
+		glColor4f (0.0f, 1.0f, 0.0f, 1.5f);
+		glVertex2i (top_right [0].x, top_right [0].y);
 
 		// Center
 		{
+		
 			//glColor4f( 0.0f, 1.0f, 0.0f,  1.0f );
-			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			glVertex2i(top_right[0].x, top_right[0].y);
+			glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+			glVertex2i (top_right [0].x, top_right [0].y);
 
 			//glColor4f( 1.0f, 0.0f, 0.0f,  1.0f );
-			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			glVertex2i(top_left[0].x, top_left[0].y);
+			glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+			glVertex2i (top_left [0].x, top_left [0].y);
 
 			//glColor4f( 0.0f, 0.0f, 1.0f,  1.0f );
-			glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-			glVertex2i(bottom_right[0].x, bottom_right[0].y);
+			glColor4f (0.5f, 0.5f, 0.5f, 1.0f);
+			glVertex2i (bottom_right [0].x, bottom_right [0].y);
 
 			//glColor4f( 1.0f, 1.0f, 0.0f,  1.0f );
-			glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-			glVertex2i(bottom_left[0].x, bottom_left[0].y);
+			glColor4f (0.5f, 0.5f, 0.5f, 1.0f);
+			glVertex2i (bottom_left [0].x, bottom_left [0].y);
+		
 		}
 
 		// Bottom
+		
 		i = 0;
 		while (i != segment_count) {
+		
 			//glColor4f( 0.0f, 0.0f, 1.0f,  1.0f );
-			glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-			glVertex2i(bottom_right[i].x, bottom_right[i].y);
+			glColor4f (0.5f, 0.5f, 0.5f, 1.0f);
+			glVertex2i (bottom_right [i].x, bottom_right [i].y);
 
 			//glColor4f( 1.0f, 1.0f, 0.0f,  1.0f );
-			glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-			glVertex2i(bottom_left[i].x, bottom_left[i].y);
+			glColor4f (0.5f, 0.5f, 0.5f, 1.0f);
+			glVertex2i (bottom_left [i].x, bottom_left [i].y);
 
 			++i;
+		
 		}
+	
 	}
-	glEnd();
+	
+	glEnd ();
 
-	glBegin(GL_LINE_STRIP);
+	glBegin (GL_LINE_STRIP);
 
 	//glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
-	glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
+	glColor4f (1.0f, 0.5f, 0.0f, 1.0f);
 
 	// Border
 	{
-		i = (segment_count - 1);
-		while (i > -1) {
-			glVertex2i(top_left[i].x, top_left[i].y);
 
+		i = (segment_count - 1);
+
+		while (i > -1) {
+			
+			glVertex2i (top_left [i].x, top_left [i].y);
 			--i;
+		
 		}
 
 		i = 0;
 		while (i != segment_count) {
-			glVertex2i(bottom_left[i].x, bottom_left[i].y);
 
+			glVertex2i (bottom_left [i].x, bottom_left [i].y);
 			++i;
+		
 		}
 
 		i = (segment_count - 1);
-		while (i > -1) {
-			glVertex2i(bottom_right[i].x, bottom_right[i].y);
 
+		while (i > -1) {
+		
+			glVertex2i (bottom_right [i].x, bottom_right [i].y);
 			--i;
+		
 		}
 
 		i = 0;
-		while (i != segment_count) {
-			glVertex2i(top_right[i].x, top_right[i].y);
 
+		while (i != segment_count) {
+		
+			glVertex2i (top_right [i].x, top_right [i].y);
 			++i;
+		
 		}
 
 		// Close the border.
-		glVertex2i(top_left[(segment_count - 1)].x,
-			top_left[(segment_count - 1)].y);
+		glVertex2i (top_left [(segment_count - 1)].x, top_left [(segment_count - 1)].y);
+	
 	}
-	glEnd();
+	
+	glEnd ();
 
-	glBegin(GL_LINES);
+	glBegin (GL_LINES);
 
 	//glColor4f( 0.0f, 1.0f, 1.0f, 1.0f );
-	glColor4f(0.0f, 0.5f, 1.0f, 1.0f);
+	glColor4f (0.0f, 0.5f, 1.0f, 1.0f);
 
 	// Separator
 	{
 		// Top bar
-		glVertex2i(top_right[0].x, top_right[0].y);
+		glVertex2i (top_right [0].x, top_right [0].y);
 
-		glVertex2i(top_left[0].x, top_left[0].y);
+		glVertex2i (top_left [0].x, top_left [0].y);
 
 		// Bottom bar
-		glVertex2i(bottom_left[0].x, bottom_left[0].y);
+		glVertex2i (bottom_left [0].x, bottom_left [0].y);
 
-		glVertex2i(bottom_right[0].x, bottom_right[0].y);
+		glVertex2i (bottom_right [0].x, bottom_right [0].y);
 	}
-	glEnd();
 
-	free(top_left);
-	free(bottom_left);
-	free(top_right);
-	free(bottom_right);
+	glEnd ();
+
+	free (top_left);
+	free (bottom_left);
+	free (top_right);
+	free (bottom_right);
+
 }
 
 

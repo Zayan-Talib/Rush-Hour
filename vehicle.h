@@ -68,6 +68,7 @@ class Vehicle {
         // Setters
 
         void fullFuel () { currentFuel = MAX_FUEL; }
+        void setMode (int mode) { currentMode = mode; }
         
         // Drawing
 
@@ -89,6 +90,7 @@ class Vehicle {
 
         void refillFuel ();
         void consumeFuel ();
+        void DrawFuelMeter ();
 
         int getFuelLevel () const { return currentFuel; }
         bool canMove () const { return currentFuel > 0; }

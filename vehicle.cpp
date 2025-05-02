@@ -122,6 +122,59 @@ void Vehicle::refillFuel () {
 
 }
 
+void Vehicle::DrawFuelMeter () {
+
+    // Drawing position
+    int x = 25;  // Left side of screen
+    int y = 300; // Current position of your circles
+    int width = 100;
+    int height = 200;
+    
+    // Draw outer border of fuel meter
+    DrawRoundRect (x, y, width, height + 10, colors[BLACK], 10);
+    
+    // Calculate fill height based on current fuel percentage
+    float fuelPercent = currentFuel / 100.0f;
+    int fillHeight = height * fuelPercent;
+    
+    // Choose color based on fuel level
+    float* fuelColor;
+    if (currentFuel > 70) {
+        fuelColor = colors[GREEN];
+    } 
+    else if (currentFuel > 30) {
+        fuelColor = colors[YELLOW];
+    } 
+    else {
+        fuelColor = colors[RED];
+    }
+    
+    // Draw fuel level
+
+    if (currentFuel > 4) {
+
+        DrawRoundRect (x + 5, y + 5, width - 10, fillHeight, fuelColor, 8);
+
+    }
+
+    else {
+    
+        int lineSpacing = 1;
+        
+        for (int a = 0; a < currentFuel * 2; a++) {
+        
+            DrawLine (x + 5, y + 5 + (a * lineSpacing), x + width - 5, y + 5 + (a * lineSpacing), 5, fuelColor);
+        
+        }
+    
+    }
+    
+    // Draw fuel icon
+    DrawString (x + 20, y + 225, "FULL", colors[BLACK]); 
+    DrawString (x + 9, y - 35, "EMPTY", colors[BLACK]); 
+
+}
+
 int Vehicle::getCellX () const {
     
     int cx = gameBoard -> getLeft();

@@ -14,6 +14,7 @@
 #include "util.h"
 #include "board.h"
 #include "vehicle.h"
+#include "menu.h"
 
 using namespace std;
 
@@ -22,13 +23,12 @@ using namespace std;
 // Prototypes because I want the logic to be at the top
 
 void SetCanvasSize (int, int);
-void drawCar ();
-void moveCar ();
 
-// Class Management
+// Classes from other files
 
 Board* gameBoard = new Board ();
 Vehicle* playerCar = new Vehicle (gameBoard);
+Menu* gameMenu = new Menu ();
 
 // Draw Canvas
 
@@ -51,68 +51,64 @@ void GameDisplay () {
 	// Update Colors
 	glClear (GL_COLOR_BUFFER_BIT);
 
-	// Display remaining time
-	int minutes = playerCar -> getRemainingTime () / 60;
-	int seconds = playerCar -> getRemainingTime () % 60;
-
-	string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
-	DrawString (150, 800, timeStr, colors [RED]);
-
-	if (playerCar -> isTimeUp ()) {
+	if (!gameMenu -> hasGameStarted ()) {
     
-		string gameOverStr = "GAME OVER! Final Score: " + Num2Str (playerCar -> getScore ());
-        DrawString (400, 400, gameOverStr, colors [RED]);
+		gameMenu -> DrawMenu ();
     
-	}
-	
-	// Display Score
-	string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
-    DrawString (20, 800, scoreStr, colors [RED]);
-
-	// Display fuel level
-	string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
-	DrawString (20, 750, fuelStr, colors [RED]);
-
-	string modeStr = "Mode: " + string (playerCar -> getCurrentMode () == 0 ? "TAXI" : "DELIVERY");
-    DrawString (800, 800, modeStr, colors [BLUE]);
-
-	// Display carrying status
-	string carryingStr;
-	
-	if (playerCar -> getCurrentMode () == 0) {
-		carryingStr = playerCar -> isCarryingPassenger () ? "Carrying: Passenger" : "Carrying: Nothing";
 	} 
+
 	else {
-		carryingStr = playerCar -> isCarryingPackage () ? "Carrying: Package" : "Carrying: Nothing";
-	}
-	
-	DrawString (400, 800, carryingStr, colors [GREEN]);
+		
+		// Display remaining time
+		int minutes = playerCar -> getRemainingTime () / 60;
+		int seconds = playerCar -> getRemainingTime () % 60;
 
-	DrawCircle (50, 670, 10, colors [RED]);
-	DrawCircle (70, 670, 10, colors [RED]);
-	DrawCircle (90, 670, 10, colors [RED]);
+		string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
+		DrawString (150, 800, timeStr, colors [RED]);
 
-	gameBoard -> DrawGrid (playerCar -> getCurrentMode ());
+		if (playerCar -> isTimeUp ()) {
+		
+			string gameOverStr = "GAME OVER! Final Score: " + Num2Str (playerCar -> getScore ());
+			DrawString (400, 400, gameOverStr, colors [RED]);
+		
+		}
+		
+		// Display Score
+		string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
+		DrawString (20, 800, scoreStr, colors [RED]);
 
-	// // Red Square
-	// DrawSquare (400, 20, 40, colors [RED]);
-	
-	// // Green Square
-	// DrawSquare (250, 250, 20, colors [GREEN]); 
-	
-	// // Trianlge Vertices v1 (300,50), v2 (500,50), v3 (400,250)
-	// DrawTriangle (300, 450, 340, 450, 320, 490, colors [MISTY_ROSE]); 
-	
-	// // DrawLine (int x1, int y1, int x2, int y2, int lwidth, float *color)
-	// DrawLine (550, 50, 550, 480, 10, colors [MISTY_ROSE]);	
-	
-	// DrawRoundRect (500, 200, 50, 100, colors [DARK_SEA_GREEN], 70);
-	// DrawRoundRect (100, 200, 100, 50, colors [DARK_OLIVE_GREEN], 20);	
-	// DrawRoundRect (100, 100, 50, 100, colors [DARK_OLIVE_GREEN], 30);
-	// DrawRoundRect (200, 100, 100, 50, colors [LIME_GREEN], 40);
-	// DrawRoundRect (350, 100, 100, 50, colors [LIME_GREEN], 20);
-	
-	playerCar -> DrawCar ();
+		// Display fuel level
+		string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
+		DrawString (20, 750, fuelStr, colors [RED]);
+
+		playerCar -> DrawFuelMeter ();
+
+		// Display Mode
+
+		string modeStr = "Mode: " + string (playerCar -> getCurrentMode () == 0 ? "TAXI" : "DELIVERY");
+		DrawString (800, 800, modeStr, colors [BLUE]);
+
+		// Display carrying status
+		string carryingStr;
+		
+		if (playerCar -> getCurrentMode () == 0) {
+			carryingStr = playerCar -> isCarryingPassenger () ? "Carrying: Passenger" : "Carrying: Nothing";
+		} 
+		else {
+			carryingStr = playerCar -> isCarryingPackage () ? "Carrying: Package" : "Carrying: Nothing";
+		}
+		
+		DrawString (400, 800, carryingStr, colors [GREEN]);
+
+		DrawCircle (50, 670, 10, colors [RED]);
+		DrawCircle (70, 670, 10, colors [RED]);
+		DrawCircle (90, 670, 10, colors [RED]);
+
+		gameBoard -> DrawGrid (playerCar -> getCurrentMode ());
+		
+		playerCar -> DrawCar ();
+
+    }
 
 	glutSwapBuffers (); // Do Not Modify
 
@@ -185,36 +181,61 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
 
-	if (key == 27 /* Escape key ASCII */) {
-
-		exit (1);
-
-	}
-
-	if (key == 'r' || key == 'R') {
-
-		gameBoard -> ResetBoard ();
-		delete playerCar;
-        playerCar = new Vehicle (gameBoard);
-
-	}
-
-	if (key == 'f' || key == 'F') {
-
-		playerCar -> fullFuel ();
-
-	}
-
-	if (key == 'p' || key == 'P') {
+	if (!gameMenu -> hasGameStarted ()) {
     
-		playerCar -> switchMode ();
+		gameMenu -> HandleKeypress (key);
     
-	}
+		if (gameMenu -> hasGameStarted ()) {
+        
+			playerCar -> setMode (gameMenu -> getSelectedMode ());
+        
+		}
+    
+	} 
+	
+	else {
+    
+		if (key == 27 /* Escape key ASCII */) {
 
-	if (key == ' ') {
+			delete playerCar;
+			delete gameBoard;
+	
+			exit (1);
+	
+		}
+	
+		if (key == 'r' || key == 'R') {
+	
+			Board* tempBoard = new Board ();
+			Vehicle* tempCar = new Vehicle (tempBoard);
+			
+			delete playerCar;
+			delete gameBoard;
+			
+			gameBoard = tempBoard;
+			playerCar = tempCar;
+	
+		}
+	
+		if (key == 'f' || key == 'F') {
+	
+			playerCar -> fullFuel ();
+	
+		}
+	
+		if (key == 'p' || key == 'P') {
+		
+			playerCar -> switchMode ();
+		
+		}
+	
+		if (key == ' ') {
+		
+			playerCar -> pickupOrDropoff ();
+		
+		}
     
-		playerCar -> pickupOrDropoff ();
-    
+	
 	}
 
 	glutPostRedisplay ();
@@ -310,6 +331,12 @@ int main (int argc, char*argv []) {
 	glutMotionFunc (MousePressedAndMoved);
 
 	glutMainLoop ();
+
+	// CleanUp
+
+	delete playerCar;
+    delete gameBoard;
+	delete gameMenu;
 
 	return 1;
 

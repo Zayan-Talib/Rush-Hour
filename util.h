@@ -1,11 +1,3 @@
-//============================================================================
-// Zayan Talib
-// 24i-6514
-// Data Science (A)
-// OOP - 2nd Semester 
-// Final Project - Rush Hour
-//============================================================================
-
 // Definitions
 
 #ifndef UTIL_H_
@@ -41,7 +33,8 @@ using namespace std;
 
 // Use ColorNames to access indexes in the colors array
 enum ColorNames {
-	MAROON,
+	
+    MAROON,
 	DARK_RED,
 	BROWN,
 	FIREBRICK,
@@ -181,9 +174,11 @@ enum ColorNames {
 	WHITE,
 	BLACK,
 	SLATE_BM,
+
 };
 
 static float colors [][3] = {
+
     {0.501960784313726, 0, 0},
     {0.545098039215686, 0, 0},
     {0.647058823529412, 0.164705882352941, 0.164705882352941},
@@ -324,6 +319,7 @@ static float colors [][3] = {
     {1, 1, 1},
     {0, 0, 0},
     {0.734375, 0.734375, 0.734375}
+
 };
 
 // Macros
