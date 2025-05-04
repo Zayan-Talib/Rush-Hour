@@ -45,7 +45,7 @@ void Board::PlaceItem (int itemType, int minCount, int maxCount) {
     int attempts = 0;
     const int MAX_ATTEMPTS = 1000;
     
-    while (placed <= maxItems && attempts < MAX_ATTEMPTS) {
+    while (placed < maxItems && attempts < MAX_ATTEMPTS) {
 
         attempts++;
 
@@ -525,27 +525,9 @@ void Board::trySpawnNewItem (int currentMode) {
     // Generate random number 1-100
     int chance = GetRandInRange (1, 100);
     
-    if (chance <= SPAWN_CHANCE) {  // 15% chance to try spawning
+    if (chance <= SPAWN_CHANCE) {
 
-        if (currentMode == 0) {
-       
-            if (countPassengers () < MAX_PASSENGERS) {
-                
-                PlaceItem (4, 1, 1);
-       
-            }
-       
-        }
-
-        else {
-
-            if (countPackages () < MAX_PACKAGES) {
-            
-                PlaceItem (6, 1, 1);
-
-            }
-
-        }
+        PlaceItem ((currentMode == 0) ? 4 : 6, 1, 1);
 
     }
 

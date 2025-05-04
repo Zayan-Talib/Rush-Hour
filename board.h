@@ -44,7 +44,7 @@ class Board {
         void PlaceItem (int itemType, int minCount, int maxCount);
         void GenerateDestination (int itemType);
 
-        static const int SPAWN_CHANCE = 5;
+        static const int SPAWN_CHANCE = 15;
         static const int MIN_PASSENGERS = 2;
         static const int MAX_PASSENGERS = 4;
         static const int MIN_PACKAGES = 2;
