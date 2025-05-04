@@ -60,18 +60,6 @@ void Vehicle::switchMode () {
 
 // Fuel
 
-void Vehicle::consumeFuel () {
-
-    currentFuel = MAX (0, currentFuel - FUEL_CONSUMPTION);
-
-}
-
-void Vehicle::refillFuel () {
-
-    currentFuel = MIN (MAX_FUEL, currentFuel + REFILL_AMOUNT);
-
-}
-
 void Vehicle::DrawFuelMeter () {
 
     // Drawing position
@@ -167,36 +155,56 @@ void Vehicle::printCurrentCell () const {
 
 }
 
-
 // Passengers and Packages
 
-void Vehicle::pickupOrDropoff() {
-    if(currentMode == MODE_TAXI) {
-        if(!hasPassenger && gameBoard->isPassenger(x, y)) {
+void Vehicle::pickupOrDropoff () {
+
+    if (currentMode == MODE_TAXI) {
+    
+        if (!hasPassenger && gameBoard -> isPassenger (x, y)) {
+       
             hasPassenger = true;
-            gameBoard->removePassenger(x, y);
+            gameBoard -> removePassenger (x, y);
+        
         }
-        else if(hasPassenger && gameBoard->isPassengerDestination(x, y)) {
+
+        else if (hasPassenger && gameBoard -> isPassengerDestination (x, y)) {
+        
             hasPassenger = false;
             addScore (10);
+        
         }
+    
     }
-    else { // Delivery mode
-        if(!hasPackage && gameBoard->isPackage(x, y)) {
+
+    else {
+
+        if (!hasPackage && gameBoard -> isPackage (x, y)) {
+            
             hasPackage = true;
-            gameBoard->removePackage(x, y);
+            gameBoard -> removePackage (x, y);
+        
         }
-        else if(hasPackage && gameBoard->isPackageDestination(x, y)) {
+
+        else if (hasPackage && gameBoard -> isPackageDestination (x, y)) {
+            
             hasPackage = false;
             addScore (20);
+
         }
+
     }
+
 }
 
 // Time
 
-void Vehicle::updateTime() {
+void Vehicle::updateTime () {
+
     if (remainingTime > 0) {
+
         remainingTime--;
+
     }
+
 }

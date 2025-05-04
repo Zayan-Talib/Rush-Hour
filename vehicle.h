@@ -89,8 +89,8 @@ class Vehicle {
 
         // Fuel
 
-        void refillFuel ();
-        void consumeFuel ();
+        void refillFuel () { currentFuel = MIN (MAX_FUEL, currentFuel + REFILL_AMOUNT); }
+        void consumeFuel () { currentFuel = MAX (0, currentFuel - FUEL_CONSUMPTION); }
         void DrawFuelMeter ();
 
         int getFuelLevel () const { return currentFuel; }

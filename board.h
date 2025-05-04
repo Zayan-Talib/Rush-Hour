@@ -80,19 +80,20 @@ class Board {
 
         int getLeft () const { return GRID_LEFT; }
         int getRight () const { return GRID_RIGHT; }
-        int getTop () const { return GRID_TOP; }
+        int getTop () const { return GRID_TOP; }    
         int getBottom () const { return GRID_BOTTOM; }
         
         int getCellValue (int row, int col) const;
+        bool GridCheck (int x, int y, int check) const;
         bool isValidMove (int x, int y) const; 
 
-        bool isRoad (int row, int col) const { return grid [row][col] == 0; }
-        bool isFuelStation (int x, int y) const;
-        bool isModeStation (int x, int y) const;
-        bool isPassenger (int x, int y) const;
-        bool isPassengerDestination (int x, int y) const;
-        bool isPackage (int x, int y) const;
-        bool isPackageDestination (int x, int y) const;
+        bool isRoad (int x, int y) const { return GridCheck (x, y, 0); }
+        bool isFuelStation (int x, int y) const { return GridCheck (x, y, 2); }
+        bool isModeStation (int x, int y) const { return GridCheck (x, y, 3); }
+        bool isPassenger (int x, int y) const { return GridCheck (x, y, 4); }
+        bool isPassengerDestination (int x, int y) const { return GridCheck (x, y, 5); }
+        bool isPackage (int x, int y) const { return GridCheck (x, y, 6); }
+        bool isPackageDestination (int x, int y) const { return GridCheck (x, y, 7); }
 
         // Drawing the Board
 

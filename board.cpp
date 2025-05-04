@@ -14,6 +14,17 @@ int Board::getCellValue (int row, int col) const {
 
 }
 
+bool Board::GridCheck (int x, int y, int check) const {
+
+    int row, col;
+
+    row = (GRID_TOP - y) / CELL_SIZE;
+    col = (x - GRID_LEFT) / CELL_SIZE;
+
+    return getCellValue (row, col) == check;
+
+}
+
 bool Board::isValidMove (int x, int y) const {
     
     int row = (GRID_TOP - y) / CELL_SIZE;
@@ -23,69 +34,18 @@ bool Board::isValidMove (int x, int y) const {
 
 }
 
-bool Board::isFuelStation (int x, int y) const {
-
-    int row = (GRID_TOP - y) / CELL_SIZE;
-    int col = (x - GRID_LEFT) / CELL_SIZE;
-
-    return getCellValue (row, col) == 2;
-
-}
-
-bool Board::isModeStation (int x, int y) const {
-
-    int row = (GRID_TOP - y) / CELL_SIZE;
-    int col = (x - GRID_LEFT) / CELL_SIZE;
-    
-    return getCellValue (row, col) == 3;
-
-}
-
-bool Board::isPassenger (int x, int y) const {
-
-    int row = (GRID_TOP - y) / CELL_SIZE;
-    int col = (x - GRID_LEFT) / CELL_SIZE;
-
-    return getCellValue (row, col) == 4;
-
-}
-
-bool Board::isPassengerDestination (int x, int y) const {
-
-    int row = (GRID_TOP - y) / CELL_SIZE;
-    int col = (x - GRID_LEFT) / CELL_SIZE;
-
-    return getCellValue (row, col) == 5;
-
-}
-
-bool Board::isPackage (int x, int y) const {
-
-    int row = (GRID_TOP - y) / CELL_SIZE;
-    int col = (x - GRID_LEFT) / CELL_SIZE;
-
-    return getCellValue (row, col) == 6;
-
-}
-
-bool Board::isPackageDestination (int x, int y) const {
-
-    int row = (GRID_TOP - y) / CELL_SIZE;
-    int col = (x - GRID_LEFT) / CELL_SIZE;
-
-    return getCellValue (row, col) == 7;
-
-}
-
 void Board::PlaceItem (int itemType, int minCount, int maxCount, bool needDestination) {
 
     int placed = 0;
     int maxItems = GetRandInRange (minCount, maxCount);
     bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
     
+    int attempts = 0;
+    const int MAX_ATTEMPTS = 1000;
+
     floodFill (visited, 0, 0);
     
-    while (placed < maxItems) {
+    while (placed < maxItems && attempts < MAX_ATTEMPTS) {
 
         int row = GetRandInRange (0, CELL_COUNT);
         int col = GetRandInRange (0, CELL_COUNT);
@@ -139,8 +99,8 @@ void Board::ResetBoard () {
     }
 
     GenerateBuildings ();
-    PlaceFuelStations ();
     PlaceModeStation ();
+    PlaceFuelStations ();
     PlacePassengers ();
     PlaceDeliveryPoints ();
 
@@ -301,8 +261,6 @@ void Board::DrawPassengersAndPackages (int currentMode) {
 
 void Board::GenerateBuildings () {
     
-    InitRandomizer ();
-    
     int totalCells = CELL_COUNT * CELL_COUNT;
     int buildingCells = (totalCells * BUILDING_PERCENT) / 100;
     
@@ -338,21 +296,13 @@ void Board::GenerateBuildings () {
 
 bool Board::canReachAllCorners () {
     
+    if (grid [0][0] != 0) { return false; }
+
     bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
     
     // Start from top left
-    
-    if (grid [0][0] == 0) {
 
-        floodFill (visited, 0, 0);
-
-    } 
-    
-    else {
-
-        return false;
-
-    }
+    floodFill (visited, 0, 0);
     
     // Corners Check
 
