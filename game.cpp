@@ -9,6 +9,7 @@
 // Definitions
 
 #ifndef RushHour_CPP_
+
 #define RushHour_CPP_
 
 #include "util.h"
@@ -19,10 +20,6 @@
 using namespace std;
 
 //=================================== Game Screen =====================================
-
-// Prototypes because I want the logic to be at the top
-
-void SetCanvasSize (int, int);
 
 // Classes from other files
 
@@ -58,53 +55,61 @@ void GameDisplay () {
 	} 
 
 	else {
-		
-		// Display remaining time
-		int minutes = playerCar -> getRemainingTime () / 60;
-		int seconds = playerCar -> getRemainingTime () % 60;
 
-		string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
-		DrawString (150, 800, timeStr, colors [RED]);
+		// Mid Game Text
 
-		if (playerCar -> isTimeUp ()) {
-		
-			string gameOverStr = "GAME OVER! Final Score: " + Num2Str (playerCar -> getScore ());
-			DrawString (400, 400, gameOverStr, colors [RED]);
-		
+		{
+			
+			// Display remaining time
+			int minutes = playerCar -> getRemainingTime () / 60;
+			int seconds = playerCar -> getRemainingTime () % 60;
+
+			string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
+			DrawString (150, 800, timeStr, colors [RED]);
+
+			if (playerCar -> isTimeUp ()) {
+			
+				string gameOverStr = "GAME OVER! Final Score: " + Num2Str (playerCar -> getScore ());
+				DrawString (400, 400, gameOverStr, colors [RED]);
+			
+			}
+			
+			// Display Score
+			string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
+			DrawString (20, 800, scoreStr, colors [RED]);
+
+			// Display fuel level
+			string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
+			DrawString (20, 750, fuelStr, colors [RED]);
+
+			
+
+			// Display Mode
+
+			string modeStr = "Mode: " + string (playerCar -> getCurrentMode () == 0 ? "TAXI" : "DELIVERY");
+			DrawString (800, 800, modeStr, colors [BLUE]);
+
+			// Display carrying status
+			string carryingStr;
+			
+			if (playerCar -> getCurrentMode () == 0) {
+				carryingStr = playerCar -> isCarryingPassenger () ? "Carrying: Passenger" : "Carrying: Nothing";
+			} 
+			else {
+				carryingStr = playerCar -> isCarryingPackage () ? "Carrying: Package" : "Carrying: Nothing";
+			}
+			
+			DrawString (400, 800, carryingStr, colors [GREEN]);
+
 		}
-		
-		// Display Score
-		string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
-		DrawString (20, 800, scoreStr, colors [RED]);
-
-		// Display fuel level
-		string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
-		DrawString (20, 750, fuelStr, colors [RED]);
-
-		playerCar -> DrawFuelMeter ();
-
-		// Display Mode
-
-		string modeStr = "Mode: " + string (playerCar -> getCurrentMode () == 0 ? "TAXI" : "DELIVERY");
-		DrawString (800, 800, modeStr, colors [BLUE]);
-
-		// Display carrying status
-		string carryingStr;
-		
-		if (playerCar -> getCurrentMode () == 0) {
-			carryingStr = playerCar -> isCarryingPassenger () ? "Carrying: Passenger" : "Carrying: Nothing";
-		} 
-		else {
-			carryingStr = playerCar -> isCarryingPackage () ? "Carrying: Package" : "Carrying: Nothing";
-		}
-		
-		DrawString (400, 800, carryingStr, colors [GREEN]);
 
 		DrawCircle (50, 670, 10, colors [RED]);
 		DrawCircle (70, 670, 10, colors [RED]);
 		DrawCircle (90, 670, 10, colors [RED]);
 
-		gameBoard -> DrawGrid (playerCar -> getCurrentMode ());
+		playerCar -> DrawFuelMeter ();
+
+		gameBoard -> DrawBoard (playerCar -> getCurrentMode ());
 		
 		playerCar -> DrawCar ();
 
@@ -130,13 +135,6 @@ void SetCanvasSize (int width, int height) {
 
 }
 
-int xI = gameBoard -> getLeft () + 5, yI = gameBoard -> getTop () - 4;
-
-bool flag = true;
-
-//=================================== Helpers =====================================
-
-
 //=================================== User Input =====================================
 
 void NonPrintableKeys (int key, int x, int y) {
@@ -159,7 +157,7 @@ void NonPrintableKeys (int key, int x, int y) {
 		
 		else if (key == GLUT_KEY_UP) {
 
-			playerCar -> moveUp();
+			playerCar -> moveUp ();
 		
 		}
 
@@ -289,11 +287,16 @@ void Timer (int m) {
 		static int frameCount = 0;
 		frameCount++;
 		
-		if (frameCount >= FPS/10) { // Update every 0.1 seconds (assuming FPS = 80)
-			if (!playerCar->isTimeUp()) {
-				playerCar->updateTime();
+		if (frameCount >= FPS / 10) { // Update every 0.1 seconds (assuming FPS = 80)
+		
+			if (!playerCar -> isTimeUp ()) {
+		
+				playerCar -> updateTime ();
+		
 			}
+		
 			frameCount = 0;
+		
 		}
 	
 

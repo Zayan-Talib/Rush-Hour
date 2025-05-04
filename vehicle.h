@@ -76,10 +76,11 @@ class Vehicle {
         
         // Movement
         
-        void moveLeft ();
-        void moveRight ();
-        void moveUp ();
-        void moveDown ();
+        void move (int dx, int dy);
+        void moveLeft ()  { move (-30, 0); }
+        void moveRight () { move (30, 0); }
+        void moveUp ()    { move (0, 30); }
+        void moveDown ()  { move (0, -30); }
 
         // Mode Switching
 

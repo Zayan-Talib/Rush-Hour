@@ -18,8 +18,6 @@ class Board {
         static const int GRID_TOP = 750;
         static const int GRID_BOTTOM = GRID_TOP - BOARD_HEIGHT + 20;
         
-        int ** grid;
-
         // Grid values:
         // 0 = Road
         // 1 = Building
@@ -30,13 +28,20 @@ class Board {
         // 6 = Package
         // 7 = Package Destination
 
+        int ** grid;
+
         // Buildings
         
         static const int BUILDING_PERCENT = 35;
 
-        bool isValidRoad (int row, int col);    // Check if a road placement is valid
-        bool canReachAllCorners ();             // Verify all corners are reachable
+        void GenerateBuildings ();
+        bool isValidRoad (int row, int col);
+        bool canReachAllCorners ();             
         void floodFill (bool visited [][24], int row, int col);
+
+        // Other Logic
+
+        void PlaceItem (int itemType, int minCount, int maxCount, bool needDestination = false);
 
     public:
 
@@ -68,7 +73,7 @@ class Board {
 
         }
 
-        // Getters
+        // Helpers
         
         int getWidth () const { return BOARD_WIDTH; }
         int getHeight () const { return BOARD_HEIGHT; }
@@ -81,41 +86,35 @@ class Board {
         int getCellValue (int row, int col) const;
         bool isValidMove (int x, int y) const; 
 
-        // Drawing the Board
-
-        void ResetBoard ();
-        void DrawGrid (int currentMode);
-
-        // Buildings
-
-        void GenerateBuildings ();
-        void DrawBuildings ();
         bool isRoad (int row, int col) const { return grid [row][col] == 0; }
-
-        // Fuel Stations
-
-        void PlaceFuelStations ();
-        void DrawFuelStations ();
         bool isFuelStation (int x, int y) const;
-
-        // Mode Station
-
-        void PlaceModeStation ();
-        void DrawModeStation ();
         bool isModeStation (int x, int y) const;
-
-        // Passengers and Packages
-
-        void PlacePassengers ();
-        void PlaceDeliveryPoints ();
-        void DrawPassengersAndPackages (int currentMode);
         bool isPassenger (int x, int y) const;
         bool isPassengerDestination (int x, int y) const;
         bool isPackage (int x, int y) const;
         bool isPackageDestination (int x, int y) const;
+
+        // Drawing the Board
+
+        void ResetBoard ();
+        void DrawBoard (int currentMode);
+        void DrawGrid ();
+        void DrawModeStation ();
+        void DrawBuildings ();
+        void DrawFuelStations ();
+        void DrawPassengersAndPackages (int currentMode);
+
+        // Placing Stuff
+
+        void PlaceModeStation () { grid [CELL_COUNT - 1][0] = 3; }
+        void PlaceFuelStations () { PlaceItem (2, 2, 3, false); }     
+        void PlacePassengers () { PlaceItem (4, 2, 4, true);  }
+        void PlaceDeliveryPoints () { PlaceItem (6, 2, 4, true); }
+        
+        // Passengers and Packages
+
         void removePassenger (int x, int y);
         void removePackage (int x, int y);
-
 
 };
 

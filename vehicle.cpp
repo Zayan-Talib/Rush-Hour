@@ -24,74 +24,24 @@ void Vehicle::DrawCar () {
 
 // Movement
 
-void Vehicle::moveLeft () {
+void Vehicle::move (int dx, int dy) {
 
-    if (canMove () && x - 30 >= gameBoard -> getLeft () && gameBoard -> isValidMove (x - 30, y)) {
+    int newX = x + dx;
+    int newY = y + dy;
+    
+    if (canMove () && newX >= gameBoard -> getLeft () && newX <= gameBoard -> getRight () && newY >= gameBoard -> getBottom () && newY <= gameBoard -> getTop () && gameBoard -> isValidMove (newX, newY)) {
         
-        x -= 30;
+        x = newX;
+        y = newY;
 
         consumeFuel ();
-
-        if (gameBoard -> isFuelStation (x, y)) {
-
-            refillFuel ();
-
-        }
-
-    }
-
-}
-
-void Vehicle::moveRight () {
-
-    if (canMove () && x + 30 <= gameBoard -> getRight () && gameBoard -> isValidMove (x + 30, y)) {
         
-        x += 30;
-
-        consumeFuel ();
-
         if (gameBoard -> isFuelStation (x, y)) {
-
-            refillFuel ();
-
-        }
-
-    }
-
-}
-
-void Vehicle::moveUp () {
-
-    if (canMove () && y + 30 <= gameBoard -> getTop () && gameBoard -> isValidMove (x, y + 30)) {
         
-        y += 30;
-
-        consumeFuel ();
-
-        if (gameBoard -> isFuelStation (x, y)) {
-
             refillFuel ();
-
-        }
-
-    }
-
-}
-
-void Vehicle::moveDown () {
-
-    if (canMove () && y - 30 >= gameBoard -> getBottom () && gameBoard -> isValidMove (x, y - 30)) {
         
-        y -= 30;
-
-        consumeFuel ();
-
-        if (gameBoard -> isFuelStation (x, y)) {
-
-            refillFuel ();
-
         }
-
+    
     }
 
 }
