@@ -1,4 +1,5 @@
 #include "board.h"
+#include "vehicle.h"
 
 // Helpers
 
@@ -105,11 +106,20 @@ void Board::ResetBoard () {
 
     }
 
+    // Reset AI cars
+    numAICars = 0;
+    aiSpeed = 1.0f;;
+
     GenerateBuildings ();
     PlaceModeStation ();
     PlaceFuelStations ();
     PlacePassengers ();
     PlaceDeliveryPoints ();
+
+    // Add new AI cars with random positions
+    for(int i = 0; i < INITIAL_AI_CARS; i++) {
+        addNewAICar();
+    }
 
 }
 
@@ -120,6 +130,7 @@ void Board::DrawBoard (int currentMode) {
     DrawBuildings ();
     DrawFuelStations ();
     DrawPassengersAndPackages (currentMode);
+    DrawAICars ();
 
 }
 
@@ -531,4 +542,118 @@ void Board::trySpawnNewItem (int currentMode) {
 
     }
 
+}
+
+// AI Cars
+
+void Board::DrawAICars () {
+
+    // Draw AI cars
+    for(int row = 0; row < CELL_COUNT; row++) {
+        for(int col = 0; col < CELL_COUNT; col++) {
+            if(grid[row][col] == AI_CAR_TYPE) {
+                int x = GRID_LEFT + (col * CELL_SIZE) + 5;
+                int y = GRID_TOP - (row * CELL_SIZE) - 4;
+                
+                DrawSquare (x, y, 20, colors [MAGENTA]);
+
+                int wheelSize = 3;
+                DrawCircle (x + 5, y, wheelSize, colors [BLACK]);      // Left wheel
+                DrawCircle (x + 15, y, wheelSize, colors [BLACK]);     // Right wheel
+            }
+        }
+    }
+
+}
+
+void Board::updateAICars() {
+    static int moveCounter = 0;
+    moveCounter++;
+    
+    // Only move cars every few frames based on speed
+    if(100 * moveCounter <  100 * ((0.01/aiSpeed))) {
+        return;
+    }
+    moveCounter = 0;
+    
+    // Update each active AI car
+    for(int i = 0; i < MAX_AI_CARS; i++) {
+        if(aiCars[i].active) {
+            // Clear old position
+            grid[aiCars[i].row][aiCars[i].col] = 0;
+            
+            // Try to move
+            moveAICar(aiCars[i]);
+            
+            // Set new position
+            grid[aiCars[i].row][aiCars[i].col] = AI_CAR_TYPE;
+        }
+    }
+}
+
+void Board::moveAICar(AICar& car) {
+    int newRow = car.row;
+    int newCol = car.col;
+    
+    // Try current direction first
+    switch(car.direction) {
+        case 0: newRow--; break; // Up
+        case 1: newCol++; break; // Right
+        case 2: newRow++; break; // Down
+        case 3: newCol--; break; // Left
+    }
+    
+    // If can't move in current direction, try others
+    if(!canAIMoveTo(newRow, newCol)) {
+        car.direction = GetRandInRange(0, 4); // New random direction
+        return;
+    }
+    
+    car.row = newRow;
+    car.col = newCol;
+}
+
+bool Board::canAIMoveTo(int row, int col) const {
+    if(row < 0 || row >= CELL_COUNT || col < 0 || col >= CELL_COUNT) 
+        return false;
+    
+    return grid[row][col] == 0; // Can only move to empty cells
+}
+
+void Board::addNewAICar() {
+    if(numAICars >= MAX_AI_CARS) return;
+    
+    bool visited[CELL_COUNT][CELL_COUNT] = {{false}};
+    floodFill(visited, 0, 0);
+    
+    int attempts = 0;
+    while(attempts < 1000) {
+        int row = GetRandInRange(0, CELL_COUNT);
+        int col = GetRandInRange(0, CELL_COUNT);
+        
+        if(grid[row][col] == 0 && visited[row][col]) {
+            aiCars[numAICars] = {row, col, GetRandInRange(0, 4), true};
+            grid[row][col] = AI_CAR_TYPE;
+            numAICars++;
+            break;
+        }
+        attempts++;
+    }
+}
+
+bool Board::isAICar(int x, int y) const {
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    return getCellValue(row, col) == AI_CAR_TYPE;
+}
+
+// Other
+
+bool Board::tryRefuel(Vehicle* car) {
+    if(car->getMoney() >= 20) {
+        car->addMoney(-20);  // Deduct money
+        car->refillFuel();
+        return true;
+    }
+    return false;
 }

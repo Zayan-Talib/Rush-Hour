@@ -36,11 +36,11 @@ void Vehicle::move (int dx, int dy) {
 
         consumeFuel ();
         
-        if (gameBoard -> isFuelStation (x, y)) {
+        // if (gameBoard -> isFuelStation (x, y)) {
         
-            refillFuel ();
+        //     refillFuel ();
         
-        }
+        // }
     
     }
 
@@ -173,6 +173,7 @@ void Vehicle::pickupOrDropoff () {
             hasPassenger = false;
             gameBoard -> removePassengerDestination (x, y);
             addScore (10);
+            addMoney (10);
         
         }
     
@@ -192,6 +193,7 @@ void Vehicle::pickupOrDropoff () {
             hasPackage = false;
             gameBoard -> removePackageDestination (x, y);
             addScore (20);
+            addMoney (15);
 
         }
 
@@ -201,12 +203,34 @@ void Vehicle::pickupOrDropoff () {
 
 // Time
 
-void Vehicle::updateTime () {
+// void Vehicle::updateTime () {
 
-    if (remainingTime > 0) {
+//     if (remainingTime > 0) {
 
-        remainingTime--;
+//         remainingTime--;
 
+//     }
+
+// }
+
+// Game Over Conditions
+
+void Vehicle::checkGameStatus() {
+    // Check for loss condition
+    if(score < 0) {
+        gameOver = true;
     }
+    
+    // Check for win condition
+    if(score >= 100 && remainingTime > 0) {
+        gameWon = true;
+        gameOver = true;
+    }
+}
 
+void Vehicle::updateTime() {
+    if(remainingTime > 0) {
+        remainingTime--;
+    }
+    checkGameStatus();
 }

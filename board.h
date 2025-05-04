@@ -3,6 +3,8 @@
 
 #include "util.h"
 
+class Vehicle;
+
 class Board {
 
     private:
@@ -50,11 +52,39 @@ class Board {
         static const int MIN_PACKAGES = 2;
         static const int MAX_PACKAGES = 3;
 
+        // AI Cars
+
+        static const int MAX_AI_CARS = 10;
+        static const int INITIAL_AI_CARS = 3;
+        static const int AI_CAR_TYPE = 8;  // New grid value for AI cars
+        
+        struct AICar {
+            int row;
+            int col;
+            int direction;  // 0=up, 1=right, 2=down, 3=left
+            bool active;
+        };
+        
+        AICar aiCars[MAX_AI_CARS];
+        int numAICars;
+        float aiSpeed;  // Movement speed multiplier
+    
+        bool canAIMoveTo(int row, int col) const;
+        void addNewAICar();
+        void moveAICar(AICar& car);
+
+        // Other Systems
+
+        static const int PASSENGER_FARE = 10;  // Points earned per passenger
+        static const int PACKAGE_FARE = 15;    // Points earned per package
+        static const int FUEL_COST = 20;       // Cost to refuel
+        static const int WIN_SCORE = 100;      // Score needed to win
+
     public:
 
         // Constructor
 
-        Board () {
+        Board () : numAICars (0), aiSpeed (1.0f) {
             
             grid = new int * [CELL_COUNT];
             
@@ -63,6 +93,10 @@ class Board {
             }
 
             ResetBoard ();
+
+            for(int i = 0; i < INITIAL_AI_CARS; i++) {
+                addNewAICar ();
+            }
 
         }
 
@@ -111,6 +145,7 @@ class Board {
         void DrawBuildings ();
         void DrawFuelStations ();
         void DrawPassengersAndPackages (int currentMode);
+        void DrawAICars ();
 
         // Placing Stuff
 
@@ -133,6 +168,17 @@ class Board {
 
         void ReplenishItems (int currentMode);
         void trySpawnNewItem (int currentMode);
+
+        // AI Cars
+
+        void updateAICars();
+        bool isAICar(int x, int y) const;
+        void incrementSpeed() { aiSpeed *= 1.2f; }  // 20% speed increase
+        void addCar() { if(numAICars < MAX_AI_CARS) addNewAICar(); }
+
+        // Other
+
+        bool tryRefuel(Vehicle* car);
 
 };
 

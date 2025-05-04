@@ -54,6 +54,30 @@ void GameDisplay () {
     
 	} 
 
+	else if (playerCar -> isGameOver()) {
+        
+        // Game over screen - draw this instead of overlaying
+        // Draw background
+        DrawRectangle(0, 0, 1020, 840, colors[WHITE]);
+        
+        // Game over text
+        string gameOverStr;
+        if(playerCar->hasWon()) {
+            gameOverStr = "CONGRATULATIONS! YOU WON!";
+        } else if(playerCar->isTimeUp()) {
+            gameOverStr = "TIME'S UP!";
+        } else {
+            gameOverStr = "GAME OVER - Score too low!";
+        }
+        
+        // Draw final stats
+        DrawString(400, 600, gameOverStr, colors[RED]);
+        DrawString(400, 550, "Final Score: " + Num2Str(playerCar->getScore()), colors[WHITE]);
+        DrawString(400, 500, "Time Remaining: " + Num2Str(playerCar->getRemainingTime()), colors[WHITE]);
+        DrawString(400, 450, "Press 'R' to restart or 'ESC' to quit", colors[WHITE]);
+    
+	}
+
 	else {
 
 		// Mid Game Text
@@ -66,21 +90,17 @@ void GameDisplay () {
 
 			string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
 			DrawString (150, 800, timeStr, colors [RED]);
-
-			if (playerCar -> isTimeUp ()) {
-			
-				string gameOverStr = "GAME OVER! Final Score: " + Num2Str (playerCar -> getScore ());
-				DrawString (400, 400, gameOverStr, colors [RED]);
-			
-			}
 			
 			// Display Score
 			string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
 			DrawString (20, 800, scoreStr, colors [RED]);
 
+			string moneyStr = "Money = $" + Num2Str(playerCar->getMoney());
+			DrawString(20, 770, moneyStr, colors[GREEN]);
+
 			// Display fuel level
 			string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
-			DrawString (20, 750, fuelStr, colors [RED]);
+			DrawString (20, 740, fuelStr, colors [RED]);
 
 			
 
@@ -204,16 +224,8 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 		if (key == 'g' || key == 'G') {
 	
+			playerCar -> forceGameOver ();
 			gameMenu -> addNewScore (playerCar -> getScore ());
-
-			gameBoard -> ResetBoard ();
-			Vehicle* tempCar = new Vehicle (gameBoard);
-
-			delete playerCar;
-
-			playerCar = tempCar;
-
-			gameMenu = new Menu ();
 	
 		}
 
@@ -228,9 +240,17 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 		}
 	
-		if (key == 'f' || key == 'F') {
+		if (key == 'q' || key == 'Q') {
 	
 			playerCar -> fullFuel ();
+	
+		}
+
+		if (key == 'f' || key == 'F') {
+	
+			if (gameBoard->tryRefuel(playerCar)) {
+				// Refuel successful
+			}
 	
 		}
 	
@@ -307,11 +327,12 @@ void Timer (int m) {
 			TimeFC++;
 			PassengerFC++;
 
-			if (TimeFC >= FPS) { // Update every 0.1 seconds (assuming FPS = 80)
+			if (TimeFC >= FPS) {
 			
 				if (!playerCar -> isTimeUp ()) {
 			
 					playerCar -> updateTime ();
+					gameBoard -> updateAICars ();
 			
 				}
 			

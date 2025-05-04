@@ -29,6 +29,7 @@ class Vehicle {
         // Passengers and Packages
 
         int score;
+        int money;      // Fare money from deliveries
 
         bool hasPassenger;
         bool hasPackage;
@@ -37,6 +38,11 @@ class Vehicle {
 
         static const int GAME_DURATION = 180; // 3 minutes in seconds
         int remainingTime;
+
+        // Game Over Conditions
+
+        bool gameOver;
+        bool gameWon;
 
   
     public:
@@ -52,7 +58,9 @@ class Vehicle {
         score (0),
         hasPassenger (false),
         hasPackage (false),
-        remainingTime (GAME_DURATION) {}
+        remainingTime (GAME_DURATION),
+        gameOver (false),
+        gameWon (false) {}
         
 
         // Getters
@@ -103,14 +111,26 @@ class Vehicle {
 
         bool isCarryingPassenger () const { return hasPassenger; }
         bool isCarryingPackage () const { return hasPackage; }
-        int getScore () const { return score; }
-        void addScore (int points) { score += points; }
 
         // Time
 
         void updateTime ();
         int getRemainingTime () const { return remainingTime; }
         bool isTimeUp () const { return remainingTime <= 0; }
+
+        // Game Over Conditions
+
+        bool isGameOver() const { return gameOver || isTimeUp(); }
+        bool hasWon() const { return gameWon; }
+        void checkGameStatus();
+        void forceGameOver() { gameOver = true; }
+
+        // Other
+
+        int getScore() const { return score; }
+        int getMoney() const { return money; }
+        void addScore(int points) { score += points; }
+        void addMoney(int fare) { money += fare; }
 
 
 };
