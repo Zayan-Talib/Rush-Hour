@@ -297,23 +297,39 @@ void MouseClicked (int button, int state, int x, int y) {
 void Timer (int m) {
 
 	    // Update game time every second
-		static int frameCount = 0;
-		frameCount++;
-		
-		if (frameCount >= FPS / 10) { // Update every 0.1 seconds (assuming FPS = 80)
-		
-			if (!playerCar -> isTimeUp ()) {
-		
-				playerCar -> updateTime ();
-		
-			}
-		
-			frameCount = 0;
-		
-		}
-	
+		// FC = Frame Count
 
-	glutTimerFunc (100, Timer, 0);
+		static int TimeFC = 0;
+		static int PassengerFC = 0;
+
+		if (gameMenu -> hasGameStarted ()) {
+
+			TimeFC++;
+			PassengerFC++;
+
+			if (TimeFC >= FPS) { // Update every 0.1 seconds (assuming FPS = 80)
+			
+				if (!playerCar -> isTimeUp ()) {
+			
+					playerCar -> updateTime ();
+			
+				}
+			
+				TimeFC = 0;
+			
+			}
+
+			if (PassengerFC >= FPS) {
+				
+				gameBoard -> trySpawnNewItem (playerCar -> getCurrentMode ());
+						
+				PassengerFC = 0;
+			
+			}
+
+		}
+
+		glutTimerFunc (1000.0 / FPS, Timer, 0); // Call the function again after 1000.0 / FPS milliseconds
 
 }
  
@@ -340,7 +356,7 @@ int main (int argc, char*argv []) {
 	
 	// Timer function called every 1000.0 / FPS milliseconds
 
-	glutTimerFunc (1000.0, Timer, 0);
+	glutTimerFunc (1000.0 / FPS, Timer, 0);
 
 	glutMouseFunc (MouseClicked);
 	glutPassiveMotionFunc (MouseMoved);

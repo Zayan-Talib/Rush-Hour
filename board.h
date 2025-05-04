@@ -41,8 +41,14 @@ class Board {
 
         // Other Logic
 
-        void PlaceItem (int itemType, int minCount, int maxCount, bool needDestination = false);
+        void PlaceItem (int itemType, int minCount, int maxCount);
         void GenerateDestination (int itemType);
+
+        static const int SPAWN_CHANCE = 5;
+        static const int MIN_PASSENGERS = 2;
+        static const int MAX_PASSENGERS = 4;
+        static const int MIN_PACKAGES = 2;
+        static const int MAX_PACKAGES = 3;
 
     public:
 
@@ -109,9 +115,9 @@ class Board {
         // Placing Stuff
 
         void PlaceModeStation () { grid [CELL_COUNT - 1][0] = 3; }
-        void PlaceFuelStations () { PlaceItem (2, 2, 3, false); }     
-        void PlacePassengers () { PlaceItem (4, 2, 4, true);  }
-        void PlaceDeliveryPoints () { PlaceItem (6, 2, 3, true); }
+        void PlaceFuelStations () { PlaceItem (2, MIN_PACKAGES, MAX_PACKAGES); }     
+        void PlacePassengers () { PlaceItem (4, MIN_PASSENGERS, MAX_PASSENGERS);  }
+        void PlaceDeliveryPoints () { PlaceItem (6, MIN_PACKAGES, MAX_PACKAGES); }
         
         // Passengers and Packages
 
@@ -119,6 +125,14 @@ class Board {
         void removePackage (int x, int y);
         void removePassengerDestination (int x, int y);
         void removePackageDestination (int x, int y);
+
+        // Replenishing
+
+        int countPassengers () const;
+        int countPackages () const;
+
+        void ReplenishItems (int currentMode);
+        void trySpawnNewItem (int currentMode);
 
 };
 

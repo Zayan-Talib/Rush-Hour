@@ -25,7 +25,7 @@
 
 using namespace std;
 
-#define FPS 80
+#define FPS 100
 
 // ASCII for Keys
 

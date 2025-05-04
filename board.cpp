@@ -34,13 +34,13 @@ bool Board::isValidMove (int x, int y) const {
 
 }
 
-void Board::PlaceItem (int itemType, int minCount, int maxCount, bool needDestination) {
+void Board::PlaceItem (int itemType, int minCount, int maxCount) {
 
     bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
     floodFill (visited, 0, 0);
 
     int placed = 0;
-    int maxItems = GetRandInRange (minCount, maxCount);
+    int maxItems = (minCount == maxCount) ? minCount : GetRandInRange (minCount, maxCount);
 
     int attempts = 0;
     const int MAX_ATTEMPTS = 1000;
@@ -230,8 +230,23 @@ void Board::DrawPassengersAndPackages (int currentMode) {
 
                 if (grid [row][col] == 4) { 
 
-                    DrawTriangle (x + size / 2, y - 5, x + 5, y - (size - 5), x + size - 5, y - (size - 5), colors [YELLOW]);
-                                
+                    //  DrawTriangle (x + size / 2, y - 5, x + 5, y - (size - 5), x + size - 5, y - (size - 5), colors [YELLOW]);
+                           
+                    // Draw stick figure
+
+                    // Head
+                    DrawCircle (x + size / 2, y - size / 4 - 2, size / 6, colors[BLACK]);
+                    
+                    // Body
+                    DrawLine (x + size / 2, (y - size / 2) + 2, x + size / 2, (y - size * 0.8), 5, colors [BLACK]);
+                    
+                    // Arms
+                    DrawLine (x + size / 3, y - size * 0.65 + 2, x + size * 0.67, y - size * 0.65 + 2, 5, colors [BLACK]);
+                    
+                    // Legs
+                    DrawLine (x + size / 2, y - size * 0.8, x + size / 3, y - size * 0.95 + 2, 5, colors [BLACK]);
+                    DrawLine (x + size / 2, y - size * 0.8, x + size * 0.67, y - size * 0.95 + 2, 5, colors [BLACK]);
+                        
                 }
 
                 else if (grid [row][col] == 5) {
@@ -402,6 +417,7 @@ void Board::removePassengerDestination (int x, int y) {
     if (grid [row][col] == 5) {
 
         grid [row][col] = 0;
+        ReplenishItems (0);
 
     }
 
@@ -415,6 +431,121 @@ void Board::removePackageDestination (int x, int y) {
     if (grid [row][col] == 7) {
 
         grid [row][col] = 0;
+        ReplenishItems (1);
+
+    }
+
+}
+
+// Replenishing
+
+int Board::countPassengers () const {
+
+    int count = 0;
+
+    for (int row = 0; row < CELL_COUNT; row++) {
+        
+        for (int col = 0; col < CELL_COUNT; col++) {
+            
+            if (grid [row][col] == 4) {
+            
+                count++;
+            
+            }
+        
+        }
+    
+    }
+    
+    return count;
+
+}
+
+int Board::countPackages () const {
+    
+    int count = 0;
+    
+    for (int row = 0; row < CELL_COUNT; row++) {
+        
+        for (int col = 0; col < CELL_COUNT; col++) {
+        
+            if (grid [row][col] == 6) {
+        
+                count++;
+        
+            }
+        
+        }
+    
+    }
+    
+    return count;
+
+}
+
+void Board::ReplenishItems (int currentMode) {
+
+    if (currentMode == 0) {
+        
+        int passengerCount = countPassengers ();
+        
+        if (passengerCount < MIN_PASSENGERS) {
+    
+            PlaceItem (4, 1, 1);
+    
+        }
+    
+    }
+
+    else {
+        
+        int packageCount = countPackages ();
+        
+        if (packageCount < MIN_PACKAGES) {
+        
+            PlaceItem (6, 1, 1);
+
+        }
+
+    }
+
+}
+
+void Board::trySpawnNewItem (int currentMode) {
+
+    // First check current count
+    int currentCount = (currentMode == 0) ? countPassengers () : countPackages ();
+    int maxAllowed = (currentMode == 0) ? MAX_PASSENGERS : MAX_PACKAGES;
+    
+    // Don't spawn if already at or above max
+    if (currentCount >= maxAllowed) {
+        return;
+    }
+
+    // Generate random number 1-100
+    int chance = GetRandInRange (1, 100);
+    
+    if (chance <= SPAWN_CHANCE) {  // 15% chance to try spawning
+
+        if (currentMode == 0) {
+       
+            if (countPassengers () < MAX_PASSENGERS) {
+                
+                PlaceItem (4, 1, 1);
+       
+            }
+       
+        }
+
+        else {
+
+            if (countPackages () < MAX_PACKAGES) {
+            
+                PlaceItem (6, 1, 1);
+
+            }
+
+        }
 
     }
 
