@@ -202,15 +202,28 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 		}
 	
+		if (key == 'g' || key == 'G') {
+	
+			gameMenu -> addNewScore (playerCar -> getScore ());
+
+			gameBoard -> ResetBoard ();
+			Vehicle* tempCar = new Vehicle (gameBoard);
+
+			delete playerCar;
+
+			playerCar = tempCar;
+
+			gameMenu = new Menu ();
+	
+		}
+
 		if (key == 'r' || key == 'R') {
 	
-			Board* tempBoard = new Board ();
-			Vehicle* tempCar = new Vehicle (tempBoard);
-			
+			gameBoard -> ResetBoard ();
+			Vehicle* tempCar = new Vehicle (gameBoard);
+
 			delete playerCar;
-			delete gameBoard;
-			
-			gameBoard = tempBoard;
+
 			playerCar = tempCar;
 	
 		}

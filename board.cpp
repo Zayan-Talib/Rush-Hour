@@ -36,16 +36,18 @@ bool Board::isValidMove (int x, int y) const {
 
 void Board::PlaceItem (int itemType, int minCount, int maxCount, bool needDestination) {
 
+    bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
+    floodFill (visited, 0, 0);
+
     int placed = 0;
     int maxItems = GetRandInRange (minCount, maxCount);
-    bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
-    
+
     int attempts = 0;
     const int MAX_ATTEMPTS = 1000;
-
-    floodFill (visited, 0, 0);
     
-    while (placed < maxItems && attempts < MAX_ATTEMPTS) {
+    while (placed <= maxItems && attempts < MAX_ATTEMPTS) {
+
+        attempts++;
 
         int row = GetRandInRange (0, CELL_COUNT);
         int col = GetRandInRange (0, CELL_COUNT);
@@ -53,33 +55,38 @@ void Board::PlaceItem (int itemType, int minCount, int maxCount, bool needDestin
         if (grid [row][col] == 0 && visited [row][col]) {
             
             grid [row][col] = itemType;
-            
-            // Handle destination placement if needed (for passengers / packages)
-            
-            if (needDestination) {
-
-                bool destPlaced = false;
-            
-                while (!destPlaced) {
-            
-                    int destRow = GetRandInRange (0, CELL_COUNT);
-                    int destCol = GetRandInRange (0, CELL_COUNT);
-                    
-                    if (grid [destRow][destCol] == 0 && visited [destRow][destCol]) {
-                    
-                        grid [destRow][destCol] = itemType + 1; // Destination type is always itemType + 1
-                        destPlaced = true;
-                    
-                    }
-            
-                }
-            
-            }
-            
             placed++;
         
         }
     
+    }
+
+}
+
+void Board::GenerateDestination (int itemType) {
+
+    bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
+    floodFill (visited, 0, 0);
+    
+    int attempts = 0;
+    const int MAX_ATTEMPTS = 1000;
+
+    bool destPlaced = false;
+
+    while (!destPlaced && attempts < MAX_ATTEMPTS) {
+
+        attempts++;
+
+        int destRow = GetRandInRange (0, CELL_COUNT);
+        int destCol = GetRandInRange (0, CELL_COUNT);
+        
+        if (grid [destRow][destCol] == 0 && visited [destRow][destCol]) {
+        
+            grid [destRow][destCol] = itemType + 1;  // Destination type
+            destPlaced = true;
+        
+        }
+
     }
 
 }
@@ -198,7 +205,7 @@ void Board::DrawFuelStations () {
                 int x = GRID_LEFT + (col * CELL_SIZE);
                 int y = GRID_TOP + 21 - (row * CELL_SIZE);
 
-                DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [GREEN]);
+                DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [RED]);
 
             }
 
@@ -239,7 +246,7 @@ void Board::DrawPassengersAndPackages (int currentMode) {
                     
                 if (grid [row][col] == 6) { 
 
-                    DrawRoundRect (x + 5, y - size + 5, size - 10, size - 10, colors [PURPLE], 5);                                
+                    DrawRoundRect (x + 5, y - size + 5, size - 10, size - 10, colors [BROWN], 5);                                
                 
                 }
 
@@ -367,6 +374,7 @@ void Board::removePassenger (int x, int y) {
     if (grid [row][col] == 4) {
     
         grid [row][col] = 0;
+        GenerateDestination (4);
     
     }
 
@@ -380,7 +388,34 @@ void Board::removePackage (int x, int y) {
     if (grid [row][col] == 6) {
     
         grid [row][col] = 0;
+        GenerateDestination (6);
     
+    }
+
+}
+
+void Board::removePassengerDestination (int x, int y) {
+    
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    
+    if (grid [row][col] == 5) {
+
+        grid [row][col] = 0;
+
+    }
+
+}
+
+void Board::removePackageDestination (int x, int y) {
+
+    int row = (GRID_TOP - y) / CELL_SIZE;
+    int col = (x - GRID_LEFT) / CELL_SIZE;
+    
+    if (grid [row][col] == 7) {
+
+        grid [row][col] = 0;
+
     }
 
 }

@@ -42,6 +42,7 @@ class Board {
         // Other Logic
 
         void PlaceItem (int itemType, int minCount, int maxCount, bool needDestination = false);
+        void GenerateDestination (int itemType);
 
     public:
 
@@ -110,12 +111,14 @@ class Board {
         void PlaceModeStation () { grid [CELL_COUNT - 1][0] = 3; }
         void PlaceFuelStations () { PlaceItem (2, 2, 3, false); }     
         void PlacePassengers () { PlaceItem (4, 2, 4, true);  }
-        void PlaceDeliveryPoints () { PlaceItem (6, 2, 4, true); }
+        void PlaceDeliveryPoints () { PlaceItem (6, 2, 3, true); }
         
         // Passengers and Packages
 
         void removePassenger (int x, int y);
         void removePackage (int x, int y);
+        void removePassengerDestination (int x, int y);
+        void removePackageDestination (int x, int y);
 
 };
 

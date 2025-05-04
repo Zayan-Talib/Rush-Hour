@@ -118,6 +118,7 @@ void Menu::loadHighScores () {
 
         file.read ((char*) highScores, sizeof (HighScore) * MAX_HIGH_SCORES);
         file.read ((char*) &numScores, sizeof (int));
+        
         file.close ();
 
     }
@@ -127,27 +128,68 @@ void Menu::loadHighScores () {
 void Menu::saveHighScores () {
 
     ofstream file ("highscores.txt", ios::binary);
-    file.write ((char*)highScores, sizeof(HighScore) * MAX_HIGH_SCORES);
-    file.write ((char*)&numScores, sizeof(int));
+
+    file.write ((char*) highScores, sizeof (HighScore) * MAX_HIGH_SCORES);
+    file.write ((char*) &numScores, sizeof (int));
+    
     file.close ();
 
 }
 
-void Menu::addNewScore(int score) {
-    if(numScores < MAX_HIGH_SCORES || score > highScores[numScores-1].score) {
-        int pos = numScores;
-        while(pos > 0 && highScores[pos-1].score < score) {
-            if(pos < MAX_HIGH_SCORES) {
-                highScores[pos] = highScores[pos-1];
+void Menu::addNewScore (int score) {
+
+    // Writing a lot of comments because this logic is a bit tricky
+
+    // Only add score if:
+    // 1. We haven't reached maximum high scores yet, OR
+    // 2. This score is better than the lowest existing score
+    
+    bool canAddScore = (numScores < MAX_HIGH_SCORES) || (score > highScores[numScores - 1].score);
+
+    if (canAddScore) {
+       
+        // Important: Lower scores have a greater index in the array
+
+        // Start from the bottom of the list
+        int insertPosition = numScores;
+
+        while (insertPosition > 0) {
+       
+            int comparePosition = insertPosition - 1;
+            bool scoreIsBetter = score > highScores [comparePosition].score;
+
+            if (!scoreIsBetter) {
+
+                break; // It's at the right spot
+            
             }
-            pos--;
+
+            // Shift the lower score down if we haven't hit the size limit
+            if (insertPosition < MAX_HIGH_SCORES) {
+
+                highScores [insertPosition] = highScores [comparePosition];
+            
+            }            
+            
+            insertPosition--;
+        
         }
         
-        if(pos < MAX_HIGH_SCORES) {
-            strcpy(highScores[pos].name, playerName);
-            highScores[pos].score = score;
-            if(numScores < MAX_HIGH_SCORES) numScores++;
-            saveHighScores();
+        if (insertPosition < MAX_HIGH_SCORES) {
+        
+            // Insert the new score
+            strcpy (highScores [insertPosition].name, playerName);
+            highScores [insertPosition].score = score;
+
+            // If we added a new score, increase the count
+            if (numScores < MAX_HIGH_SCORES) { 
+                numScores++; 
+            }
+            
+            saveHighScores ();
+        
         }
+    
     }
+
 }

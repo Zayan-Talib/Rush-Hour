@@ -171,6 +171,7 @@ void Vehicle::pickupOrDropoff () {
         else if (hasPassenger && gameBoard -> isPassengerDestination (x, y)) {
         
             hasPassenger = false;
+            gameBoard -> removePassengerDestination (x, y);
             addScore (10);
         
         }
@@ -189,6 +190,7 @@ void Vehicle::pickupOrDropoff () {
         else if (hasPackage && gameBoard -> isPackageDestination (x, y)) {
             
             hasPackage = false;
+            gameBoard -> removePackageDestination (x, y);
             addScore (20);
 
         }
