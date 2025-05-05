@@ -332,18 +332,19 @@ void Timer (int m) {
 
 		static int TimeFC = 0;
 		static int PassengerFC = 0;
+		static int CarsFC = 0;
 
 		if (gameMenu -> hasGameStarted ()) {
 
 			TimeFC++;
 			PassengerFC++;
+			CarsFC++;
 
 			if (TimeFC >= FPS) {
 			
 				if (!playerCar -> isTimeUp ()) {
 			
 					playerCar -> updateTime ();
-					gameBoard -> updateAICars ();
 
 					gameMenu -> checkGameStatus (playerCar -> getScore (), playerCar -> getRemainingTime (), playerCar -> getGameOverRef (), playerCar -> getGameWonRef ());
 			
@@ -359,6 +360,18 @@ void Timer (int m) {
 						
 				PassengerFC = 0;
 			
+			}
+
+			if (CarsFC >= FPS / 2 * gameBoard -> getAISpeed ()) {
+
+				if (!playerCar -> isTimeUp ()) {
+			
+					gameBoard -> stepAICars ();
+
+				}
+			
+				CarsFC = 0;
+
 			}
 
 		}

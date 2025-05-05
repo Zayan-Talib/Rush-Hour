@@ -229,7 +229,7 @@ void Menu::addNewScore (int score) {
 void Menu::checkGameStatus(int score, int remainingTime, bool& gameOver, bool& gameWon) {
     // Loss condition
     if(score < 0) {
-        gameOver = true;
+        //gameOver = true;
     }
     
     // Win condition

@@ -579,52 +579,40 @@ void Board::DrawAICars () {
 
 }
 
-void Board::updateAICars () {
-    
-    static int moveCounter = 0;
-    moveCounter++;
-    
-    if (moveCounter < (10 * (1.0/aiSpeed))) {
-        
-        return;
-    
-    }
-    
-    moveCounter = 0;
-    
-    for (int i = 0; i < MAX_AI_CARS; i++) {
-        
-        if (aiCars[i].active) {
+void Board::stepAICars() {
+    for(int i = 0; i < numAICars; i++) {
+        if(aiCars[i].active) {
+            // Clear old position
+            grid[aiCars[i].row][aiCars[i].col] = 0;
             
-            grid [aiCars[i].row][aiCars[i].col] = 0;
-            moveAICar (aiCars[i]);
-            grid [aiCars[i].row][aiCars[i].col] = AI_CAR_TYPE;
-        
+            // Move car
+            moveAICar(aiCars[i]);
+            
+            // Set new position
+            grid[aiCars[i].row][aiCars[i].col] = AI_CAR_TYPE;
         }
-    
     }
-
 }
 
-void Board::moveAICar (AICar& car) {
-    
+void Board::moveAICar(AICar& car) {
     int newRow = car.row;
     int newCol = car.col;
     
-    // Try current direction first
+    // Try moving in current direction
     switch(car.direction) {
         case 0: newRow--; break; // Up
-        case 1: newCol++; break; // Right
+        case 1: newCol++; break; // Right  
         case 2: newRow++; break; // Down
         case 3: newCol--; break; // Left
     }
     
-    // If can't move in current direction, try others
+    // If can't move, pick new random direction and stay in place
     if(!canAIMoveTo(newRow, newCol)) {
-        car.direction = GetRandInRange(0, 4); // New random direction
+        car.direction = GetRandInRange(0, 4);
         return;
     }
     
+    // Update position
     car.row = newRow;
     car.col = newCol;
 }
@@ -646,9 +634,15 @@ void Board::addNewAICar() {
     while(attempts < 1000) {
         int row = GetRandInRange(0, CELL_COUNT);
         int col = GetRandInRange(0, CELL_COUNT);
-        
+         
         if(grid[row][col] == 0 && visited[row][col]) {
-            aiCars[numAICars] = {row, col, GetRandInRange(0, 4), true};
+            // Initialize car with position and random direction
+            aiCars[numAICars].row = row;
+            aiCars[numAICars].col = col;
+            aiCars[numAICars].direction = GetRandInRange(0, 4);
+            aiCars[numAICars].active = true;
+            
+            // Mark position on grid
             grid[row][col] = AI_CAR_TYPE;
             numAICars++;
             break;

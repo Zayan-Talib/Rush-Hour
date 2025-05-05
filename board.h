@@ -75,6 +75,7 @@ class Board {
         bool canAIMoveTo(int row, int col) const;
         void addNewAICar();
         void moveAICar(AICar& car);
+        
 
         // Other Systems
 
@@ -180,10 +181,12 @@ class Board {
 
         // AI Cars
 
-        void updateAICars();
+        void stepAICars ();
         bool isAICar(int x, int y) const;
-        void incrementSpeed() { aiSpeed *= 1.2f; }  // 20% speed increase
-        void addCar() { if(numAICars < MAX_AI_CARS) addNewAICar(); }        
+        void incrementSpeed() { aiSpeed = MIN (3.0f, aiSpeed * 1.2f); }  // 20% speed increase
+        void addCar() { if(numAICars < MAX_AI_CARS) addNewAICar(); } 
+        
+        float getAISpeed () const { return aiSpeed; }
 
 };
 
