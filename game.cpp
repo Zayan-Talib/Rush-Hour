@@ -52,7 +52,7 @@ void GameDisplay () {
     
 		gameMenu -> DrawMenu ();
     
-	} 
+	}
 
 	else if (playerCar -> isGameOver()) {
         
@@ -69,12 +69,18 @@ void GameDisplay () {
         } else {
             gameOverStr = "GAME OVER - Score too low!";
         }
+
+		// Format time remaining as MM:SS
+		int timeLeft = playerCar->getRemainingTime();
+		int minutes = timeLeft / 60;
+		int seconds = timeLeft % 60;
+		string timeStr = Num2Str(minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str(seconds);
         
         // Draw final stats
         DrawString(400, 600, gameOverStr, colors[RED]);
 		DrawString(400, 550, "Final Score: " + Num2Str(playerCar->getScore()), colors[BLACK]); 
 		DrawString(400, 500, "Total Money: $" + Num2Str(playerCar->getMoney()), colors[BLACK]);
-		DrawString(400, 450, "Time Remaining: " + Num2Str(playerCar->getRemainingTime()), colors[BLACK]);
+		DrawString(400, 450, "Time Remaining: " + timeStr, colors[BLACK]);
 		DrawString(400, 400, "Final Fuel Level: " + Num2Str(playerCar->getFuelLevel()) + "%", colors[BLACK]);
 		DrawString(400, 350, "Press 'R' to restart or 'ESC' to quit", colors[BLACK]);
     
@@ -225,7 +231,6 @@ void PrintableKeys (unsigned char key, int x, int y) {
 		if (key == 'g' || key == 'G') {
 	
 			playerCar -> forceGameOver ();
-			gameMenu -> addNewScore (playerCar -> getScore ());
 	
 		}
 
@@ -244,6 +249,12 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 			playerCar -> fullFuel ();
 	
+		}
+
+		if (key == 'w' || key == 'W') {
+
+			playerCar -> addScore (10);
+
 		}
 
 		if (key == 'f' || key == 'F') {
@@ -333,6 +344,8 @@ void Timer (int m) {
 			
 					playerCar -> updateTime ();
 					gameBoard -> updateAICars ();
+
+					gameMenu -> checkGameStatus (playerCar -> getScore (), playerCar -> getRemainingTime (), playerCar -> getGameOverRef (), playerCar -> getGameWonRef ());
 			
 				}
 			

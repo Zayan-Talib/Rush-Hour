@@ -13,12 +13,16 @@ float Rad2Deg (float angle) {
 }
 
 // Returns a random value within the specified range of [rmin, rmax]
-long GetRandInRange (const long &rmin, const long &rmax) {
+int GetRandInRange (const long &rmin, const long &rmax) {
 	
-	long range = rmax - rmin;
-	long value = (rand () % (long) range) + rmin;
-	
-	return value;
+    if(rmin == rmax) return rmin;  // Handle equal bounds
+    if(rmin > rmax) return rmin;   // Handle invalid bounds
+    
+    long range = rmax - rmin;
+    if (range <= 0) return rmin;    // Handle overflow
+    
+    long value = (rand () % range) + rmin;
+    return value;
 
 }
 

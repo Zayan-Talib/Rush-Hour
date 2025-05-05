@@ -41,7 +41,7 @@ void Board::PlaceItem (int itemType, int minCount, int maxCount) {
     floodFill (visited, 0, 0);
 
     int placed = 0;
-    int maxItems = (minCount == maxCount) ? minCount : GetRandInRange (minCount, maxCount);
+    int maxItems = (minCount == maxCount) ? minCount : GetRandInRange (minCount, maxCount + 1);
 
     int attempts = 0;
     const int MAX_ATTEMPTS = 1000;
@@ -70,13 +70,10 @@ void Board::GenerateDestination (int itemType) {
     floodFill (visited, 0, 0);
     
     int attempts = 0;
-    const int MAX_ATTEMPTS = 1000;
 
     bool destPlaced = false;
 
-    while (!destPlaced && attempts < MAX_ATTEMPTS) {
-
-        attempts++;
+    while (!destPlaced && attempts < 1000) {
 
         int destRow = GetRandInRange (0, CELL_COUNT);
         int destCol = GetRandInRange (0, CELL_COUNT);
@@ -87,6 +84,8 @@ void Board::GenerateDestination (int itemType) {
             destPlaced = true;
         
         }
+
+        attempts++;
 
     }
 

@@ -349,7 +349,7 @@ void DrawString (int x, int y, int width, int height, const string& str, float *
 void DrawString (float x, float y, const string& str, float * color = NULL);
 
 void InitRandomizer ();
-long GetRandInRange (const long &rmin, const long &rmax);
+int GetRandInRange (const long &rmin, const long &rmax);
 
 void DrawTriangle (int x1, int y1, int x2, int y2, int x3, int y3, float *color);
 void DrawRectangle (int sx, int sy, int width, int height, float *color);

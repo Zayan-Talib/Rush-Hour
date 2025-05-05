@@ -166,10 +166,10 @@ void Vehicle::switchMode () {
 bool Vehicle::hasAdjacentItem (int itemType) const {
     
     // Check all 4 adjacent cells
-    return gameBoard -> isPassenger (x - 30, y) ||  // Left
-           gameBoard -> isPassenger (x + 30, y) ||  // Right
-           gameBoard -> isPassenger (x, y + 30) ||  // Up
-           gameBoard -> isPassenger (x, y - 30);    // Down
+    return gameBoard -> GridCheck (x - 30, y, itemType) ||          // Left
+           gameBoard -> GridCheck (x + 30, y, itemType) ||          // Right
+           gameBoard -> GridCheck (x, y + 30, itemType) ||          // Up
+           gameBoard -> GridCheck (x, y - 30, itemType);            // Down
 
 }
 
@@ -208,14 +208,15 @@ void Vehicle::pickupOrDropoff () {
 
     else {
 
-        if (!hasPackage && hasAdjacentItem (6)) {
+        if (!hasPackage && (hasAdjacentItem (6) || gameBoard -> isPackage (x, y))) {
             
             hasPackage = true;
 
             pickupX = getCellX ();
             pickupY = getCellY ();
 
-            if      (gameBoard -> isPackage (x - 30, y)) gameBoard -> removePackage (x - 30, y);
+            if      (gameBoard -> isPackage (x, y))      gameBoard -> removePackage (x, y);
+            else if (gameBoard -> isPackage (x - 30, y)) gameBoard -> removePackage (x - 30, y);
             else if (gameBoard -> isPackage (x + 30, y)) gameBoard -> removePackage (x + 30, y);
             else if (gameBoard -> isPackage (x, y + 30)) gameBoard -> removePackage (x, y + 30);
             else if (gameBoard -> isPackage (x, y - 30)) gameBoard -> removePackage (x, y - 30);
@@ -240,32 +241,11 @@ void Vehicle::pickupOrDropoff () {
 
 // Game Over Conditions
 
-void Vehicle::checkGameStatus () {
-    
-    // Loss condition
-    
-    if (score < 0) {
-        //gameOver = true;
-    }
-    
-    // Win Condition
-
-    if (score >= 100 && remainingTime > 0) {
-    
-        gameWon = true;
-        gameOver = true;
-    
-    }
-
-}
-
 void Vehicle::updateTime () {
 
     if (remainingTime > 0) {
         remainingTime--;
     }
-
-    checkGameStatus ();
 
 }
 

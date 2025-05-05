@@ -21,7 +21,9 @@ class Menu {
         static const int MENU_LEADERBOARD = 1;
         static const int MENU_MODE_SELECT = 2;
         static const int MENU_NAME_ENTRY = 3;
-        
+   
+        static const int WIN_SCORE = 100;
+
         int currentMenu;
 
         HighScore highScores [MAX_HIGH_SCORES];
@@ -56,6 +58,8 @@ class Menu {
         bool hasGameStarted () const { return gameStarted; }
         int getSelectedMode () const { return selectedMode; }
         const char* getPlayerName () const { return playerName; }
+
+        void checkGameStatus (int score, int remainingTime, bool & gameOver, bool & gameWon);
 
 };
 

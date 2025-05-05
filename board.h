@@ -29,6 +29,7 @@ class Board {
         // 5 = Passenger Destination
         // 6 = Package
         // 7 = Package Destination
+        // 8 = AI Car
 
         int ** grid;
 
@@ -59,9 +60,11 @@ class Board {
         static const int AI_CAR_TYPE = 8;  // New grid value for AI cars
         
         struct AICar {
-            int row;
-            int col;
-            int direction;  // 0=up, 1=right, 2=down, 3=left
+            float x;       // Actual x position
+            float y;       // Actual y position
+            int row;      // Grid row position
+            int col;      // Grid col position
+            int direction; // 0=up, 1=right, 2=down, 3=left
             bool active;
         };
         
@@ -84,6 +87,8 @@ class Board {
 
         Board () : numAICars (0), aiSpeed (1.0f) {
             
+            InitRandomizer ();
+
             grid = new int * [CELL_COUNT];
             
             for (int a = 0; a < CELL_COUNT; a++) {

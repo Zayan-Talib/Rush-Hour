@@ -55,7 +55,7 @@ class Vehicle {
 
         static const int PASSENGER_FARE = 5;
         static const int PACKAGE_FARE = 8;
-        
+
         // Pickup location tracking
         
         int pickupX;
@@ -146,7 +146,13 @@ class Vehicle {
 
         bool isGameOver () const { return gameOver || isTimeUp (); }
         bool hasWon () const { return gameWon; }
-        void checkGameStatus ();
+
+        void setGameOver () { gameOver = true; }
+        void setGameWon () { gameWon = true; }
+
+        bool& getGameOverRef() { return gameOver; }
+        bool& getGameWonRef() { return gameWon; }
+        
         void forceGameOver () { gameOver = true; }
 
         // Score and Money

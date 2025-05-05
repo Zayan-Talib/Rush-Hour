@@ -99,7 +99,7 @@ void Menu::HandleKeypress (unsigned char key) {
             
             case '3':
     
-                selectedMode = GetRandInRange (0, 1);
+                selectedMode = GetRandInRange (0, 2);
                 currentMenu = MENU_NAME_ENTRY;
                 break;
         
@@ -222,4 +222,31 @@ void Menu::addNewScore (int score) {
     
     }
 
+}
+
+// Game Over
+
+void Menu::checkGameStatus(int score, int remainingTime, bool& gameOver, bool& gameWon) {
+    // Loss condition
+    if(score < 0) {
+        gameOver = true;
+    }
+    
+    // Win condition
+    if(score >= WIN_SCORE && remainingTime > 0) {
+        gameWon = true;
+        gameOver = true;
+    }
+    
+    // Time up condition
+    if(remainingTime <= 0) {
+        gameOver = true;
+    }
+    
+    // Save score if game just ended
+    static bool scoreSaved = false;
+    if(gameOver && !scoreSaved) {
+        addNewScore(score);
+        scoreSaved = true;
+    }
 }
