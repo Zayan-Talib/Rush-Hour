@@ -1,8 +1,8 @@
 #ifndef VEHICLE_H_
 #define VEHICLE_H_
 
-#include "util.h"
-#include "board.h"
+#include "../utility/util.h"
+class Board;
 
 class Vehicle {
 
@@ -74,20 +74,7 @@ class Vehicle {
 
         // Constructor
     
-        Vehicle (Board* board) : 
-        gameBoard (board), 
-        x (board -> getLeft () + 5), 
-        y (board -> getTop () - 4), 
-        currentFuel (MAX_FUEL),
-        currentMode (MODE_TAXI),
-        score (0),
-        hasPassenger (false),
-        hasPackage (false),
-        remainingTime (GAME_DURATION),
-        gameOver (false),
-        gameWon (false),
-        pickupX (0),
-        pickupY (0) {}
+        Vehicle (Board* board);
         
         // Helpers
 

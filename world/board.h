@@ -1,7 +1,8 @@
 #ifndef BOARD_H_
 #define BOARD_H_
 
-#include "util.h"
+#include "../utility/util.h"
+#include "../entities/vehicle.h"
 
 class Vehicle;
 

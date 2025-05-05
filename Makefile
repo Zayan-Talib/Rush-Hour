@@ -1,6 +1,12 @@
 CXXFLAGS =	-g3 -fmessage-length=0 -Wno-narrowing #-Wall -Werror
 
-OBJS = 		util.o game.o board.o vehicle.o menu.o
+SRCS = game.cpp \
+       utility/util.cpp \
+       world/board.cpp \
+       entities/vehicle.cpp \
+       ui/menu.cpp
+
+OBJS = $(SRCS:.cpp=.o)
 
 LIBS = 		-L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread
 

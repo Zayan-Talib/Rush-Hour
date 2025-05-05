@@ -1,4 +1,18 @@
-#include "vehicle.h"
+#include "../entities/vehicle.h"
+#include "../world/board.h" 
+
+Vehicle::Vehicle(Board* board) : 
+    gameBoard(board),
+    x(board->getLeft() + 5),
+    y(board->getTop() - 4),
+    currentFuel(MAX_FUEL),
+    currentMode(MODE_TAXI),
+    score(0),
+    hasPassenger(false),
+    hasPackage(false),
+    remainingTime(GAME_DURATION),
+    gameOver(false),
+    gameWon(false) {}
 
 // Helpers
 

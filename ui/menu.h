@@ -1,8 +1,7 @@
 #ifndef MENU_H_
 #define MENU_H_
 
-#include "util.h"
-#include <fstream>
+#include "../utility/util.h"
 
 struct HighScore {
 

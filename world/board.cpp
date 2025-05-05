@@ -1,5 +1,5 @@
 #include "board.h"
-#include "vehicle.h"
+#include "../entities/vehicle.h"
 
 // Helpers
 

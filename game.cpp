@@ -12,10 +12,10 @@
 
 #define RushHour_CPP_
 
-#include "util.h"
-#include "board.h"
-#include "vehicle.h"
-#include "menu.h"
+#include "utility/util.h"
+#include "world/board.h"
+#include "entities/vehicle.h"
+#include "ui/menu.h"
 
 using namespace std;
 
