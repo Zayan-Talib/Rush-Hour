@@ -1,5 +1,7 @@
 #include "menu.h"
 
+// Drawing
+
 void Menu::DrawMenu () {
 
     switch (currentMenu) {
@@ -49,6 +51,8 @@ void Menu::DrawMenu () {
 
 }
 
+// Entering
+
 void Menu::HandleKeypress (unsigned char key) {
     
     if (currentMenu == MENU_MAIN) {
@@ -77,38 +81,64 @@ void Menu::HandleKeypress (unsigned char key) {
     
     }
     
-    else if(currentMenu == MENU_MODE_SELECT) {
-        switch(key) {
+    else if (currentMenu == MENU_MODE_SELECT) {
+        
+        switch (key) {
+            
             case '1':
+            
                 selectedMode = 0;  // Taxi
                 currentMenu = MENU_NAME_ENTRY;
                 break;
+            
             case '2':
+            
                 selectedMode = 1;  // Delivery
                 currentMenu = MENU_NAME_ENTRY;
                 break;
+            
             case '3':
-                selectedMode = GetRandInRange(0, 2);
+    
+                selectedMode = GetRandInRange (0, 1);
                 currentMenu = MENU_NAME_ENTRY;
                 break;
+        
         }
+    
     }
-    else if(currentMenu == MENU_NAME_ENTRY) {
-        if(key == 13) {  // Enter key
+
+    else if (currentMenu == MENU_NAME_ENTRY) {
+        
+        if (key == KEY_ENTER) {
+        
             gameStarted = true;
+        
         }
-        else if(key == 8 && strlen(playerName) > 0) {  // Backspace
-            playerName[strlen(playerName)-1] = '\0';
+
+        else if (key == KEY_BACKSPACE && strlen (playerName) > 0) {
+        
+            playerName [strlen (playerName) - 1] = '\0';
+        
         }
-        else if(strlen(playerName) < 49) {
-            playerName[strlen(playerName)] = key;
-            playerName[strlen(playerName)+1] = '\0';
+
+        else if (strlen (playerName) < 49) {
+    
+            playerName [strlen (playerName)] = key;
+            playerName [strlen (playerName) + 1] = '\0';
+    
         }
+    
     }
-    else if(currentMenu == MENU_LEADERBOARD && key == 27) {  // ESC
+
+    else if (currentMenu == MENU_LEADERBOARD && key == KEY_ESC) {
+
         currentMenu = MENU_MAIN;
+
     }
+
 }
+
+// High Scores
 
 void Menu::loadHighScores () {
 

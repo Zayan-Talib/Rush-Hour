@@ -8,8 +8,9 @@ class Vehicle {
 
     private:
 
-        int x, y;
+        // Essential Parameters
 
+        int x, y;
         Board* gameBoard;
 
         // Fuel
@@ -24,12 +25,15 @@ class Vehicle {
 
         static const int MODE_TAXI = 0;
         static const int MODE_DELIVERY = 1;
+
         int currentMode;
 
         // Passengers and Packages
 
         int score;
-        int money;      // Fare money from deliveries
+        int money;
+
+        bool hasAdjacentItem (int itemType) const;
 
         bool hasPassenger;
         bool hasPackage;
@@ -39,10 +43,31 @@ class Vehicle {
         static const int GAME_DURATION = 180; // 3 minutes in seconds
         int remainingTime;
 
-        // Game Over Conditions
+        // Game Over
 
         bool gameOver;
         bool gameWon;
+
+        // Score and Money
+
+        static const int PASSENGER_SCORE = 10;
+        static const int PACKAGE_SCORE = 20;  
+
+        static const int PASSENGER_FARE = 5;
+        static const int PACKAGE_FARE = 8;
+        
+        // Pickup location tracking
+        
+        int pickupX;
+        int pickupY;
+
+        int calculateFare (int startX, int startY, int endX, int endY);
+
+        // Collision
+
+        static const int PERSON_COLLISION = -5;
+        static const int OBSTACLE_COLLISION = -2;
+        static const int CAR_COLLISION = -3;
 
   
     public:
@@ -60,10 +85,11 @@ class Vehicle {
         hasPackage (false),
         remainingTime (GAME_DURATION),
         gameOver (false),
-        gameWon (false) {}
+        gameWon (false),
+        pickupX (0),
+        pickupY (0) {}
         
-
-        // Getters
+        // Helpers
 
         int getX () const { return x; }
         int getY () const { return y; }
@@ -73,15 +99,13 @@ class Vehicle {
 
         void printCurrentCell () const;
 
-        // Setters
-
-        void fullFuel () { currentFuel = MAX_FUEL; }
         void setMode (int mode) { currentMode = mode; }
         
         // Drawing
 
         void DrawCar ();
-        
+        void DrawFuelMeter ();
+
         // Movement
         
         void move (int dx, int dy);
@@ -99,7 +123,7 @@ class Vehicle {
 
         void refillFuel () { currentFuel = MIN (MAX_FUEL, currentFuel + REFILL_AMOUNT); }
         void consumeFuel () { currentFuel = MAX (0, currentFuel - FUEL_CONSUMPTION); }
-        void DrawFuelMeter ();
+        void fullFuel () { currentFuel = MAX_FUEL; }        // Cheat Code
 
         int getFuelLevel () const { return currentFuel; }
         bool canMove () const { return currentFuel > 0; }
@@ -107,8 +131,8 @@ class Vehicle {
         // Carrying
 
         void pickupOrDropoff ();
-        bool isCarrying () const { return hasPassenger || hasPackage; }
 
+        bool isCarrying () const { return hasPassenger || hasPackage; }
         bool isCarryingPassenger () const { return hasPassenger; }
         bool isCarryingPackage () const { return hasPackage; }
 
@@ -120,18 +144,21 @@ class Vehicle {
 
         // Game Over Conditions
 
-        bool isGameOver() const { return gameOver || isTimeUp(); }
-        bool hasWon() const { return gameWon; }
-        void checkGameStatus();
-        void forceGameOver() { gameOver = true; }
+        bool isGameOver () const { return gameOver || isTimeUp (); }
+        bool hasWon () const { return gameWon; }
+        void checkGameStatus ();
+        void forceGameOver () { gameOver = true; }
 
-        // Other
+        // Score and Money
 
-        int getScore() const { return score; }
-        int getMoney() const { return money; }
-        void addScore(int points) { score += points; }
-        void addMoney(int fare) { money += fare; }
+        int getScore () const { return score; }
+        int getMoney () const { return money; }
+        void addScore (int points) { score += points; }
+        void addMoney (int fare) { money += fare; }
 
+        // Collisions
+
+        void checkCollisions (int newX, int newY);
 
 };
 

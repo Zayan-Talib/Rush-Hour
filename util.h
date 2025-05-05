@@ -30,6 +30,8 @@ using namespace std;
 // ASCII for Keys
 
 #define KEY_ESC 27 // A
+#define KEY_ENTER 13
+#define KEY_BACKSPACE 8
 
 // Use ColorNames to access indexes in the colors array
 enum ColorNames {

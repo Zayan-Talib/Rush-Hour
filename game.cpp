@@ -72,9 +72,11 @@ void GameDisplay () {
         
         // Draw final stats
         DrawString(400, 600, gameOverStr, colors[RED]);
-        DrawString(400, 550, "Final Score: " + Num2Str(playerCar->getScore()), colors[WHITE]);
-        DrawString(400, 500, "Time Remaining: " + Num2Str(playerCar->getRemainingTime()), colors[WHITE]);
-        DrawString(400, 450, "Press 'R' to restart or 'ESC' to quit", colors[WHITE]);
+		DrawString(400, 550, "Final Score: " + Num2Str(playerCar->getScore()), colors[BLACK]); 
+		DrawString(400, 500, "Total Money: $" + Num2Str(playerCar->getMoney()), colors[BLACK]);
+		DrawString(400, 450, "Time Remaining: " + Num2Str(playerCar->getRemainingTime()), colors[BLACK]);
+		DrawString(400, 400, "Final Fuel Level: " + Num2Str(playerCar->getFuelLevel()) + "%", colors[BLACK]);
+		DrawString(400, 350, "Press 'R' to restart or 'ESC' to quit", colors[BLACK]);
     
 	}
 
@@ -101,8 +103,6 @@ void GameDisplay () {
 			// Display fuel level
 			string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
 			DrawString (20, 740, fuelStr, colors [RED]);
-
-			
 
 			// Display Mode
 
@@ -248,7 +248,7 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 		if (key == 'f' || key == 'F') {
 	
-			if (gameBoard->tryRefuel(playerCar)) {
+			if (gameBoard -> tryRefuel (playerCar)) {
 				// Refuel successful
 			}
 	

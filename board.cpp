@@ -544,6 +544,20 @@ void Board::trySpawnNewItem (int currentMode) {
 
 }
 
+bool Board::tryRefuel (Vehicle* car) {
+
+    if (car -> getMoney () >= 20) {
+
+        car -> addMoney (-FUEL_COST);
+        car -> refillFuel ();
+        return true;
+
+    }
+
+    return false;
+
+}
+
 // AI Cars
 
 void Board::DrawAICars () {
@@ -566,32 +580,35 @@ void Board::DrawAICars () {
 
 }
 
-void Board::updateAICars() {
+void Board::updateAICars () {
+    
     static int moveCounter = 0;
     moveCounter++;
     
-    // Only move cars every few frames based on speed
-    if(100 * moveCounter <  100 * ((0.01/aiSpeed))) {
+    if (moveCounter < (10 * (1.0/aiSpeed))) {
+        
         return;
+    
     }
+    
     moveCounter = 0;
     
-    // Update each active AI car
-    for(int i = 0; i < MAX_AI_CARS; i++) {
-        if(aiCars[i].active) {
-            // Clear old position
-            grid[aiCars[i].row][aiCars[i].col] = 0;
+    for (int i = 0; i < MAX_AI_CARS; i++) {
+        
+        if (aiCars[i].active) {
             
-            // Try to move
-            moveAICar(aiCars[i]);
-            
-            // Set new position
-            grid[aiCars[i].row][aiCars[i].col] = AI_CAR_TYPE;
+            grid [aiCars[i].row][aiCars[i].col] = 0;
+            moveAICar (aiCars[i]);
+            grid [aiCars[i].row][aiCars[i].col] = AI_CAR_TYPE;
+        
         }
+    
     }
+
 }
 
-void Board::moveAICar(AICar& car) {
+void Board::moveAICar (AICar& car) {
+    
     int newRow = car.row;
     int newCol = car.col;
     
@@ -645,15 +662,4 @@ bool Board::isAICar(int x, int y) const {
     int row = (GRID_TOP - y) / CELL_SIZE;
     int col = (x - GRID_LEFT) / CELL_SIZE;
     return getCellValue(row, col) == AI_CAR_TYPE;
-}
-
-// Other
-
-bool Board::tryRefuel(Vehicle* car) {
-    if(car->getMoney() >= 20) {
-        car->addMoney(-20);  // Deduct money
-        car->refillFuel();
-        return true;
-    }
-    return false;
 }

@@ -46,7 +46,7 @@ class Board {
         void PlaceItem (int itemType, int minCount, int maxCount);
         void GenerateDestination (int itemType);
 
-        static const int SPAWN_CHANCE = 15;
+        static const int SPAWN_CHANCE = 30;
         static const int MIN_PASSENGERS = 2;
         static const int MAX_PASSENGERS = 4;
         static const int MIN_PACKAGES = 2;
@@ -75,8 +75,6 @@ class Board {
 
         // Other Systems
 
-        static const int PASSENGER_FARE = 10;  // Points earned per passenger
-        static const int PACKAGE_FARE = 15;    // Points earned per package
         static const int FUEL_COST = 20;       // Cost to refuel
         static const int WIN_SCORE = 100;      // Score needed to win
 
@@ -89,13 +87,17 @@ class Board {
             grid = new int * [CELL_COUNT];
             
             for (int a = 0; a < CELL_COUNT; a++) {
+            
                 grid [a] = new int [CELL_COUNT];
+            
             }
 
             ResetBoard ();
 
-            for(int i = 0; i < INITIAL_AI_CARS; i++) {
+            for (int a = 0; a < INITIAL_AI_CARS; a++) {
+            
                 addNewAICar ();
+            
             }
 
         }
@@ -169,16 +171,14 @@ class Board {
         void ReplenishItems (int currentMode);
         void trySpawnNewItem (int currentMode);
 
+        bool tryRefuel (Vehicle* car);
+
         // AI Cars
 
         void updateAICars();
         bool isAICar(int x, int y) const;
         void incrementSpeed() { aiSpeed *= 1.2f; }  // 20% speed increase
-        void addCar() { if(numAICars < MAX_AI_CARS) addNewAICar(); }
-
-        // Other
-
-        bool tryRefuel(Vehicle* car);
+        void addCar() { if(numAICars < MAX_AI_CARS) addNewAICar(); }        
 
 };
 
