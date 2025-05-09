@@ -1,88 +1,101 @@
-#include "../entities/vehicle.h"
-#include "../world/board.h" 
+#include "player_car.h"
+#include "../world/board.h"
+#include "../world/game_state.h"
 
-Vehicle::Vehicle(Board* board) : 
-    gameBoard(board),
-    x(board->getLeft() + 5),
-    y(board->getTop() - 4),
-    currentFuel(MAX_FUEL),
-    currentMode(MODE_TAXI),
-    score(0),
-    hasPassenger(false),
-    hasPackage(false),
-    remainingTime(GAME_DURATION),
-    gameOver(false),
-    gameWon(false) {}
+// Constructor
 
-// Helpers
-
-int Vehicle::getCellX () const {
+PlayerCar::PlayerCar (Board* board, GameState* state) :
     
-    int cx = gameBoard -> getLeft();
+    Actor (board, state), 
+    x (board -> getLeft () + 5),
+    y (board -> getTop () - 4),
+    currentFuel (MAX_FUEL),
+    currentMode (MODE_TAXI),
+    hasPassenger (false),
+    hasPackage (false)
 
-    for (int a = 0; a < 24; a++) {
-    
-        if (x >= cx && x <= cx + 30) {
-            return a;
-        }
-    
-        cx += 30;
-    
-    }
+{}
 
-    return -1;
+// Vehicle
 
-}
+void PlayerCar::Draw () {
 
-int Vehicle::getCellY () const {
-
-    int cy = gameBoard -> getTop();
-    
-    for (int a = 0; a < 24; a++) {
-    
-        if (y <= cy && y >= cy - 30) {
-            return a;
-        }
-    
-        cy -= 30;
-    
-    }
-
-    return -1;
-
-}
-
-void Vehicle::printCurrentCell () const {
-
-    cout << "Current Cell of Car: [" << getCellY () + 1 << "][" << getCellX () + 1 << "]" << endl;
-
-}
-
-// Drawing
-
-void Vehicle::DrawCar () {
-
-    float* WheelColor = colors [BLACK];
+    float * WheelColor = colors [BLACK];
     float * CarColor = nullptr;
 
     if (currentMode == MODE_TAXI) {
+    
         CarColor = colors [RED];
+    
     } 
+    
     else {
+    
         CarColor = colors [BLUE];
+    
     }
     
     DrawSquare (x, y, 20, CarColor);
 
     int wheelSize = 5;
+
     DrawCircle (x + 5, y, wheelSize, WheelColor);      // Left wheel
     DrawCircle (x + 15, y, wheelSize, WheelColor);     // Right wheel
 
     glutPostRedisplay ();
 
 }
+       
+// Movement
 
-void Vehicle::DrawFuelMeter () {
+void PlayerCar::Move (int dx, int dy) {
+
+    int newX = x + dx;
+    int newY = y + dy;
+    
+    if (isFuelLeft () && newX >= gameBoard -> getLeft () && newX <= gameBoard -> getRight () && newY >= gameBoard -> getBottom () && newY <= gameBoard -> getTop ()) {
+        
+        // Check collisions before moving
+
+        checkCollisions (newX, newY);
+        
+        if (gameBoard -> isValidMove (newX, newY)) {
+        
+            x = newX;
+            y = newY;
+            consumeFuel ();
+
+            cellX = (gameBoard -> getTop () - y) / gameBoard -> getCellSize ();
+            cellY = (x - gameBoard -> getLeft ()) / gameBoard -> getCellSize ();
+        
+        }
+    
+    }
+
+}
+
+bool PlayerCar::canMoveTo (int dx, int dy) {
+    
+    int row = (gameBoard -> getTop () - dy) / gameBoard -> getCellSize ();
+    int col = (dx - gameBoard -> getLeft ()) / gameBoard -> getCellSize ();
+    
+    return gameBoard -> getCellValue (row, col) != 1;
+
+}
+
+void PlayerCar::ResetPosition () {
+
+    x = (gameBoard -> getLeft ()) + 5;
+    y = (gameBoard -> getTop ()) - 4;
+
+    cellX = 0;
+    cellY = 0;
+
+}
+
+// Fuel
+
+void PlayerCar::DrawFuelMeter () {
 
     // Drawing position
 
@@ -92,13 +105,16 @@ void Vehicle::DrawFuelMeter () {
     int height = 200;
     
     // Draw outer border of fuel meter
+
     DrawRoundRect (x, y, width, height + 10, colors [BLACK], 10);
     
     // Calculate fill height based on current fuel percentage
+
     float fuelPercent = currentFuel / 100.0f;
     int fillHeight = height * fuelPercent;
     
     // Choose color based on fuel level
+ 
     float* fuelColor;
 
     if (currentFuel > 70) {
@@ -134,38 +150,15 @@ void Vehicle::DrawFuelMeter () {
     }
     
     // Draw fuel icon
+ 
     DrawString (x + 29, y + 220, "FULL", colors [BLACK]); 
     DrawString (x + 20, y - 25, "EMPTY", colors [BLACK]); 
 
 }
 
-// Movement
-
-void Vehicle::move (int dx, int dy) {
-
-    int newX = x + dx;
-    int newY = y + dy;
-    
-    if (canMove () && newX >= gameBoard -> getLeft () && newX <= gameBoard -> getRight () && newY >= gameBoard -> getBottom () && newY <= gameBoard -> getTop ()) {
-        
-        // Check collisions before moving
-        checkCollisions (newX, newY);
-        
-        if (gameBoard -> isValidMove (newX, newY)) {
-        
-            x = newX;
-            y = newY;
-            consumeFuel ();
-        
-        }
-    
-    }
-
-}
-
 // Mode Switching
 
-void Vehicle::switchMode () {
+void PlayerCar::switchMode () {
 
     if (gameBoard -> isModeStation (x, y)) {
     
@@ -175,11 +168,12 @@ void Vehicle::switchMode () {
 
 }
 
-// Passengers and Packages
+// Pickup and Dropoff
 
-bool Vehicle::hasAdjacentItem (int itemType) const {
+bool PlayerCar::hasAdjacentItem (int itemType) const {
     
     // Check all 4 adjacent cells
+
     return gameBoard -> GridCheck (x - 30, y, itemType) ||          // Left
            gameBoard -> GridCheck (x + 30, y, itemType) ||          // Right
            gameBoard -> GridCheck (x, y + 30, itemType) ||          // Up
@@ -187,7 +181,7 @@ bool Vehicle::hasAdjacentItem (int itemType) const {
 
 }
 
-void Vehicle::pickupOrDropoff () {
+void PlayerCar::pickupOrDropoff () {
 
     if (currentMode == MODE_TAXI) {
     
@@ -212,7 +206,7 @@ void Vehicle::pickupOrDropoff () {
 
             int fare = calculateFare (pickupX, pickupY, getCellX (), getCellY ());
             addMoney (fare);
-            addScore (PASSENGER_SCORE);
+            gameState -> addScore (PASSENGER_SCORE);
 
             gameBoard -> removePassengerDestination (x, y);
         
@@ -243,7 +237,7 @@ void Vehicle::pickupOrDropoff () {
 
             int fare = calculateFare (pickupX, pickupY, getCellX (), getCellY ());
             addMoney (fare);
-            addScore (PACKAGE_SCORE);
+            gameState -> addScore (PACKAGE_SCORE);
 
             gameBoard -> removePackageDestination (x, y);
 
@@ -253,23 +247,14 @@ void Vehicle::pickupOrDropoff () {
 
 }
 
-// Game Over Conditions
+// Money
 
-void Vehicle::updateTime () {
-
-    if (remainingTime > 0) {
-        remainingTime--;
-    }
-
-}
-
-// Score and Money
-
-int Vehicle::calculateFare (int startX, int startY, int endX, int endY) {
+int PlayerCar::calculateFare (int startX, int startY, int endX, int endY) {
 
     int distance = ABS (endX - startX) + ABS (endY - startY);
     
     // Base fare + distance multiplier
+    
     if (currentMode == MODE_TAXI) {
 
         return PASSENGER_FARE + (distance * 2); // $2 per cell for passengers
@@ -284,26 +269,28 @@ int Vehicle::calculateFare (int startX, int startY, int endX, int endY) {
 
 }
 
-// Collisions
+// Collision
 
-void Vehicle::checkCollisions (int newX, int newY) {
+void PlayerCar::checkCollisions (int newX, int newY) {
 
     if (gameBoard -> isPassenger (newX, newY)) {
         
-        addScore (PERSON_COLLISION);
+        gameState -> addScore (PERSON_COLLISION);
     
     }
     
     if (gameBoard -> GridCheck (newX, newY, 1)) {
         
-        addScore (OBSTACLE_COLLISION);
+        gameState -> addScore (OBSTACLE_COLLISION);
     
     }
     
     if (gameBoard -> isAICar (newX, newY)) {
         
-        addScore (CAR_COLLISION);
+        gameState -> addScore (CAR_COLLISION);
     
     }
 
 }
+
+

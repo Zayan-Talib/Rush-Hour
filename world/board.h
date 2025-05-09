@@ -2,9 +2,7 @@
 #define BOARD_H_
 
 #include "../utility/util.h"
-#include "../entities/vehicle.h"
-
-class Vehicle;
+#include "../entities/player_car.h"
 
 class Board {
 
@@ -128,6 +126,8 @@ class Board {
         int getWidth () const { return BOARD_WIDTH; }
         int getHeight () const { return BOARD_HEIGHT; }
 
+        int getCellSize () const { return CELL_SIZE; }
+
         int getLeft () const { return GRID_LEFT; }
         int getRight () const { return GRID_RIGHT; }
         int getTop () const { return GRID_TOP; }    
@@ -178,7 +178,7 @@ class Board {
         void ReplenishItems (int currentMode);
         void trySpawnNewItem (int currentMode);
 
-        bool tryRefuel (Vehicle* car);
+        bool tryRefuel (PlayerCar* car);
 
         // AI Cars
 

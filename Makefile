@@ -3,8 +3,11 @@ CXXFLAGS =	-g3 -fmessage-length=0 -Wno-narrowing #-Wall -Werror
 SRCS = game.cpp \
        utility/util.cpp \
        world/board.cpp \
-       entities/vehicle.cpp \
-       ui/menu.cpp
+       world/game_state.cpp \
+       ui/menu.cpp \
+       entities/entity.cpp \
+       entities/actor.cpp \
+       entities/player_car.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

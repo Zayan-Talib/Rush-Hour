@@ -3,14 +3,6 @@
 #ifndef UTIL_H_
 #define UTIL_H_
 
-#ifndef FORWARD_H_
-#define FORWARD_H_
-
-class Vehicle;
-class Board;
-
-#endif
-
 // Windows
 
 // #include <Windows.h>

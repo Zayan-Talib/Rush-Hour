@@ -14,18 +14,20 @@
 
 #include "utility/util.h"
 #include "world/board.h"
-#include "entities/vehicle.h"
+#include "world/game_state.h"
 #include "ui/menu.h"
+#include "entities/player_car.h"
 
 using namespace std;
 
 //=================================== Game Screen =====================================
 
-// Classes from other files
+// Object Creation
 
 Board* gameBoard = new Board ();
-Vehicle* playerCar = new Vehicle (gameBoard);
+GameState* gameState = new GameState ();
 Menu* gameMenu = new Menu ();
+PlayerCar* playerCar = new PlayerCar (gameBoard, gameState);
 
 // Draw Canvas
 
@@ -46,6 +48,7 @@ void GameDisplay () {
 	// R=G=B=0.5 -> Gray
 	
 	// Update Colors
+
 	glClear (GL_COLOR_BUFFER_BIT);
 
 	if (!gameMenu -> hasGameStarted ()) {
@@ -54,31 +57,32 @@ void GameDisplay () {
     
 	}
 
-	else if (playerCar -> isGameOver()) {
+	else if (gameState -> isGameOver()) {
         
         // Game over screen - draw this instead of overlaying
         // Draw background
-        DrawRectangle(0, 0, 1020, 840, colors[WHITE]);
+    
+		DrawRectangle (0, 0, 1020, 840, colors[WHITE]);
         
         // Game over text
         string gameOverStr;
-        if(playerCar->hasWon()) {
+        if(gameState->hasWon()) {
             gameOverStr = "CONGRATULATIONS! YOU WON!";
-        } else if(playerCar->isTimeUp()) {
+        } else if(gameState->isTimeUp()) {
             gameOverStr = "TIME'S UP!";
         } else {
             gameOverStr = "GAME OVER - Score too low!";
         }
 
 		// Format time remaining as MM:SS
-		int timeLeft = playerCar->getRemainingTime();
+		int timeLeft = gameState->getRemainingTime();
 		int minutes = timeLeft / 60;
 		int seconds = timeLeft % 60;
 		string timeStr = Num2Str(minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str(seconds);
         
         // Draw final stats
         DrawString(400, 600, gameOverStr, colors[RED]);
-		DrawString(400, 550, "Final Score: " + Num2Str(playerCar->getScore()), colors[BLACK]); 
+		DrawString(400, 550, "Final Score: " + Num2Str(gameState->getScore()), colors[BLACK]); 
 		DrawString(400, 500, "Total Money: $" + Num2Str(playerCar->getMoney()), colors[BLACK]);
 		DrawString(400, 450, "Time Remaining: " + timeStr, colors[BLACK]);
 		DrawString(400, 400, "Final Fuel Level: " + Num2Str(playerCar->getFuelLevel()) + "%", colors[BLACK]);
@@ -93,14 +97,14 @@ void GameDisplay () {
 		{
 			
 			// Display remaining time
-			int minutes = playerCar -> getRemainingTime () / 60;
-			int seconds = playerCar -> getRemainingTime () % 60;
+			int minutes = gameState -> getRemainingTime () / 60;
+			int seconds = gameState -> getRemainingTime () % 60;
 
 			string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
 			DrawString (150, 800, timeStr, colors [RED]);
 			
 			// Display Score
-			string scoreStr = "Score = " + Num2Str (playerCar -> getScore ());
+			string scoreStr = "Score = " + Num2Str (gameState -> getScore ());
 			DrawString (20, 800, scoreStr, colors [RED]);
 
 			string moneyStr = "Money = $" + Num2Str(playerCar->getMoney());
@@ -137,7 +141,7 @@ void GameDisplay () {
 
 		gameBoard -> DrawBoard (playerCar -> getCurrentMode ());
 		
-		playerCar -> DrawCar ();
+		playerCar -> Draw ();
 
     }
 
@@ -167,7 +171,7 @@ void NonPrintableKeys (int key, int x, int y) {
 	
 	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
 
-	if (!playerCar -> isTimeUp ()) {
+	if (!gameState -> isTimeUp ()) {
      
 		if (key == GLUT_KEY_LEFT) {
 			
@@ -230,18 +234,14 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 		if (key == 'g' || key == 'G') {
 	
-			playerCar -> forceGameOver ();
+			gameState -> forceGameOver ();
 	
 		}
 
 		if (key == 'r' || key == 'R') {
 	
 			gameBoard -> ResetBoard ();
-			Vehicle* tempCar = new Vehicle (gameBoard);
-
-			delete playerCar;
-
-			playerCar = tempCar;
+			playerCar -> ResetPosition ();
 	
 		}
 	
@@ -253,7 +253,7 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 		if (key == 'w' || key == 'W') {
 
-			playerCar -> addScore (10);
+			gameState -> addScore (10);
 
 		}
 
@@ -290,14 +290,12 @@ void MousePressedAndMoved (int x, int y) {
 	// Arguments: x and y (coordinates of mouse pointer)
 	// Use this function to find the direction of shooting
 
-	//cout << x << " " << y << endl;
 	glutPostRedisplay ();
 
 }
 
 void MouseMoved (int x, int y) {
 	
-	//cout << x << " " << y << endl;
 	glutPostRedisplay ();
 
 }
@@ -307,16 +305,15 @@ void MouseClicked (int button, int state, int x, int y) {
 	// Auto Called When Mouse is clicked inside the window
 	// Arguments: button (Left, Middle or Right), state (button is pressed or released), x and y (coordinates of mouse pointer)
 
+	// cout << GLUT_DOWN << " " << GLUT_UP << endl;
+
 	if (button == GLUT_LEFT_BUTTON) {
 	
-		// cout << GLUT_DOWN << " " << GLUT_UP << endl;
 
 	} 
 	
 	else if (button == GLUT_RIGHT_BUTTON) {
 		
-		playerCar -> printCurrentCell ();
-
 	}
 
 	glutPostRedisplay ();
@@ -342,11 +339,11 @@ void Timer (int m) {
 
 			if (TimeFC >= FPS) {
 			
-				if (!playerCar -> isTimeUp ()) {
+				if (!gameState -> isTimeUp ()) {
 			
-					playerCar -> updateTime ();
+					gameState -> updateTime ();
 
-					gameMenu -> checkGameStatus (playerCar -> getScore (), playerCar -> getRemainingTime (), playerCar -> getGameOverRef (), playerCar -> getGameWonRef ());
+					gameMenu -> checkGameStatus (gameState -> getScore (), gameState -> getRemainingTime (), gameState -> getGameOverRef (), gameState -> getGameWonRef ());
 			
 				}
 			
@@ -364,7 +361,7 @@ void Timer (int m) {
 
 			if (CarsFC >= FPS / 2 * gameBoard -> getAISpeed ()) {
 
-				if (!playerCar -> isTimeUp ()) {
+				if (!gameState -> isTimeUp ()) {
 			
 					gameBoard -> stepAICars ();
 

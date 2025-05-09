@@ -1,5 +1,4 @@
 #include "board.h"
-#include "../entities/vehicle.h"
 
 // Helpers
 
@@ -543,7 +542,7 @@ void Board::trySpawnNewItem (int currentMode) {
 
 }
 
-bool Board::tryRefuel (Vehicle* car) {
+bool Board::tryRefuel (PlayerCar* car) {
 
     if (car -> getMoney () >= 20) {
 
