@@ -64,6 +64,9 @@ class PlayerCar : public Actor {
         // Vehicle
 
         void Draw () override;
+
+        int getX () const { return x; }
+        int getY () const { return y; }
         
         // Movement
 

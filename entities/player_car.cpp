@@ -285,7 +285,7 @@ void PlayerCar::checkCollisions (int newX, int newY) {
     
     }
     
-    if (gameBoard -> isAICar (newX, newY)) {
+    if (gameBoard -> isNPCCar (newX, newY)) {
         
         gameState -> addScore (CAR_COLLISION);
     

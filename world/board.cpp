@@ -104,9 +104,9 @@ void Board::ResetBoard () {
 
     }
 
-    // Reset AI cars
-    numAICars = 0;
-    aiSpeed = 1.0f;;
+    // Reset NPC cars
+    numNPCCars = 0;
+    resetNPCSpeed ();
 
     GenerateBuildings ();
     PlaceModeStation ();
@@ -114,9 +114,10 @@ void Board::ResetBoard () {
     PlacePassengers ();
     PlaceDeliveryPoints ();
 
-    // Add new AI cars with random positions
-    for(int i = 0; i < INITIAL_AI_CARS; i++) {
-        addNewAICar();
+    for (int a = 0; a < INITIAL_NPC_CARS; a++) {
+    
+        addNPCCar ();
+    
     }
 
 }
@@ -128,7 +129,7 @@ void Board::DrawBoard (int currentMode) {
     DrawBuildings ();
     DrawFuelStations ();
     DrawPassengersAndPackages (currentMode);
-    DrawAICars ();
+    DrawNPCCars ();
 
 }
 
@@ -544,7 +545,7 @@ void Board::trySpawnNewItem (int currentMode) {
 
 bool Board::tryRefuel (PlayerCar* car) {
 
-    if (car -> getMoney () >= 20) {
+    if (car -> getMoney () >= 20 && isFuelStation (car -> getX (), car -> getY ())) {
 
         car -> addMoney (-FUEL_COST);
         car -> refillFuel ();
@@ -556,102 +557,104 @@ bool Board::tryRefuel (PlayerCar* car) {
 
 }
 
-// AI Cars
+// NPC Cars
 
-void Board::DrawAICars () {
+void Board::increaseNPCSpeed (float mult) {
 
-    // Draw AI cars
-    for(int row = 0; row < CELL_COUNT; row++) {
-        for(int col = 0; col < CELL_COUNT; col++) {
-            if(grid[row][col] == AI_CAR_TYPE) {
-                int x = GRID_LEFT + (col * CELL_SIZE) + 5;
-                int y = GRID_TOP - (row * CELL_SIZE) - 4;
-                
-                DrawSquare (x, y, 20, colors [MAGENTA]);
+    for (int a = 0; a < numNPCCars; a++) {
 
-                int wheelSize = 3;
-                DrawCircle (x + 5, y, wheelSize, colors [BLACK]);      // Left wheel
-                DrawCircle (x + 15, y, wheelSize, colors [BLACK]);     // Right wheel
-            }
-        }
+        npcCars [a] -> setSpeed (npcCars [a] -> getSpeed () * mult);
+
     }
+
+    NPCCar::setGlobalSpeed (NPCCar::getGlobalSpeed () * mult);
 
 }
 
-void Board::stepAICars() {
-    for(int i = 0; i < numAICars; i++) {
-        if(aiCars[i].active) {
+void Board::resetNPCSpeed () {
+
+    for (int a = 0; a < numNPCCars; a++) {
+
+        npcCars [a] -> setSpeed (1.0f);
+
+    }
+
+    NPCCar::setGlobalSpeed (1.0f);
+
+}
+
+void Board::stepNPCCars () {
+
+    for (int a = 0; a < numNPCCars; a++) {
+
+        if (npcCars [a] -> isActive ()) {
+
             // Clear old position
-            grid[aiCars[i].row][aiCars[i].col] = 0;
             
+            grid [npcCars [a] -> getCellY ()][npcCars [a] -> getCellX ()] = 0;
+
             // Move car
-            moveAICar(aiCars[i]);
+            
+            npcCars [a] -> Move ();
             
             // Set new position
-            grid[aiCars[i].row][aiCars[i].col] = AI_CAR_TYPE;
-        }
-    }
-}
-
-void Board::moveAICar(AICar& car) {
-    int newRow = car.row;
-    int newCol = car.col;
-    
-    // Try moving in current direction
-    switch(car.direction) {
-        case 0: newRow--; break; // Up
-        case 1: newCol++; break; // Right  
-        case 2: newRow++; break; // Down
-        case 3: newCol--; break; // Left
-    }
-    
-    // If can't move, pick new random direction and stay in place
-    if(!canAIMoveTo(newRow, newCol)) {
-        car.direction = GetRandInRange(0, 4);
-        return;
-    }
-    
-    // Update position
-    car.row = newRow;
-    car.col = newCol;
-}
-
-bool Board::canAIMoveTo(int row, int col) const {
-    if(row < 0 || row >= CELL_COUNT || col < 0 || col >= CELL_COUNT) 
-        return false;
-    
-    return grid[row][col] == 0; // Can only move to empty cells
-}
-
-void Board::addNewAICar() {
-    if(numAICars >= MAX_AI_CARS) return;
-    
-    bool visited[CELL_COUNT][CELL_COUNT] = {{false}};
-    floodFill(visited, 0, 0);
-    
-    int attempts = 0;
-    while(attempts < 1000) {
-        int row = GetRandInRange(0, CELL_COUNT);
-        int col = GetRandInRange(0, CELL_COUNT);
-         
-        if(grid[row][col] == 0 && visited[row][col]) {
-            // Initialize car with position and random direction
-            aiCars[numAICars].row = row;
-            aiCars[numAICars].col = col;
-            aiCars[numAICars].direction = GetRandInRange(0, 4);
-            aiCars[numAICars].active = true;
             
-            // Mark position on grid
-            grid[row][col] = AI_CAR_TYPE;
-            numAICars++;
-            break;
+            grid [npcCars [a] -> getCellY ()][npcCars [a] -> getCellX ()] = NPC_CAR_TYPE;
+
         }
-        attempts++;
+
     }
+
 }
 
-bool Board::isAICar(int x, int y) const {
-    int row = (GRID_TOP - y) / CELL_SIZE;
-    int col = (x - GRID_LEFT) / CELL_SIZE;
-    return getCellValue(row, col) == AI_CAR_TYPE;
+void Board::addNPCCar () {
+
+        if (numNPCCars >= MAX_NPC_CARS) {
+            return;
+        }
+        
+        bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
+        
+        floodFill (visited, 0, 0);
+        
+        int attempts = 0;
+
+        while (attempts < 1000) {
+            
+            int row = GetRandInRange (0, CELL_COUNT);
+            int col = GetRandInRange (0, CELL_COUNT);
+             
+            if (grid [row][col] == 0 && visited [row][col]) {
+
+                npcCars [numNPCCars] = new NPCCar (this, nullptr);
+                npcCars [numNPCCars] -> setCellY (row);
+                npcCars [numNPCCars] -> setCellX (col);
+                npcCars [numNPCCars] -> setDirection (GetRandInRange (0, 4));
+                npcCars [numNPCCars] -> setActive (true);
+                
+                grid [row][col] = NPC_CAR_TYPE;
+                numNPCCars++;
+                
+                break;
+            
+            }
+            
+            attempts++;
+        
+    }
+
+}
+
+void Board::DrawNPCCars () {
+
+    for (int a = 0; a < numNPCCars; a++) {
+    
+        if (npcCars [a] != nullptr) {
+        
+            npcCars [a] -> Draw ();
+        
+        }
+
+    }
+
 }

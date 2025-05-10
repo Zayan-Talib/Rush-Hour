@@ -257,6 +257,12 @@ void PrintableKeys (unsigned char key, int x, int y) {
 
 		}
 
+		if (key == 'm' || key == 'M') {
+
+			playerCar -> addMoney (10);
+
+		}
+
 		if (key == 'f' || key == 'F') {
 	
 			if (gameBoard -> tryRefuel (playerCar)) {
@@ -358,11 +364,11 @@ void Timer (int m) {
 			
 			}
 
-			if (CarsFC >= FPS / 2 * gameBoard -> getAISpeed ()) {
+			if (CarsFC >= FPS / (4 * gameBoard -> getNPCSpeed ())) {
 
 				if (!gameState -> isTimeUp ()) {
 			
-					gameBoard -> stepAICars ();
+					gameBoard -> stepNPCCars ();
 
 				}
 			

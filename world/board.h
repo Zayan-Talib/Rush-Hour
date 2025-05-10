@@ -3,6 +3,7 @@
 
 #include "../utility/util.h"
 #include "../entities/player_car.h"
+#include "../entities/npc_car.h"
 
 class Board {
 
@@ -46,46 +47,29 @@ class Board {
         void PlaceItem (int itemType, int minCount, int maxCount);
         void GenerateDestination (int itemType);
 
+        static const int FUEL_COST = 20;       // Cost to refuel
+
         static const int SPAWN_CHANCE = 30;
         static const int MIN_PASSENGERS = 2;
         static const int MAX_PASSENGERS = 4;
         static const int MIN_PACKAGES = 2;
         static const int MAX_PACKAGES = 3;
 
-        // AI Cars
-
-        static const int MAX_AI_CARS = 10;
-        static const int INITIAL_AI_CARS = 3;
-        static const int AI_CAR_TYPE = 8;  // New grid value for AI cars
+        // NPC Cars
         
-        struct AICar {
-            float x;       // Actual x position
-            float y;       // Actual y position
-            int row;      // Grid row position
-            int col;      // Grid col position
-            int direction; // 0=up, 1=right, 2=down, 3=left
-            bool active;
-        };
+        static const int MAX_NPC_CARS = 10;
+        static const int INITIAL_NPC_CARS = 3;
+        static const int NPC_CAR_TYPE = 8;  // Grid value for NPC cars
         
-        AICar aiCars[MAX_AI_CARS];
-        int numAICars;
-        float aiSpeed;  // Movement speed multiplier
-    
-        bool canAIMoveTo(int row, int col) const;
-        void addNewAICar();
-        void moveAICar(AICar& car);
-        
-
-        // Other Systems
-
-        static const int FUEL_COST = 20;       // Cost to refuel
-        static const int WIN_SCORE = 100;      // Score needed to win
+        NPCCar* npcCars [MAX_NPC_CARS];
+        int numNPCCars;
+        static constexpr float NPC_SPEED_MULT = 1.2f;  // Movement speed multiplier
 
     public:
 
         // Constructor
 
-        Board () : numAICars (0), aiSpeed (1.0f) {
+        Board () : numNPCCars (0) {
             
             InitRandomizer ();
 
@@ -99,9 +83,9 @@ class Board {
 
             ResetBoard ();
 
-            for (int a = 0; a < INITIAL_AI_CARS; a++) {
+            for (int a = 0; a < INITIAL_NPC_CARS; a++) {
             
-                addNewAICar ();
+                addNPCCar ();
             
             }
 
@@ -119,6 +103,12 @@ class Board {
 
             delete [] grid;
 
+            for (int a = 0; a < numNPCCars; a++) {
+        
+                delete npcCars[a];
+            
+            }
+        
         }
 
         // Helpers
@@ -154,7 +144,7 @@ class Board {
         void DrawBuildings ();
         void DrawFuelStations ();
         void DrawPassengersAndPackages (int currentMode);
-        void DrawAICars ();
+        void DrawNPCCars ();
 
         // Placing Stuff
 
@@ -180,15 +170,18 @@ class Board {
 
         bool tryRefuel (PlayerCar* car);
 
-        // AI Cars
+        // NPC Cars
 
-        void stepAICars ();
-        bool isAICar(int x, int y) const;
-        void incrementSpeed() { aiSpeed = MIN (3.0f, aiSpeed * 1.2f); }  // 20% speed increase
-        void addCar() { if(numAICars < MAX_AI_CARS) addNewAICar(); } 
+        friend class NPCCar;  // Make the entire NPCCar class a friend
+
+        void addNPCCar ();
+        void stepNPCCars ();
         
-        float getAISpeed () const { return aiSpeed; }
-
+        bool isNPCCar (int x, int y) const { return GridCheck (x, y, NPC_CAR_TYPE); }
+        void increaseNPCSpeed (float mult = NPC_SPEED_MULT);
+        void resetNPCSpeed ();
+        float getNPCSpeed () { return NPCCar::getGlobalSpeed (); }
+        
 };
 
 #endif

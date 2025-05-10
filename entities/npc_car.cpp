@@ -1,95 +1,102 @@
 #include "npc_car.h"
 #include "../world/board.h"
-#include "../utility/util.h"
 
-NPCCar::NPCCar(Board* board, GameState* state, int startCellX, int startCellY, float aiSpeed) :
-    Actor(board, state, aiSpeed, startCellX, startCellY),
-    aiSpeed(aiSpeed),
-    isBlocked(false),
-    targetCellX(startCellX),
-    targetCellY(startCellY),
-    movementDelay(1000 / aiSpeed),  // Convert speed to delay
-    lastMoveTime(0) {
-    // NPCs start with full fuel and in taxi mode
-    fullFuel();
-    setMode(MODE_TAXI);
+// Static member initialization
+
+float NPCCar::GlobalSpeed = 1.0f;
+
+// Constructor
+
+NPCCar::NPCCar (Board* board, GameState* state) : 
+
+    Actor (board, state, START_SPEED), 
+    isBlocked (false),
+    targetCellX (0), 
+    targetCellY (0), 
+    direction (0)  
+
+{}
+
+// Drawing
+
+void NPCCar::Draw () {
+
+    int x = gameBoard -> getLeft () + (cellX * gameBoard -> getCellSize ()) + 5;
+    int y = gameBoard -> getTop () - (cellY * gameBoard -> getCellSize ()) - 4;
+    
+    DrawSquare (x, y, 20, colors [MAGENTA]);
+
+    int wheelSize = 3;
+
+    DrawCircle (x + 5, y, wheelSize, colors [BLACK]);      // Left wheel
+    DrawCircle (x + 15, y, wheelSize, colors [BLACK]);     // Right wheel
+
+    // Direction Indicator - Centered in the square
+    
+    int arrowSize = 10;
+    int centerX = x + 10;  // Center of the 20x20 square
+    int centerY = y + 10;  // Center of the 20x20 square
+    
+    switch (direction) {
+        
+        case 0: // Up
+
+            DrawTriangle (centerX, centerY + arrowSize, centerX - arrowSize / 2, centerY, centerX + arrowSize / 2, centerY, colors [BLACK]);
+            break;
+        
+        case 1: // Right
+        
+            DrawTriangle (centerX + arrowSize, centerY, centerX, centerY - arrowSize / 2, centerX, centerY + arrowSize / 2, colors [BLACK]);
+            break;
+        
+        case 2: // Down
+        
+            DrawTriangle (centerX, centerY - arrowSize, centerX - arrowSize / 2, centerY, centerX + arrowSize / 2, centerY, colors [BLACK]);
+            break;
+      
+        case 3: // Left
+        
+            DrawTriangle (centerX - arrowSize, centerY, centerX, centerY - arrowSize / 2, centerX, centerY + arrowSize / 2, colors [BLACK]);
+            break;
+    
+    }
+
 }
 
-void NPCCar::Draw() {
-    // Store current color
-    float* currentColor = colors[BLUE];
-    
-    // Draw the NPC car
-    float* wheelColor = colors[BLACK];
-    
-    // Convert cell coordinates to pixel coordinates
-    int pixelX = gameBoard->getLeft() + (cellX * 30);
-    int pixelY = gameBoard->getTop() - (cellY * 30);
-    
-    DrawSquare(pixelX, pixelY, 20, currentColor);
-    
-    int wheelSize = 5;
-    DrawCircle(pixelX + 5, pixelY, wheelSize, wheelColor);
-    DrawCircle(pixelX + 15, pixelY, wheelSize, wheelColor);
-    
-    glutPostRedisplay();
-}
+// Movement
 
-void NPCCar::Move(int dX, int dY) {
-    // Only move if enough time has passed (based on AI speed)
-    int currentTime = glutGet(GLUT_ELAPSED_TIME);
-    if (currentTime - lastMoveTime < movementDelay) {
-        return;
+bool NPCCar::canMoveTo (int newCellX, int newCellY) {
+
+    if (newCellY < 0 || newCellY >= Board::CELL_COUNT || newCellX < 0 || newCellX >= Board::CELL_COUNT) {
+        return false;
     }
     
-    // Call base class move
-    Actor::Move(dX, dY);
+    return gameBoard -> getCellValue (newCellY, newCellX) == 0;
+}
+
+void NPCCar::Move (int dx, int dy) {
+
+    int newCellX = cellX;
+    int newCellY = cellY;
     
-    // Update last move time
-    lastMoveTime = currentTime;
-}
+    switch (direction) {
 
-bool NPCCar::canMoveTo(int newCellX, int newCellY) {
-    return Actor::canMoveTo(newCellX, newCellY) && !isBlocked;
-}
-
-void NPCCar::updateAI() {
-    // If we're at the target or blocked, find a new target
-    if (isAtTarget() || isBlocked) {
-        findNewTarget();
-        return;
+        case 0: newCellY--; break; // Up
+        case 1: newCellX++; break; // Right  
+        case 2: newCellY++; break; // Down
+        case 3: newCellX--; break; // Left
+    
     }
     
-    // Calculate direction to target
-    int dx = 0, dy = 0;
+    if (!canMoveTo (newCellX, newCellY)) {
+        
+        direction = GetRandInRange (0, 4);
+        return;
     
-    if (cellX < targetCellX) dx = 1;
-    else if (cellX > targetCellX) dx = -1;
-    else if (cellY < targetCellY) dy = 1;
-    else if (cellY > targetCellY) dy = -1;
+    }
     
-    // Try to move towards target
-    Move(dx * 30, dy * 30);  // Convert cell movement to pixel movement
-}
 
-void NPCCar::setTarget(int cellX, int cellY) {
-    targetCellX = cellX;
-    targetCellY = cellY;
-}
+    cellY = newCellY;
+    cellX = newCellX;
 
-bool NPCCar::isAtTarget() const {
-    return cellX == targetCellX && cellY == targetCellY;
 }
-
-void NPCCar::findNewTarget() {
-    // Simple random target selection
-    // In a real implementation, this would be more sophisticated
-    int boardWidth = 24;  // Assuming standard board size
-    int boardHeight = 24;
-    
-    targetCellX = rand() % boardWidth;
-    targetCellY = rand() % boardHeight;
-    
-    // Reset blocked status when finding new target
-    isBlocked = false;
-} 

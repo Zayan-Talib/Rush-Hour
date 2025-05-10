@@ -12,7 +12,8 @@ SRCS = game.cpp \
        ui/leaderboard.cpp \
        entities/entity.cpp \
        entities/actor.cpp \
-       entities/player_car.cpp
+       entities/player_car.cpp \
+       entities/npc_car.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
