@@ -6,7 +6,7 @@
 ModeMenu::ModeMenu (UI* ui) : 
 
     UIElement (true), 
-    parentUI (ui), 
+    gameUI (ui), 
     selectedMode (-1) 
     
 {}
@@ -31,21 +31,36 @@ void ModeMenu::PrintKeys (unsigned char key) {
         case '1':
         
             selectedMode = 0;  // Taxi
-            parentUI -> setCurrentMenu (UI::MENU_NAME_ENTRY);
             break;
         
         case '2':
         
             selectedMode = 1;  // Delivery
-            parentUI -> setCurrentMenu (UI::MENU_NAME_ENTRY);
             break;
         
         case '3':
 
             selectedMode = GetRandInRange (0, 2);
-            parentUI -> setCurrentMenu (UI::MENU_NAME_ENTRY);
             break;
     
+    }
+
+    if (key == '1' || key == '2' || key == '3') {
+
+        gameUI -> getPlayerCar () -> setMode (selectedMode);
+
+        if (gameUI -> getGameState () -> hasGameStarted ()) {
+
+            gameUI -> setCurrentMenu (UI::MENU_HUD);
+
+        }
+
+        else {
+
+            gameUI -> setCurrentMenu (UI::MENU_NAME_ENTRY);
+
+        }
+
     }
  
 }

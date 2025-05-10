@@ -116,5 +116,10 @@ void Leaderboard::addNewScore (int score) {
 
 void Leaderboard::PrintKeys (unsigned char key) {
 
+    if (key == KEY_ESC) {
+
+        parentUI -> setCurrentMenu (UI::MENU_MAIN);
+    
+    }
  
 }

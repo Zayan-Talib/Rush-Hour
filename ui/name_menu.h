@@ -9,7 +9,7 @@ class NameMenu : public UIElement {
 
     private:
 
-        UI* parentUI;
+        UI* gameUI;
 
     public:
 

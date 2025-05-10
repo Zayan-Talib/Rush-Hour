@@ -2,7 +2,7 @@
 
 // Constructor
 
-UIElement::UIElement (bool isVisible) : visible (isVisible) {}
+UIElement::UIElement (bool isVisible) : visible (isVisible) {} 
 
 // Virtual function implementations
 

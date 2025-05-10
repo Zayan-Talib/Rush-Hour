@@ -3,15 +3,22 @@
 
 #include "../utility/util.h"
 
+class UI;
+
 class GameState {
 
     private:
 
+        UI* gameUI;
+
         // Stats
 
+        static const int START_SCORE = 50;
         static const int WIN_SCORE = 100;
 
         int score;
+
+        static bool scoreAdded;
 
         // Time
 
@@ -25,9 +32,16 @@ class GameState {
 
         bool gameStarted;
         
+        // Jobs
+
+        int jobsCompleted;
+        int sinceLastJob;
+        
     public:
 
         GameState ();
+
+        void setUI (UI* ui) { gameUI = ui; }
 
         // Time
 
@@ -39,16 +53,13 @@ class GameState {
 
         bool isGameOver () const { return gameOver || isTimeUp (); }
         bool hasWon () const { return gameWon; }
-        bool hasGameStarted () { return gameStarted; } 
+        bool hasGameStarted () const { return gameStarted; } 
 
-        void startGame () { gameStarted = true; }
+        void startGame ();
         void setGameOver () { gameOver = true; }
         void setGameWon () { gameWon = true; }
-
-        bool& getGameOverRef () { return gameOver; }
-        bool& getGameWonRef () { return gameWon; }
         
-        void forceGameOver () { gameOver = true; }
+        void forceGameOver ();
         
         void checkGameStatus ();
 
@@ -56,7 +67,20 @@ class GameState {
 
         int getScore () const { return score; }
         void addScore (int points) { score += points; }
+
+        bool isScoreNegative () const { return score <= 0; }
+
+        // Reset game state
         
+        void resetGameState ();
+
+        // Jobs
+
+        int getJobsCompleted () const { return jobsCompleted; }
+        void increaseJobsCompleted () { jobsCompleted++; sinceLastJob++; }
+
+        void checkJobs ();
+
 };
 
 #endif 

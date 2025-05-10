@@ -2,18 +2,35 @@
 
 // Constructor
 
-UI::UI (GameState* state) : currentMenu (MENU_MAIN), gameState (state) {
+UI::UI (GameState* state, PlayerCar* car, Board* board) : 
+    
+    currentMenuID (MENU_MAIN),     
+    gameState (state), 
+    playerCar (car),
+    gameBoard (board) {
+    
+    gameState -> setUI (this);
+    
+    // Initialize player name
+
+    for (int a = 0; a < 50; a++) {
+
+        playerName [a] = '\0';
+    
+    }
+
+    // Create menus
     
     leaderboardMenu = new Leaderboard (this);
     mainMenu = new MainMenu (this);
     nameMenu = new NameMenu (this);
     modeMenu = new ModeMenu (this);
+    gameOverMenu = new GameOverMenu (this);
+    hud = new HUD (this);
 
-    for (int a = 0; a < 50; a++) {
-
-        playerName[a] = '\0';
-
-    }
+    // Set initial menu
+    
+    currentMenu = mainMenu;
 
 }
 
@@ -25,35 +42,19 @@ UI::~UI () {
     delete mainMenu;
     delete nameMenu;
     delete modeMenu;
-
+    delete gameOverMenu;
+    delete hud;
+    
 }
 
 // Drawing
 
 void UI::Draw () {
 
-    switch (currentMenu) {
+    if (currentMenu) {
 
-        case MENU_MAIN:
-
-            mainMenu -> Draw ();
-            break;
-            
-        case MENU_LEADERBOARD:
-
-            leaderboardMenu -> Draw ();
-            break;
-            
-        case MENU_MODE_SELECT:
-
-            modeMenu -> Draw ();
-            break;
-            
-        case MENU_NAME_ENTRY:
-
-            nameMenu -> Draw ();
-            break;
-
+        currentMenu -> Draw ();
+    
     }
 
 }
@@ -62,34 +63,87 @@ void UI::Draw () {
 
 void UI::HandlePrintKeys (unsigned char key) {
 
-    switch (currentMenu) {
+    if (currentMenu) {
+
+        currentMenu -> PrintKeys (key);
+
+    }
+
+}
+
+void UI::HandleNonPrintKeys (int key) {
+
+    if (currentMenu) {
+
+        currentMenu -> NonPrintKeys (key);
+
+    }
+
+}
+
+void UI::setCurrentMenu (int menuID) {
+
+    switch (menuID) {
 
         case MENU_MAIN:
 
-            mainMenu -> PrintKeys (key);
+            currentMenu = mainMenu;
             break;
-            
-        case MENU_LEADERBOARD:
 
-            leaderboardMenu -> PrintKeys (key);
-            
-            if (key == KEY_ESC) {
-                currentMenu = MENU_MAIN;
-            }
-
-            break;
-            
         case MENU_MODE_SELECT:
 
-            modeMenu -> PrintKeys (key);
+            currentMenu = modeMenu;
             break;
-            
+        
         case MENU_NAME_ENTRY:
+        
+            currentMenu = nameMenu;
+            break;
+        
+        case MENU_GAME_OVER:
+        
+            currentMenu = gameOverMenu;
+            break;
 
-            nameMenu -> PrintKeys (key);
+        case MENU_LEADERBOARD:
+
+            currentMenu = leaderboardMenu;
+            break;
+
+        case MENU_HUD:
+
+            currentMenu = hud;
             break;
 
     }
+
+    currentMenuID = menuID;
+
+}
+
+void UI::backToMainMenu () {
+
+    // First stop the game
+    
+    gameState -> setGameOver ();  
+    gameState -> resetGameState ();
+    
+    // Reset all game objects
+    
+    gameBoard -> ResetBoard ();
+    playerCar -> Reset ();
+    
+    // Clear player name
+    
+    for (int a = 0; a < 50; a++) {
+    
+        playerName[a] = '\0';
+    
+    }
+    
+    // Switch to main menu
+    
+    setCurrentMenu (MENU_MAIN);
 
 }
 

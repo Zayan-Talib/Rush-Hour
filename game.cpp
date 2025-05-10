@@ -26,8 +26,8 @@ using namespace std;
 
 Board* gameBoard = new Board ();
 GameState* gameState = new GameState ();
-UI* gameUI = new UI (gameState);
 PlayerCar* playerCar = new PlayerCar (gameBoard, gameState);
+UI* gameUI = new UI (gameState, playerCar, gameBoard);
 
 // Draw Canvas
 
@@ -51,99 +51,7 @@ void GameDisplay () {
 
 	glClear (GL_COLOR_BUFFER_BIT);
 
-	if (!gameState -> hasGameStarted ()) {
-    
-		gameUI -> Draw ();
-    
-	}
-
-	else if (gameState -> isGameOver()) {
-        
-        // Game over screen - draw this instead of overlaying
-        // Draw background
-    
-		DrawRectangle (0, 0, 1020, 840, colors[WHITE]);
-        
-        // Game over text
-        string gameOverStr;
-        if(gameState->hasWon()) {
-            gameOverStr = "CONGRATULATIONS! YOU WON!";
-        } else if(gameState->isTimeUp()) {
-            gameOverStr = "TIME'S UP!";
-        } else {
-            gameOverStr = "GAME OVER - Score too low!";
-        }
-
-		// Format time remaining as MM:SS
-		int timeLeft = gameState->getRemainingTime();
-		int minutes = timeLeft / 60;
-		int seconds = timeLeft % 60;
-		string timeStr = Num2Str(minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str(seconds);
-        
-        // Draw final stats
-        DrawString(400, 600, gameOverStr, colors[RED]);
-		DrawString(400, 550, "Final Score: " + Num2Str(gameState->getScore()), colors[BLACK]); 
-		DrawString(400, 500, "Total Money: $" + Num2Str(playerCar->getMoney()), colors[BLACK]);
-		DrawString(400, 450, "Time Remaining: " + timeStr, colors[BLACK]);
-		DrawString(400, 400, "Final Fuel Level: " + Num2Str(playerCar->getFuelLevel()) + "%", colors[BLACK]);
-		DrawString(400, 350, "Press 'R' to restart or 'ESC' to quit", colors[BLACK]);
-    
-	}
-
-	else {
-
-		// Mid Game Text
-
-		{
-			
-			// Display remaining time
-			int minutes = gameState -> getRemainingTime () / 60;
-			int seconds = gameState -> getRemainingTime () % 60;
-
-			string timeStr = "Time: " + Num2Str (minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str (seconds);
-			DrawString (150, 800, timeStr, colors [RED]);
-			
-			// Display Score
-			string scoreStr = "Score = " + Num2Str (gameState -> getScore ());
-			DrawString (20, 800, scoreStr, colors [RED]);
-
-			string moneyStr = "Money = $" + Num2Str(playerCar->getMoney());
-			DrawString(20, 770, moneyStr, colors[GREEN]);
-
-			// Display fuel level
-			string fuelStr = "Fuel = " + Num2Str (playerCar -> getFuelLevel ());
-			DrawString (20, 740, fuelStr, colors [RED]);
-
-			// Display Mode
-
-			string modeStr = "Mode: " + string (playerCar -> getCurrentMode () == 0 ? "TAXI" : "DELIVERY");
-			DrawString (800, 800, modeStr, colors [BLUE]);
-
-			// Display carrying status
-			string carryingStr;
-			
-			if (playerCar -> getCurrentMode () == 0) {
-				carryingStr = playerCar -> isCarryingPassenger () ? "Carrying: Passenger" : "Carrying: Nothing";
-			} 
-			else {
-				carryingStr = playerCar -> isCarryingPackage () ? "Carrying: Package" : "Carrying: Nothing";
-			}
-			
-			DrawString (400, 800, carryingStr, colors [GREEN]);
-
-		}
-
-		DrawCircle (50, 670, 10, colors [RED]);
-		DrawCircle (70, 670, 10, colors [RED]);
-		DrawCircle (90, 670, 10, colors [RED]);
-
-		playerCar -> DrawFuelMeter ();
-
-		gameBoard -> DrawBoard (playerCar -> getCurrentMode ());
-		
-		playerCar -> Draw ();
-
-    }
+	gameUI -> Draw ();
 
 	glutSwapBuffers (); // Do Not Modify
 
@@ -171,33 +79,7 @@ void NonPrintableKeys (int key, int x, int y) {
 	
 	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
 
-	if (!gameState -> isTimeUp ()) {
-     
-		if (key == GLUT_KEY_LEFT) {
-			
-			playerCar -> moveLeft ();
-
-		} 
-		
-		else if (key == GLUT_KEY_RIGHT) {
-		
-			playerCar -> moveRight ();
-		
-		} 
-		
-		else if (key == GLUT_KEY_UP) {
-
-			playerCar -> moveUp ();
-		
-		}
-
-		else if (key == GLUT_KEY_DOWN) {
-		
-			playerCar -> moveDown ();
-		
-		}
-
-	}
+	gameUI -> HandleNonPrintKeys (key);
 
 	// Call the function whenever you want to redraw the screen
 
@@ -209,82 +91,7 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
 
-	if (!gameState -> hasGameStarted ()) {
-    
-		gameUI -> HandlePrintKeys (key);
-    
-		if (gameState -> hasGameStarted ()) {
-        
-			playerCar -> setMode (gameUI -> getSelectedMode ());
-        
-		}
-    
-	} 
-	
-	else {
-    
-		if (key == 27 /* Escape key ASCII */) {
-
-			delete playerCar;
-			delete gameBoard;
-	
-			exit (1);
-	
-		}
-	
-		if (key == 'g' || key == 'G') {
-	
-			gameState -> forceGameOver ();
-	
-		}
-
-		if (key == 'r' || key == 'R') {
-	
-			gameBoard -> ResetBoard ();
-			playerCar -> ResetPosition ();
-	
-		}
-	
-		if (key == 'q' || key == 'Q') {
-	
-			playerCar -> fullFuel ();
-	
-		}
-
-		if (key == 'w' || key == 'W') {
-
-			gameState -> addScore (10);
-
-		}
-
-		if (key == 'm' || key == 'M') {
-
-			playerCar -> addMoney (10);
-
-		}
-
-		if (key == 'f' || key == 'F') {
-	
-			if (gameBoard -> tryRefuel (playerCar)) {
-				
-			}
-	
-		}
-	
-		if (key == 'p' || key == 'P') {
-		
-			playerCar -> switchMode ();
-		
-		}
-	
-		if (key == ' ') {
-		
-			playerCar -> pickupOrDropoff ();
-		
-		}
-    
-	
-	}
+	gameUI -> HandlePrintKeys (key);
 
 	glutPostRedisplay ();
 
@@ -330,55 +137,57 @@ void MouseClicked (int button, int state, int x, int y) {
 
 void Timer (int m) {
 
-	    // Update game time every second
-		// FC = Frame Count
+    // Update game time every second
+    // FC = Frame Count
 
-		static int TimeFC = 0;
-		static int PassengerFC = 0;
-		static int CarsFC = 0;
+    static int TimeFC = 0;
+    static int PassengerFC = 0;
+    static int CarsFC = 0;
 
-		if (gameState -> hasGameStarted ()) {
+    if (gameState -> hasGameStarted ()) {
 
-			TimeFC++;
-			PassengerFC++;
-			CarsFC++;
+        TimeFC++;
+        PassengerFC++;
+        CarsFC++;
 
-			if (TimeFC >= FPS) {
-			
-				if (!gameState -> isTimeUp ()) {
-			
-					gameState -> updateTime ();
-					gameState -> checkGameStatus ();
-			
-				}
-			
-				TimeFC = 0;
-			
-			}
+        if (TimeFC >= FPS) {
 
-			if (PassengerFC >= FPS) {
-				
-				gameBoard -> trySpawnNewItem (playerCar -> getCurrentMode ());
-						
-				PassengerFC = 0;
-			
-			}
+			gameState -> checkGameStatus ();
+        
+            if (!gameState -> isTimeUp ()) {
+        
+                gameState -> updateTime ();
+        
+            }
+        
+            TimeFC = 0;
+        
+        }
 
-			if (CarsFC >= FPS / (4 * gameBoard -> getNPCSpeed ())) {
+        if (PassengerFC >= FPS) {
+            
+            gameBoard -> trySpawnNewItem (playerCar -> getCurrentMode ());
+                    
+            PassengerFC = 0;
+        
+        }
 
-				if (!gameState -> isTimeUp ()) {
-			
-					gameBoard -> stepNPCCars ();
+        if (CarsFC >= FPS / (2 * gameBoard -> getNPCSpeed ())) {
 
-				}
-			
-				CarsFC = 0;
+            if (!gameState -> isTimeUp ()) {
+        
+                gameBoard -> stepNPCCars ();
+				playerCar -> checkCurrentCollision ();
 
-			}
+            }
+        
+            CarsFC = 0;
 
-		}
+        }
 
-		glutTimerFunc (1000.0 / FPS, Timer, 0); // Call the function again after 1000.0 / FPS milliseconds
+    }
+
+    glutTimerFunc (1000.0 / FPS, Timer, 0); // Call the function again after 1000.0 / FPS milliseconds
 
 }
  

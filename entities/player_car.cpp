@@ -12,9 +12,43 @@ PlayerCar::PlayerCar (Board* board, GameState* state) :
     currentFuel (MAX_FUEL),
     currentMode (MODE_TAXI),
     hasPassenger (false),
-    hasPackage (false)
+    hasPackage (false),
+    money (0)
 
 {}
+
+// Reset
+
+void PlayerCar::ResetPosition () {
+
+    x = (gameBoard -> getLeft ()) + 5;
+    y = (gameBoard -> getTop ()) - 4;
+
+    cellX = 0;
+    cellY = 0;
+
+}
+
+void PlayerCar::Reset () {
+   
+    x = (gameBoard -> getLeft ()) + 5;
+    y = (gameBoard -> getTop ()) - 4;
+
+    cellX = 0;
+    cellY = 0;
+    
+    currentFuel = MAX_FUEL;
+    
+    currentMode = -1;  // No mode selected
+    
+    money = 0;
+    
+    hasPassenger = false;
+    hasPackage = false;
+    pickupX = 0;
+    pickupY = 0;
+
+}
 
 // Vehicle
 
@@ -80,16 +114,6 @@ bool PlayerCar::canMoveTo (int dx, int dy) {
     int col = (dx - gameBoard -> getLeft ()) / gameBoard -> getCellSize ();
     
     return gameBoard -> getCellValue (row, col) != 1;
-
-}
-
-void PlayerCar::ResetPosition () {
-
-    x = (gameBoard -> getLeft ()) + 5;
-    y = (gameBoard -> getTop ()) - 4;
-
-    cellX = 0;
-    cellY = 0;
 
 }
 
@@ -209,6 +233,7 @@ void PlayerCar::pickupOrDropoff () {
             gameState -> addScore (PASSENGER_SCORE);
 
             gameBoard -> removePassengerDestination (x, y);
+            gameState -> increaseJobsCompleted ();
         
         }
     
@@ -240,6 +265,7 @@ void PlayerCar::pickupOrDropoff () {
             gameState -> addScore (PACKAGE_SCORE);
 
             gameBoard -> removePackageDestination (x, y);
+            gameState -> increaseJobsCompleted ();
 
         }
 
@@ -273,22 +299,48 @@ int PlayerCar::calculateFare (int startX, int startY, int endX, int endY) {
 
 void PlayerCar::checkCollisions (int newX, int newY) {
 
-    if (gameBoard -> isPassenger (newX, newY)) {
+    if (currentMode == MODE_TAXI) {
+
+        if (gameBoard -> isPassenger (newX, newY)) {
         
-        gameState -> addScore (PERSON_COLLISION);
-    
+            gameState -> addScore (TAXI_PERSON_COLLISION);
+        
+        }
+        
+        if (gameBoard -> GridCheck (newX, newY, 1)) {
+            
+            gameState -> addScore (TAXI_OBSTACLE_COLLISION);
+        
+        }
+        
+        if (gameBoard -> isNPCCar (newX, newY)) {
+            
+            gameState -> addScore (TAXI_CAR_COLLISION);
+        
+        }
+
     }
-    
-    if (gameBoard -> GridCheck (newX, newY, 1)) {
+
+    else {
+
+        if (gameBoard -> isPassenger (newX, newY)) {
         
-        gameState -> addScore (OBSTACLE_COLLISION);
-    
-    }
-    
-    if (gameBoard -> isNPCCar (newX, newY)) {
+            gameState -> addScore (DELIVERY_PERSON_COLLISION);
         
-        gameState -> addScore (CAR_COLLISION);
-    
+        }
+        
+        if (gameBoard -> GridCheck (newX, newY, 1)) {
+            
+            gameState -> addScore (DELIVERY_OBSTACLE_COLLISION);
+        
+        }
+        
+        if (gameBoard -> isNPCCar (newX, newY)) {
+            
+            gameState -> addScore (DELIVERY_CAR_COLLISION);
+        
+        }
+
     }
 
 }

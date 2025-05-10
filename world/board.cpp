@@ -65,28 +65,7 @@ void Board::PlaceItem (int itemType, int minCount, int maxCount) {
 
 void Board::GenerateDestination (int itemType) {
 
-    bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
-    floodFill (visited, 0, 0);
-    
-    int attempts = 0;
-
-    bool destPlaced = false;
-
-    while (!destPlaced && attempts < 1000) {
-
-        int destRow = GetRandInRange (0, CELL_COUNT);
-        int destCol = GetRandInRange (0, CELL_COUNT);
-        
-        if (grid [destRow][destCol] == 0 && visited [destRow][destCol]) {
-        
-            grid [destRow][destCol] = itemType + 1;  // Destination type
-            destPlaced = true;
-        
-        }
-
-        attempts++;
-
-    }
+    PlaceItem (itemType + 1, 1, 1);
 
 }
 
@@ -115,7 +94,7 @@ void Board::ResetBoard () {
     PlaceDeliveryPoints ();
 
     for (int a = 0; a < INITIAL_NPC_CARS; a++) {
-    
+            
         addNPCCar ();
     
     }
@@ -608,10 +587,6 @@ void Board::stepNPCCars () {
 }
 
 void Board::addNPCCar () {
-
-        if (numNPCCars >= MAX_NPC_CARS) {
-            return;
-        }
         
         bool visited [CELL_COUNT][CELL_COUNT] = {{false}};
         

@@ -2,11 +2,18 @@
 #define UI_H_
 
 #include "../utility/util.h"
+#include "../world/game_state.h"
+#include "../entities/player_car.h"
+#include "../world/board.h"
 #include "leaderboard.h"
 #include "main_menu.h"
 #include "name_menu.h"
 #include "mode_menu.h"
-#include "../world/game_state.h"
+#include "game_over_menu.h"
+#include "hud.h"
+
+
+class UIElement;
 
 class UI {
     
@@ -22,26 +29,41 @@ class UI {
         MainMenu* mainMenu;
         NameMenu* nameMenu;
         ModeMenu* modeMenu;
+        GameOverMenu* gameOverMenu;
+        HUD* hud;
         
-        int currentMenu;
+        int currentMenuID;
+        UIElement* currentMenu;
+
+        GameState* gameState;
+        PlayerCar* playerCar;
+        Board* gameBoard;
+        
 
     public:
 
         // Shared state
         
-        GameState* gameState;
+        GameState* getGameState () const { return gameState; }
+        PlayerCar* getPlayerCar () const { return playerCar; }
+        Board* getBoard () const { return gameBoard; }
+
+        HUD* getHUD () const { return hud; }
+        Leaderboard* getLeaderboard () const { return leaderboardMenu; }
+        ModeMenu* getModeMenu () const { return modeMenu; }
 
         // Options
-
-        static const int MENU_OPTIONS = 4;
+     
         static const int MENU_MAIN = 0;
         static const int MENU_LEADERBOARD = 1;
         static const int MENU_MODE_SELECT = 2;
         static const int MENU_NAME_ENTRY = 3;
+        static const int MENU_GAME_OVER = 4;
+        static const int MENU_HUD = 5;
 
         // Constructor
         
-        UI (GameState* state);
+        UI (GameState* state, PlayerCar* car, Board* gameBoard);
         
         // Destructor
         
@@ -66,14 +88,19 @@ class UI {
 
         // Menu State
         
-        void setCurrentMenu (int menu) { currentMenu = menu; }
-        int getCurrentMenu () const { return currentMenu; }
+        void setCurrentMenu (int menuID);
+        
+        int getCurrentMenuID () const { return currentMenuID; }
+        UIElement* getCurrentMenu () const { return currentMenu; }
 
-        // Mode
+        // Game Over
 
-        int getSelectedMode() const { return modeMenu -> getSelectedMode (); }
+        void backToMainMenu ();
 
-    
+        // Selected Mode
+
+        int getSelectedMode () const { return modeMenu -> getSelectedMode (); }
+
 };
 
 #endif 

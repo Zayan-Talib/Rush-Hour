@@ -9,7 +9,7 @@ class ModeMenu : public UIElement {
     
     private:
     
-        UI* parentUI;
+        UI* gameUI;
         int selectedMode;   // 0 for taxi, 1 for delivery
 
     public:
@@ -26,6 +26,7 @@ class ModeMenu : public UIElement {
         // Mode
 
         int getSelectedMode () const { return selectedMode; }
+        
 
 };
 

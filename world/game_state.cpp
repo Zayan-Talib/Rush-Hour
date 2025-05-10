@@ -1,14 +1,18 @@
 #include "game_state.h"
+#include "../ui/ui.h"
 
 // Constructor
 
 GameState::GameState () :
 
-    score (50),
+    score (START_SCORE),
     remainingTime (GAME_DURATION),
     gameOver (false),
     gameWon (false),
-    gameStarted (false)
+    gameStarted (false),
+    gameUI (nullptr),
+    jobsCompleted (0),
+    sinceLastJob (0)
 
 {}
 
@@ -22,13 +26,31 @@ void GameState::updateTime () {
 
 }
 
+// Start Game
+
+void GameState::startGame () {
+
+    gameStarted = true;
+    gameUI -> setCurrentMenu (UI::MENU_HUD);
+
+}
+
 // Game End 
+
+void GameState::forceGameOver () {
+
+    gameOver = true;
+    checkGameStatus ();
+
+}
 
 void GameState::checkGameStatus () {
     
+    checkJobs ();
+
     // Loss condition
 
-    if (score < 0) {
+    if (score < 0 || (gameUI -> getPlayerCar () -> getFuelLevel () <= 0)) {
     
         gameOver = true;
     
@@ -55,11 +77,47 @@ void GameState::checkGameStatus () {
     
     static bool scoreSaved = false;
     
-    if(gameOver && !scoreSaved) {
+    if (gameOver) {
     
-        addScore (score);
-        scoreSaved = true;
-    
+        if (!scoreSaved) {
+
+            gameUI -> getLeaderboard () -> addNewScore (score);   
+            scoreSaved = true;
+
+        }
+        
+        gameUI -> setCurrentMenu (UI::MENU_GAME_OVER);
+
     }
 
 }
+
+// Reset game state
+
+void GameState::resetGameState () {
+
+    gameStarted = false;
+    gameOver = false;
+    gameWon = false;
+    score = START_SCORE;
+    remainingTime = GAME_DURATION;
+    jobsCompleted = 0;
+    sinceLastJob = 0;
+
+}
+
+// Jobs Completed
+
+void GameState::checkJobs () {
+
+    if (sinceLastJob >= 2) {
+
+        sinceLastJob = 0;
+
+        gameUI -> getBoard () -> addNPCCar ();
+        gameUI -> getBoard () -> increaseNPCSpeed ();
+
+    }
+
+}
+

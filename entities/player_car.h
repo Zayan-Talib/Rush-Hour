@@ -51,9 +51,13 @@ class PlayerCar : public Actor {
 
         // Collision
 
-        static const int PERSON_COLLISION = -5;
-        static const int OBSTACLE_COLLISION = -2;
-        static const int CAR_COLLISION = -3;
+        static const int TAXI_PERSON_COLLISION = -5;
+        static const int TAXI_OBSTACLE_COLLISION = -2;
+        static const int TAXI_CAR_COLLISION = -3;
+
+        static const int DELIVERY_PERSON_COLLISION = -8;
+        static const int DELIVERY_OBSTACLE_COLLISION = -4;
+        static const int DELIVERY_CAR_COLLISION = -5;
 
     public:
 
@@ -80,6 +84,7 @@ class PlayerCar : public Actor {
         bool canMoveTo (int newCellX, int newCellY) override;
 
         void ResetPosition ();
+        void Reset ();
 
         // Fuel
 
@@ -116,6 +121,7 @@ class PlayerCar : public Actor {
         // Collision
 
         void checkCollisions (int newX, int newY);
+        void checkCurrentCollision () { checkCollisions (cellX, cellY); }
 
 };
 

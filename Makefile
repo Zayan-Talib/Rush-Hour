@@ -10,6 +10,8 @@ SRCS = game.cpp \
        ui/mode_menu.cpp \
        ui/name_menu.cpp \
        ui/leaderboard.cpp \
+       ui/game_over_menu.cpp \
+       ui/hud.cpp \
        entities/entity.cpp \
        entities/actor.cpp \
        entities/player_car.cpp \
@@ -17,7 +19,7 @@ SRCS = game.cpp \
 
 OBJS = $(SRCS:.cpp=.o)
 
-LIBS = 		-L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread
+LIBS = 	-L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread
 
 TARGET =	rush_hour
 

@@ -57,9 +57,9 @@ class Board {
 
         // NPC Cars
         
-        static const int MAX_NPC_CARS = 10;
-        static const int INITIAL_NPC_CARS = 3;
-        static const int NPC_CAR_TYPE = 8;  // Grid value for NPC cars
+        static const int MAX_NPC_CARS = 30;
+        static const int INITIAL_NPC_CARS = 5;
+        static const int NPC_CAR_TYPE = 8;
         
         NPCCar* npcCars [MAX_NPC_CARS];
         int numNPCCars;
@@ -82,12 +82,6 @@ class Board {
             }
 
             ResetBoard ();
-
-            for (int a = 0; a < INITIAL_NPC_CARS; a++) {
-            
-                addNPCCar ();
-            
-            }
 
         }
 
@@ -172,7 +166,7 @@ class Board {
 
         // NPC Cars
 
-        friend class NPCCar;  // Make the entire NPCCar class a friend
+        friend class NPCCar;
 
         void addNPCCar ();
         void stepNPCCars ();

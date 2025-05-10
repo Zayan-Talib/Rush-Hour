@@ -33,7 +33,7 @@ class Leaderboard : public UIElement {
 
         // Main Methods
 
-        void Draw ();
+        void Draw () override;
         void PrintKeys (char unsigned key) override;
 
         // High Scores
