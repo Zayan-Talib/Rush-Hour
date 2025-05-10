@@ -95,7 +95,7 @@ void InitCircleVertices (float radius) {
 }
 
 // Draws a Square - Coordinates (sx, sy) with given size and color
-void DrawSquare (int sx, int sy, int size, float color []) {
+void DrawSquare (int sx, int sy, int size, float* color) {
 
 	int mx = size, my = size;
 

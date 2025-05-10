@@ -9,6 +9,8 @@ class GameState {
 
         // Stats
 
+        static const int WIN_SCORE = 100;
+
         int score;
 
         // Time
@@ -16,10 +18,12 @@ class GameState {
         static const int GAME_DURATION = 180; // 3 minutes in seconds
         int remainingTime;
 
-        // Game Over
+        // Game Status
 
         bool gameOver;
         bool gameWon;
+
+        bool gameStarted;
         
     public:
 
@@ -35,14 +39,18 @@ class GameState {
 
         bool isGameOver () const { return gameOver || isTimeUp (); }
         bool hasWon () const { return gameWon; }
+        bool hasGameStarted () { return gameStarted; } 
 
+        void startGame () { gameStarted = true; }
         void setGameOver () { gameOver = true; }
         void setGameWon () { gameWon = true; }
 
-        bool& getGameOverRef() { return gameOver; }
-        bool& getGameWonRef() { return gameWon; }
+        bool& getGameOverRef () { return gameOver; }
+        bool& getGameWonRef () { return gameWon; }
         
-        void forceGameOver () { gameOver = true; } 
+        void forceGameOver () { gameOver = true; }
+        
+        void checkGameStatus ();
 
         // Score
 

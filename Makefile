@@ -4,7 +4,12 @@ SRCS = game.cpp \
        utility/util.cpp \
        world/board.cpp \
        world/game_state.cpp \
-       ui/menu.cpp \
+       ui/ui_element.cpp \
+       ui/ui.cpp \
+       ui/main_menu.cpp \
+       ui/mode_menu.cpp \
+       ui/name_menu.cpp \
+       ui/leaderboard.cpp \
        entities/entity.cpp \
        entities/actor.cpp \
        entities/player_car.cpp

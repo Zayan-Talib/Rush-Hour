@@ -15,7 +15,7 @@
 #include "utility/util.h"
 #include "world/board.h"
 #include "world/game_state.h"
-#include "ui/menu.h"
+#include "ui/ui.h"
 #include "entities/player_car.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ using namespace std;
 
 Board* gameBoard = new Board ();
 GameState* gameState = new GameState ();
-Menu* gameMenu = new Menu ();
+UI* gameUI = new UI (gameState);
 PlayerCar* playerCar = new PlayerCar (gameBoard, gameState);
 
 // Draw Canvas
@@ -51,9 +51,9 @@ void GameDisplay () {
 
 	glClear (GL_COLOR_BUFFER_BIT);
 
-	if (!gameMenu -> hasGameStarted ()) {
+	if (!gameState -> hasGameStarted ()) {
     
-		gameMenu -> DrawMenu ();
+		gameUI -> Draw ();
     
 	}
 
@@ -209,13 +209,13 @@ void PrintableKeys (unsigned char key, int x, int y) {
 	
 	// Arguments: key (ASCII of the key pressed), x and y (coordinates of mouse pointer)
 
-	if (!gameMenu -> hasGameStarted ()) {
+	if (!gameState -> hasGameStarted ()) {
     
-		gameMenu -> HandleKeypress (key);
+		gameUI -> HandlePrintKeys (key);
     
-		if (gameMenu -> hasGameStarted ()) {
+		if (gameState -> hasGameStarted ()) {
         
-			playerCar -> setMode (gameMenu -> getSelectedMode ());
+			playerCar -> setMode (gameUI -> getSelectedMode ());
         
 		}
     
@@ -260,7 +260,7 @@ void PrintableKeys (unsigned char key, int x, int y) {
 		if (key == 'f' || key == 'F') {
 	
 			if (gameBoard -> tryRefuel (playerCar)) {
-				// Refuel successful
+				
 			}
 	
 		}
@@ -331,7 +331,7 @@ void Timer (int m) {
 		static int PassengerFC = 0;
 		static int CarsFC = 0;
 
-		if (gameMenu -> hasGameStarted ()) {
+		if (gameState -> hasGameStarted ()) {
 
 			TimeFC++;
 			PassengerFC++;
@@ -342,8 +342,7 @@ void Timer (int m) {
 				if (!gameState -> isTimeUp ()) {
 			
 					gameState -> updateTime ();
-
-					gameMenu -> checkGameStatus (gameState -> getScore (), gameState -> getRemainingTime (), gameState -> getGameOverRef (), gameState -> getGameWonRef ());
+					gameState -> checkGameStatus ();
 			
 				}
 			
@@ -411,8 +410,9 @@ int main (int argc, char*argv []) {
 	// CleanUp
 
 	delete playerCar;
+	delete gameUI;
+	delete gameState;
     delete gameBoard;
-	delete gameMenu;
 
 	return 1;
 

@@ -28,7 +28,7 @@ class Board {
         // 5 = Passenger Destination
         // 6 = Package
         // 7 = Package Destination
-        // 8 = AI Car
+        // 8 = NPC Car
 
         int ** grid;
 

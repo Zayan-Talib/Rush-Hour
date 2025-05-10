@@ -7,13 +7,24 @@ class Structure : public Entity {
 
     protected:
 
-        int type;       // Type of structure
+        int type;                       
+
+        // Type of structure
+        // 0 = Road
+        // 1 = Building
+        // 2 = Fuel Station
+        // 3 = Mode Station
+        // 4 = Passenger
+        // 5 = Passenger Destination
+        // 6 = Package
+        // 7 = Package Destination
+        // 8 = NPC Car
 
     public:
 
         // Constructor
 
-        Structure (Board* board, int startCellX, int startCellY, int type);
+        Structure (Board* board, GameState* state, int type);
         
         // Virtual destructor
 
