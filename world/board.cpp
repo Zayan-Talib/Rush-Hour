@@ -17,6 +17,7 @@ Board::Board () : numNPCCars (0) {
     fuelstation = new FuelStation (this, nullptr);
     modestation = new ModeStation (this, nullptr);
     building = new Building (this, nullptr);
+    destination = new Destination (this, nullptr);
 
     ResetBoard ();
 
@@ -29,6 +30,7 @@ Board::~Board () {
     delete fuelstation;
     delete modestation;
     delete building;
+    delete destination;
 
     for (int a = 0; a < numNPCCars; a++) {
 
@@ -158,6 +160,10 @@ void Board::DrawBoard (int currentMode) {
     DrawPassengersAndPackages (currentMode);
     DrawNPCCars ();
 
+    destination -> DrawDestination (currentMode);
+
+    glutPostRedisplay ();
+
 }
 
 void Board::DrawGrid () {
@@ -235,12 +241,6 @@ void Board::DrawPassengersAndPackages (int currentMode) {
                         
                 }
 
-                else if (grid [row][col] == 5) {
-                
-                    DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [ORANGE]);
-                
-                }
-
             }
 
             if (currentMode == 1) {
@@ -248,12 +248,6 @@ void Board::DrawPassengersAndPackages (int currentMode) {
                 if (grid [row][col] == 6) { 
 
                     DrawRoundRect (x + 5, y - size + 5, size - 10, size - 10, colors [BROWN], 5);                                
-                
-                }
-
-                else if (grid [row][col] == 7) {
-                
-                    DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [PURPLE]);
                 
                 }
             

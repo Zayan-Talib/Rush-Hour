@@ -16,6 +16,7 @@ class FuelStation : public Structure {
         virtual ~FuelStation () = default;
 
         void Draw () override;
+        void DrawStation (int x, int y);
 
 };
 

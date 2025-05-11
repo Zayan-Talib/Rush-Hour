@@ -22,12 +22,18 @@ void FuelStation::Draw () {
                 int x = Board::GRID_LEFT + (col * Board::CELL_SIZE);
                 int y = Board::GRID_TOP + 21 - (row * Board::CELL_SIZE);
 
-                DrawSquare (x, y - Board::CELL_SIZE, Board::CELL_SIZE, colors [RED]);
+                DrawStation (x, y);
 
             }
 
         }
 
     }
+
+}
+
+void FuelStation::DrawStation (int x, int y) {
+
+    DrawSquare (x, y - Board::CELL_SIZE, Board::CELL_SIZE, colors [RED]);
 
 }

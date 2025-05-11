@@ -7,6 +7,7 @@
 #include "../entities/fuel_station.h"
 #include "../entities/mode_station.h"
 #include "../entities/building.h"
+#include "../entities/destination.h"
 
 class Board {
 
@@ -50,6 +51,7 @@ class Board {
         FuelStation* fuelstation;
         Building* building;
         ModeStation* modestation;
+        Destination* destination;
 
         // Other Logic
 
@@ -146,6 +148,7 @@ class Board {
         friend class FuelStation;
         friend class ModeStation;
         friend class Building;
+        friend class Destination;
 
         // NPC Cars
 

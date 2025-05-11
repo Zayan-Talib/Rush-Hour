@@ -20,7 +20,8 @@ SRCS = game.cpp \
        entities/structure.cpp \
        entities/fuel_station.cpp \
        entities/mode_station.cpp \
-       entities/building.cpp       
+       entities/building.cpp \
+       entities/destination.cpp    
 
 OBJS = $(SRCS:.cpp=.o)
 
