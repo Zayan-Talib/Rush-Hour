@@ -16,14 +16,13 @@ class Leaderboard : public UIElement {
 
     private:
 
-        UI* parentUI;
+        UI* gameUI;
 
         // High Scores
 
         static const int MAX_HIGH_SCORES = 10;
         HighScore highScores [MAX_HIGH_SCORES];
         int numScores;
-
 
     public:
 
@@ -34,7 +33,7 @@ class Leaderboard : public UIElement {
         // Main Methods
 
         void Draw () override;
-        void PrintKeys (char unsigned key) override;
+        void PrintKeys (unsigned char key) override;
 
         // High Scores
 

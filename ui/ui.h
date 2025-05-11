@@ -11,6 +11,7 @@
 #include "mode_menu.h"
 #include "game_over_menu.h"
 #include "hud.h"
+#include "button.h"
 
 #include "../world/audio.h"
 
@@ -110,6 +111,9 @@ class UI {
         // Selected Mode
 
         int getSelectedMode () const { return modeMenu -> getSelectedMode (); }
+
+        friend class Button;
+        friend class PlayerCar;
 
 };
 

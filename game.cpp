@@ -93,11 +93,15 @@ void MousePressedAndMoved (int x, int y) {
 	// Arguments: x and y (coordinates of mouse pointer)
 	// Use this function to find the direction of shooting
 
+	gameUI -> HandleMouse (x, y);
+
 	glutPostRedisplay ();
 
 }
 
 void MouseMoved (int x, int y) {
+
+	gameUI -> HandleMouse (x, y);
 	
 	glutPostRedisplay ();
 
@@ -108,13 +112,7 @@ void MouseClicked (int button, int state, int x, int y) {
 	// Auto Called When Mouse is clicked inside the window
 	// Arguments: button (Left, Middle or Right), state (button is pressed or released), x and y (coordinates of mouse pointer)
 
-	if (button == GLUT_LEFT_BUTTON) {
-	
-	} 
-	
-	else if (button == GLUT_RIGHT_BUTTON) {
-		
-	}
+	gameUI -> HandleClick (button, state, x, y);
 
 	glutPostRedisplay ();
 
@@ -131,7 +129,7 @@ void Timer (int m) {
     static int PassengerFC = 0;
     static int CarsFC = 0;
 
-    if (gameState -> hasGameStarted ()) {
+    if (gameState -> hasGameStarted () && !gameState -> isGameOver ()) {
 
         TimeFC++;
         PassengerFC++;
@@ -174,14 +172,10 @@ void Timer (int m) {
 
     }
 
-	MouseMoved (0, 0);
     glutTimerFunc (1000.0 / FPS, Timer, 0); // Call the function again after 1000.0 / FPS milliseconds
 
 }
  
-//===================================== Audio =========================================
-
-
 //======================================= Main =======================================
 
 int main (int argc, char*argv []) {
@@ -194,7 +188,7 @@ int main (int argc, char*argv []) {
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA); 	// Color Display Mode
 	glutInitWindowPosition (430, 70); 				// Initial Window Position
 	glutInitWindowSize (width, height); 			// Window Size
-	glutCreateWindow ("Rush Hour - Zayan Talib"); 	// Title
+	glutCreateWindow ("Rush Hour"); 	// Title
 	SetCanvasSize (width, height); 					// Pixels
 
 	// Register your functions to the library

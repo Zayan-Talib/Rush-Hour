@@ -91,7 +91,7 @@ void UI::HandleClick (int button, int state, int x, int y) {
 
     if (currentMenu) {
 
-        currentMenu -> MouseClick (button, state, x, y);
+        currentMenu -> MouseClick (button, state, x, 840 - y);
 
     }
 
@@ -101,7 +101,7 @@ void UI::HandleMouse (int x, int y) {
 
     if (currentMenu) {
 
-        currentMenu -> MouseMove (x, y);
+        currentMenu -> MouseMove (x, 840 - y);
 
     }
 

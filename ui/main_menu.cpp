@@ -6,26 +6,23 @@
 MainMenu::MainMenu (UI* ui) : 
 
     UIElement (true), 
-    parentUI (ui),
-    numButtons (4) {
+    gameUI (ui),
+    numButtons (3) {
 
     const int buttonWidth = 200;
     const int buttonHeight = 50;
-    const int spacing = 20; // space between buttons
-    const int numButtons = 4;
-
-    Button* buttons [numButtons];
+    const int spacing = 20;
 
     int totalHeight = numButtons * buttonHeight + (numButtons - 1) * spacing;
-    int startY = (parentUI -> getScreenHeight () - totalHeight) / 2;
-    int centerX = (parentUI -> getScreenWidth () - buttonWidth) / 2;
+    int startY = (totalHeight / 2 + gameUI -> getScreenHeight () / 2) - 100;
+    int centerX = (gameUI -> getScreenWidth () - buttonWidth) / 2;
 
-    string labels [] = {"Play", "Options", "Leaderboard", "Exit"};
+    string labels [] = {"Play", "Leaderboard", "Exit"};
 
     for (int a = 0; a < numButtons; a++) {
 
-        int y = startY + a * (buttonHeight + spacing);
-        buttons [a] = new Button (centerX, y, buttonWidth, buttonHeight, labels [a], colors [BLUE], colors [LIGHT_BLUE], colors [WHITE], 10);
+        int y = startY - a * (buttonHeight + spacing);
+        buttons [a] = new Button (centerX, y, buttonWidth, buttonHeight, labels [a], colors [BLUE], colors [GREEN], colors [WHITE], 10);
 
     }
 
@@ -35,7 +32,11 @@ MainMenu::MainMenu (UI* ui) :
 
 MainMenu::~MainMenu () {
 
-    delete buttons;
+    for (int a = 0; a < numButtons; a++) {
+
+        delete buttons [a];
+     
+    }
 
 }
 
@@ -56,17 +57,59 @@ void MainMenu::Draw () {
 	// R=G=B=1 -> White
 	// R=G=B=0 -> Black
 	// R=G=B=0.5 -> Gray
+
+    glClear (GL_COLOR_BUFFER_BIT);
+
+    int x = 480;
+    int y = 550;
+
+    float * WheelColor = colors [WHITE];
+    float * WindowColor = colors [SILVER];
+    float * CarColor = nullptr;
+    float * TopColor = nullptr;
+
+    if (true) {
     
-    DrawString (400, 600, "RUSH HOUR", colors [RED]);
-    DrawString (400, 500, "1. Play Game", colors [WHITE]);
-    DrawString (400, 450, "2. View Leaderboard", colors [WHITE]);
-    DrawString (400, 400, "3. Exit", colors [WHITE]);
+        CarColor = colors [YELLOW];
+        TopColor = colors [WHITE];
+    
+    } 
+    
+    else {
+    
+        CarColor = colors [BROWN];
+        TopColor = colors [BLUE];
+    
+    }
+
+    // Car Body (tripled)
+    DrawRectangle(x - 6, y, 72, 30, CarColor);           // Main body
+    DrawRectangle(x + 3, y + 21, 54, 30, CarColor);      // Upper body
+
+    // Windows (tripled)
+    DrawRectangle(x + 9, y + 27, 21, 15, WindowColor);   // Left window
+    DrawRectangle(x + 30, y + 27, 21, 15, WindowColor);  // Right window
+
+    // Wheels (tripled)
+    int wheelSize = 9;
+    DrawCircle(x + 9, y, wheelSize, WheelColor);         // Left wheel
+    DrawCircle(x + 48, y, wheelSize, WheelColor);        // Right wheel
+
+    // Top (tripled)
+    DrawRectangle(x + 15, y + 48, 30, 18, TopColor);     // Roof
+    
+    DrawString (450, 680, "RUSH HOUR", colors [RED]);
+    // DrawString (400, 500, "1. Play Game", colors [WHITE]);
+    // DrawString (400, 450, "2. View Leaderboard", colors [WHITE]);
+    // DrawString (400, 400, "3. Exit", colors [WHITE]);
 
     for (int a = 0; a < numButtons; a++) {
 
-        //buttons [a].Draw ();
+        buttons [a] -> Draw ();
 
     }
+
+    DrawString (410, 100, "By Zayan Talib (24i-6514)", colors [WHITE]);
 
 }
 
@@ -78,16 +121,21 @@ void MainMenu::PrintKeys (unsigned char key) {
             
         case '1':
     
-            parentUI -> setCurrentMenu (UI::MENU_MODE_SELECT);
+            gameUI -> setCurrentMenu (UI::MENU_MODE_SELECT);
             break;
 
         case '2':
 
-            parentUI -> setCurrentMenu (UI::MENU_LEADERBOARD);
+            gameUI -> setCurrentMenu (UI::MENU_LEADERBOARD);
             break;
         
         case '3':
     
+            exit (0);
+            break;
+
+        case KEY_ESC:
+
             exit (0);
             break;
     
@@ -96,5 +144,55 @@ void MainMenu::PrintKeys (unsigned char key) {
             break;
     
     }
+
+}
+
+void MainMenu::MouseMove (int x, int y) {
+
+    for (int a = 0; a < numButtons; a++) {
+
+        buttons [a] -> MouseMove (x, y);
+
+    }
+
+}
+
+void MainMenu::MouseClick (int button, int state, int x, int y) {
+
+    for (int a = 0; a < numButtons; a++) {
+
+        buttons [a] -> MouseClick (button, state, x, y);
+        
+        if (buttons [a] -> getPressed ()) {
+
+            buttons [a] -> setPressed (false);
+
+            switch (a) {
+            
+                case 0:
+            
+                    gameUI -> setCurrentMenu (UI::MENU_MODE_SELECT);
+                    break;
+        
+                case 1:
+        
+                    gameUI -> setCurrentMenu (UI::MENU_LEADERBOARD);
+                    break;
+                
+                case 2:
+            
+                    exit (0);
+                    break;
+        
+                default:
+                
+                    break;
+            
+            }
+
+        }
+
+    }
+
 
 }

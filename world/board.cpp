@@ -157,6 +157,13 @@ void Board::ResetBoard () {
 
 void Board::DrawBoard (int currentMode) {
 
+    glClearColor 
+	(1, // Red 
+	 0.737, // Green
+	 0.506, // Blue
+     1  // Alpha
+    ); 
+
     DrawGrid ();
 
     building -> Draw ();
@@ -221,6 +228,19 @@ void Board::DrawGrid () {
         DrawLine (nx, cy, nx, cy - ny, lwidth, gridColor);
 
         nx += cellsize;
+
+    }
+
+    for (int row = 0; row < CELL_COUNT; row++) {
+
+        for (int col = 0; col < CELL_COUNT; col++) {
+
+            int x = GRID_LEFT + (col * CELL_SIZE);
+            int y = (GRID_TOP + 21 - (row * CELL_SIZE)) - CELL_SIZE;
+
+            DrawSquare (x, y, CELL_SIZE, colors [WHITE]); 
+
+        }
 
     }
     

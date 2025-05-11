@@ -10,11 +10,10 @@ class MainMenu : public UIElement {
     
     private:
         
-        UI* parentUI;
+        UI* gameUI;
 
+        Button * buttons [3];
         int numButtons;
-
-        Button * buttons;
 
     public:
 
@@ -30,6 +29,8 @@ class MainMenu : public UIElement {
 
         void Draw () override;
         void PrintKeys (unsigned char key) override;
+        void MouseMove (int x, int y) override;
+        void MouseClick (int button, int state, int x, int y) override;
 
 };
 

@@ -43,6 +43,8 @@ class GameState {
 
         void setUI (UI* ui) { gameUI = ui; }
 
+        UI* getUI () { return gameUI; }
+
         // Time
 
         void updateTime ();

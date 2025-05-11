@@ -1,4 +1,5 @@
 #include "button.h"
+#include "ui.h"
 
 // Constructor
 
@@ -47,6 +48,30 @@ void Button::Draw () {
 
         DrawString (textX, textY, label, textColor);
  
+    }
+
+}
+
+// User Input
+
+void Button::MouseMove (int mouseX, int mouseY) {
+
+    isHovered = ContainsPoint (mouseX, mouseY);
+
+    // if (isHovered) {
+
+    //     cout << "Hovered!";
+
+    // }
+
+}
+
+void Button::MouseClick (int button, int state, int mx, int my) {
+
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && ContainsPoint (mx, my)) {
+    
+        isPressed = true;
+    
     }
 
 }

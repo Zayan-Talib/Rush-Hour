@@ -15,7 +15,7 @@ NPCCar::NPCCar (Board* board, GameState* state) :
     targetCellY (0), 
     direction (0)  {
 
-        typeCar = GetRandInRange (0, 3);
+    typeCar = GetRandInRange (0, 3);
 
 }
 
@@ -60,7 +60,7 @@ void NPCCar::Draw () {
     
     int arrowSize = 10;
     int centerX = x + 10;  // Center of the 20x20 square
-    int centerY = y + 10;  // Center of the 20x20 square
+    int centerY = y + 20;  // Center of the 20x20 square
     
     float * ArrowColor = colors [BLACK];
 

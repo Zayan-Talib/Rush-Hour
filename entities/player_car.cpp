@@ -1,6 +1,7 @@
 #include "player_car.h"
 #include "../world/board.h"
 #include "../world/game_state.h"
+#include "../ui/ui.h"
 
 // Constructor
 
@@ -347,18 +348,21 @@ void PlayerCar::checkCollisions (int newX, int newY) {
         if (gameBoard -> isPassenger (newX, newY)) {
         
             gameState -> addScore (TAXI_PERSON_COLLISION);
+            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
         
         }
         
         if (gameBoard -> GridCheck (newX, newY, 1)) {
             
             gameState -> addScore (TAXI_OBSTACLE_COLLISION);
+            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
         
         }
         
         if (gameBoard -> isNPCCar (newX, newY)) {
             
             gameState -> addScore (TAXI_CAR_COLLISION);
+            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
         
         }
 
@@ -369,18 +373,21 @@ void PlayerCar::checkCollisions (int newX, int newY) {
         if (gameBoard -> isPassenger (newX, newY)) {
         
             gameState -> addScore (DELIVERY_PERSON_COLLISION);
+            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
         
         }
         
         if (gameBoard -> GridCheck (newX, newY, 1)) {
             
             gameState -> addScore (DELIVERY_OBSTACLE_COLLISION);
+            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
         
         }
         
         if (gameBoard -> isNPCCar (newX, newY)) {
             
             gameState -> addScore (DELIVERY_CAR_COLLISION);
+            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
         
         }
 

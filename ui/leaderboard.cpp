@@ -3,42 +3,55 @@
 
 // Constructor
 
-Leaderboard::Leaderboard (UI* ui) : numScores (0), parentUI (ui) {
+Leaderboard::Leaderboard (UI* ui) : numScores (0), gameUI (ui) {
 
     loadHighScores ();
-
 }
 
 // Drawing
 
-void Leaderboard::Draw () {
+void Leaderboard::Draw() {
+    glClearColor(0, 0, 0, 0); // White background
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    // Set Background Color
-	// Range: 0 to 1
-
-	glClearColor 
-	(1, // Red 
-	 1, // Green
-	 1, // Blue
-     0  // Alpha
-    );  
-	
-	// R=G=B=1 -> White
-	// R=G=B=0 -> Black
-	// R=G=B=0.5 -> Gray
-
-    DrawString (400, 700, "HIGH SCORES", colors [RED]);
-            
-    for (int a = 0; a < numScores; a++) {
-
-        string entry = string (highScores [a].name) + " - " + Num2Str (highScores [a].score);
-        DrawString (400, 650 - (a * 40), entry, colors [BLACK]);
+    const int headerHeight = 40;
+    const int rowHeight = 40;
+    const int rowSpacing = 10;
+    int screenWidth = gameUI->getScreenWidth();
+    int screenHeight = gameUI ->getScreenHeight();
     
-    }
-    
-    DrawString (400, 200, "Press ESC to return", colors [BLACK]);
+    int tableWidth = 600; // Width of the leaderboard table
+    int tableHeight = (numScores * (rowHeight + rowSpacing)) + headerHeight; // Height including rows
+    int startX = (screenWidth - tableWidth) / 2; // Center horizontally
+    int startY = (screenHeight - tableHeight) / 2 + 100; // Center vertically, but slightly lower
 
+    // Draw Table Background
+    DrawRectangle(startX - 10, startY - 10, tableWidth + 20, tableHeight + 20, colors[LIGHT_GRAY]);
+
+    // Draw Header Rectangle
+    DrawRectangle(startX, startY + 500, tableWidth, headerHeight, colors[BLUE]);
+    
+    // Draw Column Headers
+    DrawString(startX + 20, startY + headerHeight / 2 - 10 + 500, "Name", colors[WHITE]);
+    DrawString(startX + 300, startY + headerHeight / 2 - 10 + 500, "Score", colors[WHITE]);
+
+// Draw the Leaderboard Entries
+for (int a = 0; a < numScores; a++) {
+    string entry = string(highScores[a].name) + " - " + Num2Str(highScores[a].score);
+
+    // Calculate y-position for each row, starting from the bottom
+    int y =  startY - rowHeight + headerHeight + ((numScores - a - 1) * (rowHeight + rowSpacing)); // Reverse the order
+
+    // Draw the Name and Score inside the table
+    DrawString(startX + 20, y + rowHeight / 2 - 10, highScores[a].name, colors[WHITE]);
+    DrawString(startX + 300, y + rowHeight / 2 - 10, Num2Str(highScores[a].score), colors[WHITE]);
 }
+
+    // Return message for user instructions
+    DrawString(startX + 200, startY - 50, "Press ESC to return", colors[WHITE]);
+}
+
+
 
 // High Scores
 
@@ -110,7 +123,7 @@ void Leaderboard::addNewScore (int score) {
         if (insertPosition < MAX_HIGH_SCORES) {
         
             // Insert the new score
-            strcpy (highScores [insertPosition].name, parentUI -> getPlayerName ());
+            strcpy (highScores [insertPosition].name, gameUI -> getPlayerName ());
             highScores [insertPosition].score = score;
 
             // If we added a new score, increase the count
@@ -132,7 +145,7 @@ void Leaderboard::PrintKeys (unsigned char key) {
 
     if (key == KEY_ESC) {
 
-        parentUI -> setCurrentMenu (UI::MENU_MAIN);
+        gameUI -> setCurrentMenu (UI::MENU_MAIN);
     
     }
  

@@ -18,9 +18,9 @@ void NameMenu::Draw () {
 	// Range: 0 to 1
 
 	glClearColor 
-	(1, // Red 
-	 1, // Green
-	 1, // Blue
+	(0, // Red 
+	 0, // Green
+	 0, // Blue
      0  // Alpha
     );  
 	
@@ -28,9 +28,9 @@ void NameMenu::Draw () {
 	// R=G=B=0 -> Black
 	// R=G=B=0.5 -> Gray
 
-    DrawString (400, 600, "ENTER YOUR NAME:", colors [RED]);
-    DrawString (400, 500, string (gameUI -> getPlayerName ()) + "_", colors [BLACK]);
-    DrawString (400, 400, "Press ENTER when done", colors [BLACK]);
+    DrawString (420, 600, "ENTER YOUR NAME:", colors [RED]);
+    DrawString (420, 500, string (gameUI -> getPlayerName ()) + "_", colors [WHITE]);
+    DrawString (400, 400, "Press ENTER when done", colors [WHITE]);
 
 }
 
@@ -49,6 +49,12 @@ void NameMenu::PrintKeys (unsigned char key) {
     
         gameUI -> removeLastCharFromPlayerName ();
     
+    }
+
+    else if (key == KEY_ESC) {
+
+        exit (0);
+
     }
 
     else {
