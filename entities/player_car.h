@@ -14,7 +14,7 @@ class PlayerCar : public Actor {
 
         // Fuel
 
-        static const int MAX_FUEL = 100;
+        static const int MAX_FUEL = 200;
         static const int FUEL_CONSUMPTION = 1;
         static const int REFILL_AMOUNT = 50;
         
@@ -94,6 +94,7 @@ class PlayerCar : public Actor {
         void fullFuel () { currentFuel = MAX_FUEL; }                 // Cheat Code
 
         int getFuelLevel () const { return currentFuel; }
+        int getFuelPercentage () const { return currentFuel / MAX_FUEL; }
         bool isFuelLeft () const { return currentFuel > 0; }
 
         // Mode Switching
@@ -109,6 +110,8 @@ class PlayerCar : public Actor {
         bool isCarrying () const { return hasPassenger || hasPackage; }
         bool isCarryingPassenger () const { return hasPassenger; }
         bool isCarryingPackage () const { return hasPackage; }
+
+        void dropCarrying ();
 
         void pickupOrDropoff ();
         

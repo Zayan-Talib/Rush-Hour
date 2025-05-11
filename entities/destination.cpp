@@ -19,7 +19,7 @@ void Destination::DrawDestination (int currentMode) {
         MainColor = colors [GREEN];
     }
     else if (currentMode == 1) {
-        MainColor = colors [PURPLE];
+        MainColor = colors [DARK_BLUE];
     }
 
     for (int row = 0; row < Board::CELL_COUNT; row++) {

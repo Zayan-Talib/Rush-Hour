@@ -150,18 +150,18 @@ void PlayerCar::DrawFuelMeter () {
     
     // Calculate fill height based on current fuel percentage
 
-    float fuelPercent = currentFuel / 100.0f;
+    float fuelPercent = currentFuel / 200.0f;
     int fillHeight = height * fuelPercent;
     
     // Choose color based on fuel level
  
     float* fuelColor;
 
-    if (currentFuel > 70) {
+    if (currentFuel > MAX_FUEL * 0.7) {
         fuelColor = colors [GREEN];
     } 
 
-    else if (currentFuel > 30) {
+    else if (currentFuel > MAX_FUEL * 0.3) {
         fuelColor = colors [YELLOW];
     }
 
@@ -171,7 +171,7 @@ void PlayerCar::DrawFuelMeter () {
     
     // Draw fuel level
 
-    if (currentFuel > 4) {
+    if (currentFuel > MAX_FUEL * 0.04) {
 
         DrawRoundRect (x + 5, y + 5, width - 10, fillHeight, fuelColor, 8);
 
@@ -287,6 +287,33 @@ void PlayerCar::pickupOrDropoff () {
 
     }
 
+}
+
+void PlayerCar::dropCarrying () {
+
+    if (isCarrying ()) {
+
+        hasPassenger = false;
+        hasPackage = false;
+
+        for (int row = 0; row < Board::CELL_COUNT; row++) {
+
+            for (int col = 0; col < Board::CELL_COUNT; col++) {
+    
+                int x = Board::GRID_LEFT + (col * Board::CELL_SIZE);
+                int y = (Board::GRID_TOP + 21 - (row * Board::CELL_SIZE)) - Board::CELL_SIZE;
+    
+                if (gameBoard -> getCellValue (row, col) == 5 || gameBoard -> getCellValue (row, col) == 7) {
+    
+                    gameBoard -> setCellValue (row, col, 0);
+    
+                }
+    
+            }
+    
+        }
+
+    }
 }
 
 // Money

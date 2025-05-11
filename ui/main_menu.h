@@ -2,6 +2,7 @@
 #define MAIN_MENU_H_
 
 #include "ui_element.h"
+#include "button.h"
 
 class UI;
 
@@ -11,11 +12,19 @@ class MainMenu : public UIElement {
         
         UI* parentUI;
 
+        int numButtons;
+
+        Button * buttons;
+
     public:
 
         // Constructor
         
         MainMenu (UI* ui);
+
+        // Destructor
+
+        ~MainMenu ();
 
         // Main Methods
 

@@ -13,6 +13,7 @@ SRCS = game.cpp \
        ui/leaderboard.cpp \
        ui/game_over_menu.cpp \
        ui/hud.cpp \
+       ui/button.cpp \
        entities/entity.cpp \
        entities/actor.cpp \
        entities/player_car.cpp \
@@ -21,7 +22,10 @@ SRCS = game.cpp \
        entities/fuel_station.cpp \
        entities/mode_station.cpp \
        entities/building.cpp \
-       entities/destination.cpp    
+       entities/destination.cpp \
+       entities/transportable.cpp \
+       entities/package.cpp \
+       entities/passenger.cpp   
 
 OBJS = $(SRCS:.cpp=.o)
 

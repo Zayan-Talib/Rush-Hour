@@ -59,10 +59,6 @@ void HUD::Draw () {
 
 		DrawString (420, 20, jobsStr, colors [GREEN]);
 
-		DrawCircle (50, 670, 10, colors [RED]);
-		DrawCircle (70, 670, 10, colors [RED]);
-		DrawCircle (90, 670, 10, colors [RED]);
-
 		gameUI -> getPlayerCar () -> DrawFuelMeter ();
 
 		gameUI -> getBoard () -> DrawBoard (gameUI -> getPlayerCar () -> getCurrentMode ());
@@ -115,6 +111,12 @@ void HUD::PrintKeys (unsigned char key) {
 	if (key == 'j' || key == 'J') {
 
 		gameUI -> getGameState () -> increaseJobsCompleted ();
+
+	}
+
+	if (key == 'd' || key == 'D') {
+
+		gameUI ->  getPlayerCar () -> dropCarrying ();
 
 	}
 

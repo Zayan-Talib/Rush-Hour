@@ -8,6 +8,8 @@
 #include "../entities/mode_station.h"
 #include "../entities/building.h"
 #include "../entities/destination.h"
+#include "../entities/package.h"
+#include "../entities/passenger.h"
 
 class Board {
 
@@ -52,6 +54,9 @@ class Board {
         Building* building;
         ModeStation* modestation;
         Destination* destination;
+
+        Package* package;
+        Passenger* passenger;
 
         // Other Logic
 
@@ -99,6 +104,8 @@ class Board {
         int getBottom () const { return GRID_BOTTOM; }
         
         int getCellValue (int row, int col) const;
+        void setCellValue (int row, int col, int value) { grid [row][col] = value; }
+
         bool GridCheck (int x, int y, int check) const;
         bool isValidMove (int x, int y) const; 
 
@@ -115,8 +122,6 @@ class Board {
         void ResetBoard ();
         void DrawBoard (int currentMode);
         void DrawGrid ();
-        void DrawPassengersAndPackages (int currentMode);
-        void DrawNPCCars ();
 
         // Placing Stuff
 
@@ -144,11 +149,14 @@ class Board {
 
         // Friends
 
+        friend class PlayerCar;
         friend class NPCCar;
         friend class FuelStation;
         friend class ModeStation;
         friend class Building;
         friend class Destination;
+        friend class Package;
+        friend class Passenger;
 
         // NPC Cars
 

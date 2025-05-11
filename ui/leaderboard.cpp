@@ -13,6 +13,20 @@ Leaderboard::Leaderboard (UI* ui) : numScores (0), parentUI (ui) {
 
 void Leaderboard::Draw () {
 
+    // Set Background Color
+	// Range: 0 to 1
+
+	glClearColor 
+	(1, // Red 
+	 1, // Green
+	 1, // Blue
+     0  // Alpha
+    );  
+	
+	// R=G=B=1 -> White
+	// R=G=B=0 -> Black
+	// R=G=B=0.5 -> Gray
+
     DrawString (400, 700, "HIGH SCORES", colors [RED]);
             
     for (int a = 0; a < numScores; a++) {

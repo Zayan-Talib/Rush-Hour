@@ -19,6 +19,9 @@ Board::Board () : numNPCCars (0) {
     building = new Building (this, nullptr);
     destination = new Destination (this, nullptr);
 
+    package = new Package (this, nullptr);
+    passenger = new Passenger (this, nullptr);
+
     ResetBoard ();
 
 }
@@ -31,6 +34,9 @@ Board::~Board () {
     delete modestation;
     delete building;
     delete destination;
+
+    delete package;
+    delete passenger;
 
     for (int a = 0; a < numNPCCars; a++) {
 
@@ -156,11 +162,24 @@ void Board::DrawBoard (int currentMode) {
     building -> Draw ();
     modestation -> Draw ();
     fuelstation -> Draw ();
-
-    DrawPassengersAndPackages (currentMode);
-    DrawNPCCars ();
-
     destination -> DrawDestination (currentMode);
+    
+    if (currentMode == 0) {
+        passenger -> Draw ();
+    }
+    else if (currentMode == 1) {
+        package -> Draw ();
+    }
+
+    for (int a = 0; a < numNPCCars; a++) {
+    
+        if (npcCars [a] != nullptr) {
+        
+            npcCars [a] -> Draw ();
+        
+        }
+
+    }
 
     glutPostRedisplay ();
 
@@ -205,58 +224,6 @@ void Board::DrawGrid () {
 
     }
     
-}
-
-void Board::DrawPassengersAndPackages (int currentMode) {
-    
-    int size = CELL_SIZE;
-
-    for (int row = 0; row < CELL_COUNT; row++) {
-        
-        for (int col = 0; col < CELL_COUNT; col++) {
-            
-            int x = GRID_LEFT + (col * CELL_SIZE);
-            int y = GRID_TOP + 21 - (row * CELL_SIZE);
-            
-            if (currentMode == 0) {
-
-                if (grid [row][col] == 4) { 
-
-                    //  DrawTriangle (x + size / 2, y - 5, x + 5, y - (size - 5), x + size - 5, y - (size - 5), colors [YELLOW]);
-                           
-                    // Draw stick figure
-
-                    // Head
-                    DrawCircle (x + size / 2, y - size / 4 - 2, size / 6, colors[BLACK]);
-                    
-                    // Body
-                    DrawLine (x + size / 2, (y - size / 2) + 2, x + size / 2, (y - size * 0.8), 5, colors [BLACK]);
-                    
-                    // Arms
-                    DrawLine (x + size / 3, y - size * 0.65 + 2, x + size * 0.67, y - size * 0.65 + 2, 5, colors [BLACK]);
-                    
-                    // Legs
-                    DrawLine (x + size / 2, y - size * 0.8, x + size / 3, y - size * 0.95 + 2, 5, colors [BLACK]);
-                    DrawLine (x + size / 2, y - size * 0.8, x + size * 0.67, y - size * 0.95 + 2, 5, colors [BLACK]);
-                        
-                }
-
-            }
-
-            if (currentMode == 1) {
-                    
-                if (grid [row][col] == 6) { 
-
-                    DrawRoundRect (x + 5, y - size + 5, size - 10, size - 10, colors [BROWN], 5);                                
-                
-                }
-            
-            }
-
-        }
-
-    }
-
 }
 
 // Buildings
@@ -607,20 +574,6 @@ void Board::addNPCCar () {
             
             attempts++;
         
-    }
-
-}
-
-void Board::DrawNPCCars () {
-
-    for (int a = 0; a < numNPCCars; a++) {
-    
-        if (npcCars [a] != nullptr) {
-        
-            npcCars [a] -> Draw ();
-        
-        }
-
     }
 
 }

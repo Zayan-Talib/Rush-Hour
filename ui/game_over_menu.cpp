@@ -10,6 +10,21 @@ GameOverMenu::GameOverMenu (UI* ui) : gameUI(ui) {}
 // Drawing
 
 void GameOverMenu::Draw () {
+
+	// Set Background Color
+	// Range: 0 to 1
+
+	glClearColor 
+	(1, // Red 
+	 1, // Green
+	 1, // Blue
+     0  // Alpha
+    );  
+	
+	// R=G=B=1 -> White
+	// R=G=B=0 -> Black
+	// R=G=B=0.5 -> Gray
+
     // Draw background
     DrawRectangle(0, 0, 1020, 840, colors[WHITE]);
     
@@ -49,8 +64,9 @@ void GameOverMenu::Draw () {
     DrawString(400, 500, "Total Money: $" + Num2Str(gameUI->getPlayerCar()->getMoney()), colors[BLACK]);
     DrawString(400, 450, "Jobs Completed: " + Num2Str(gameUI-> getGameState () -> getJobsCompleted()), colors[BLACK]);
     DrawString(400, 400, "Time Remaining: " + timeStr, colors[BLACK]);
-    DrawString(400, 350, "Final Fuel Level: " + Num2Str(gameUI->getPlayerCar()->getFuelLevel()) + "%", colors[BLACK]);
+    DrawString(400, 350, "Final Fuel Level: " + Num2Str(gameUI -> getPlayerCar () -> getFuelPercentage ()) + "%", colors[BLACK]);
     DrawString(400, 300, "Press 'R' to restart or 'ESC' to quit", colors[BLACK]);
+    
 }
 
 void GameOverMenu::PrintKeys (unsigned char key) {

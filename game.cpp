@@ -37,20 +37,6 @@ UI* gameUI = new UI (gameState, playerCar, gameBoard);
 
 void GameDisplay () {
 
-	// Set Background Color
-	// Range: 0 to 1
-
-	glClearColor 
-	(1, // Red 
-	 1, // Green
-	 1, // Blue
-     0  // Alpha
-    );  
-	
-	// R=G=B=1 -> White
-	// R=G=B=0 -> Black
-	// R=G=B=0.5 -> Gray
-	
 	// Update Colors
 
 	glClear (GL_COLOR_BUFFER_BIT);
@@ -122,11 +108,8 @@ void MouseClicked (int button, int state, int x, int y) {
 	// Auto Called When Mouse is clicked inside the window
 	// Arguments: button (Left, Middle or Right), state (button is pressed or released), x and y (coordinates of mouse pointer)
 
-	// cout << GLUT_DOWN << " " << GLUT_UP << endl;
-
 	if (button == GLUT_LEFT_BUTTON) {
 	
-
 	} 
 	
 	else if (button == GLUT_RIGHT_BUTTON) {
@@ -191,6 +174,7 @@ void Timer (int m) {
 
     }
 
+	MouseMoved (0, 0);
     glutTimerFunc (1000.0 / FPS, Timer, 0); // Call the function again after 1000.0 / FPS milliseconds
 
 }

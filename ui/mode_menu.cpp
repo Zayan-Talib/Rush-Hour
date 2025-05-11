@@ -15,6 +15,20 @@ ModeMenu::ModeMenu (UI* ui) :
 
 void ModeMenu::Draw () {
 
+    // Set Background Color
+	// Range: 0 to 1
+
+	glClearColor 
+	(1, // Red 
+	 1, // Green
+	 1, // Blue
+     0  // Alpha
+    );  
+	
+	// R=G=B=1 -> White
+	// R=G=B=0 -> Black
+	// R=G=B=0.5 -> Gray
+
     DrawString (400, 600, "SELECT MODE", colors [RED]);
     DrawString (400, 500, "1. Taxi Driver", colors [BLACK]);
     DrawString (400, 450, "2. Delivery Driver", colors [BLACK]);

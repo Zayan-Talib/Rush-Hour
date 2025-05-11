@@ -15,6 +15,8 @@ class NPCCar : public Actor {
         int targetCellY;      // Target cell Y coordinate
         int direction;        // 0 = up, 1 = right, 2 = down, 3 = left
 
+        int typeCar;
+
         // Already inherited speed and active
 
     public:

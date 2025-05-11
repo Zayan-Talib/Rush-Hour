@@ -87,6 +87,27 @@ void UI::HandleNonPrintKeys (int key) {
 
 }
 
+void UI::HandleClick (int button, int state, int x, int y) {
+
+    if (currentMenu) {
+
+        currentMenu -> MouseClick (button, state, x, y);
+
+    }
+
+}
+
+void UI::HandleMouse (int x, int y) {
+
+    if (currentMenu) {
+
+        currentMenu -> MouseMove (x, y);
+
+    }
+
+}
+
+
 void UI::setCurrentMenu (int menuID) {
 
     switch (menuID) {

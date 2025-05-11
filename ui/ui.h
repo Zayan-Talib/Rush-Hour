@@ -20,6 +20,9 @@ class UI {
     
     private:
 
+        const int screenWidth = 1020;
+        const int screenHeight = 840;
+
         // User
 
         char playerName [50];
@@ -55,6 +58,9 @@ class UI {
         ModeMenu* getModeMenu () const { return modeMenu; }
         Audio* getAudio () const { return audio; }
 
+        int getScreenWidth () const { return screenWidth; }
+        int getScreenHeight () const { return screenHeight; }
+
         // Options
      
         static const int MENU_MAIN = 0;
@@ -78,7 +84,8 @@ class UI {
 
         // User Input
 
-        void HandleClick (int x, int y);
+        void HandleClick (int button, int state, int x, int y);
+        void HandleMouse (int x, int y);
         void HandlePrintKeys (unsigned char key);
         void HandleNonPrintKeys (int key);
 

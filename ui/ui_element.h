@@ -16,12 +16,13 @@ class UIElement {
         UIElement (bool isVisible = true);
         virtual ~UIElement () = default;
 
-        // Pure virtual methods that must be implemented by derived classes
+        // Inerhited Methods
         
         virtual void Draw () = 0;
         virtual void PrintKeys (unsigned char key);
         virtual void NonPrintKeys (int key);
-        virtual void MouseClick (int x, int y);
+        virtual void MouseClick (int button, int state, int x, int y);
+        virtual void MouseMove (int x, int y);
 
         // Visibility controls
 
