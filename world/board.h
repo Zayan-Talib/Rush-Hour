@@ -4,6 +4,9 @@
 #include "../utility/util.h"
 #include "../entities/player_car.h"
 #include "../entities/npc_car.h"
+#include "../entities/fuel_station.h"
+#include "../entities/mode_station.h"
+#include "../entities/building.h"
 
 class Board {
 
@@ -42,6 +45,12 @@ class Board {
         bool canReachAllCorners ();             
         void floodFill (bool visited [][24], int row, int col);
 
+        // Fuel Station
+
+        FuelStation* fuelstation;
+        Building* building;
+        ModeStation* modestation;
+
         // Other Logic
 
         void PlaceItem (int itemType, int minCount, int maxCount);
@@ -69,41 +78,11 @@ class Board {
 
         // Constructor
 
-        Board () : numNPCCars (0) {
-            
-            InitRandomizer ();
-
-            grid = new int * [CELL_COUNT];
-            
-            for (int a = 0; a < CELL_COUNT; a++) {
-            
-                grid [a] = new int [CELL_COUNT];
-            
-            }
-
-            ResetBoard ();
-
-        }
+        Board ();
 
         // Destructor
 
-        ~Board () {
-            
-            for (int a = 0; a < CELL_COUNT; a++) {
-
-                delete [] grid [a];
-
-            }
-
-            delete [] grid;
-
-            for (int a = 0; a < numNPCCars; a++) {
-        
-                delete npcCars[a];
-            
-            }
-        
-        }
+        ~Board ();
 
         // Helpers
         
@@ -134,9 +113,6 @@ class Board {
         void ResetBoard ();
         void DrawBoard (int currentMode);
         void DrawGrid ();
-        void DrawModeStation ();
-        void DrawBuildings ();
-        void DrawFuelStations ();
         void DrawPassengersAndPackages (int currentMode);
         void DrawNPCCars ();
 
@@ -164,9 +140,14 @@ class Board {
 
         bool tryRefuel (PlayerCar* car);
 
-        // NPC Cars
+        // Friends
 
         friend class NPCCar;
+        friend class FuelStation;
+        friend class ModeStation;
+        friend class Building;
+
+        // NPC Cars
 
         void addNPCCar ();
         void stepNPCCars ();

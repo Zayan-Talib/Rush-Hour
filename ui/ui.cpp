@@ -32,6 +32,10 @@ UI::UI (GameState* state, PlayerCar* car, Board* board) :
     
     currentMenu = mainMenu;
 
+    // Audio
+
+    audio = new Audio (this);
+
 }
 
 // Destructor
@@ -44,6 +48,8 @@ UI::~UI () {
     delete modeMenu;
     delete gameOverMenu;
     delete hud;
+
+    delete audio;
     
 }
 

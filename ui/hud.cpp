@@ -126,6 +126,12 @@ void HUD::PrintKeys (unsigned char key) {
 
 	}
 
+	if (key == 'v' || key == 'V') {
+
+		gameUI -> getAudio () -> ToggleAudio ();
+
+	}
+
 	if (key == 'p' || key == 'P') {
 	
 		gameUI -> setCurrentMenu (UI::MENU_MODE_SELECT);

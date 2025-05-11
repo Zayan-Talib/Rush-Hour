@@ -1,5 +1,51 @@
 #include "board.h"
 
+// Constructor
+
+Board::Board () : numNPCCars (0) {
+            
+    InitRandomizer ();
+
+    grid = new int * [CELL_COUNT];
+    
+    for (int a = 0; a < CELL_COUNT; a++) {
+    
+        grid [a] = new int [CELL_COUNT];
+    
+    }
+
+    fuelstation = new FuelStation (this, nullptr);
+    modestation = new ModeStation (this, nullptr);
+    building = new Building (this, nullptr);
+
+    ResetBoard ();
+
+}
+
+// Destructor
+
+Board::~Board () {
+
+    delete fuelstation;
+    delete modestation;
+    delete building;
+
+    for (int a = 0; a < numNPCCars; a++) {
+
+        delete npcCars[a];
+
+    }
+
+    for (int a = 0; a < CELL_COUNT; a++) {
+
+        delete [] grid [a];
+
+    }
+
+    delete [] grid;
+
+}
+
 // Helpers
 
 int Board::getCellValue (int row, int col) const { 
@@ -52,7 +98,7 @@ void Board::PlaceItem (int itemType, int minCount, int maxCount) {
         int row = GetRandInRange (0, CELL_COUNT);
         int col = GetRandInRange (0, CELL_COUNT);
         
-        if (grid [row][col] == 0 && visited [row][col]) {
+        if (grid [row][col] == 0 && !(row == 0 && col == 0) && visited [row][col]) {
             
             grid [row][col] = itemType;
             placed++;
@@ -104,9 +150,11 @@ void Board::ResetBoard () {
 void Board::DrawBoard (int currentMode) {
 
     DrawGrid ();
-    DrawModeStation ();
-    DrawBuildings ();
-    DrawFuelStations ();
+
+    building -> Draw ();
+    modestation -> Draw ();
+    fuelstation -> Draw ();
+
     DrawPassengersAndPackages (currentMode);
     DrawNPCCars ();
 
@@ -151,57 +199,6 @@ void Board::DrawGrid () {
 
     }
     
-}
-
-void Board::DrawModeStation () {
-
-    int x = GRID_LEFT;
-    int y = GRID_TOP + 21 - ((CELL_COUNT - 1) * CELL_SIZE);
-    
-    DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [GRAY]);
-
-}
-
-void Board::DrawBuildings () {
-
-    for (int row = 0; row < CELL_COUNT; row++) {
-
-        for (int col = 0; col < CELL_COUNT; col++) {
-
-            if (grid [row][col] == 1) {
-
-                int x = GRID_LEFT + (col * CELL_SIZE);
-                int y = GRID_TOP + 21 - (row * CELL_SIZE);
-
-                DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [BLACK]);
-
-            }
-
-        }
-
-    }
-
-}
-
-void Board::DrawFuelStations () {
-
-    for (int row = 0; row < CELL_COUNT; row++) {
-
-        for (int col = 0; col < CELL_COUNT; col++) {
-
-            if (grid [row][col] == 2) {
-
-                int x = GRID_LEFT + (col * CELL_SIZE);
-                int y = GRID_TOP + 21 - (row * CELL_SIZE);
-
-                DrawSquare (x, y - CELL_SIZE, CELL_SIZE, colors [RED]);
-
-            }
-
-        }
-
-    }
-
 }
 
 void Board::DrawPassengersAndPackages (int currentMode) {

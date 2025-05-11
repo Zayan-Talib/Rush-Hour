@@ -55,26 +55,42 @@ void PlayerCar::Reset () {
 void PlayerCar::Draw () {
 
     float * WheelColor = colors [BLACK];
+    float * WindowColor = colors [SILVER];
     float * CarColor = nullptr;
+    float * TopColor = nullptr;
 
     if (currentMode == MODE_TAXI) {
     
-        CarColor = colors [RED];
+        CarColor = colors [YELLOW];
+        TopColor = colors [BLACK];
     
     } 
     
     else {
     
-        CarColor = colors [BLUE];
+        CarColor = colors [BROWN];
+        TopColor = colors [BLUE];
     
     }
+
+    DrawRectangle (x - 2, y, 24, 10, CarColor);
+    DrawRectangle (x + 1, y + 7, 18, 10, CarColor);
+
+    // Windows
     
-    DrawSquare (x, y, 20, CarColor);
+    DrawRectangle (x + 3, y + 9, 7, 5, WindowColor);         // Left window
+    DrawRectangle (x + 10, y + 9, 7, 5, WindowColor);       // Right window
 
-    int wheelSize = 5;
+    // Wheels
 
-    DrawCircle (x + 5, y, wheelSize, WheelColor);      // Left wheel
-    DrawCircle (x + 15, y, wheelSize, WheelColor);     // Right wheel
+    int wheelSize = 3;
+
+    DrawCircle (x + 3, y, wheelSize, WheelColor);      // Left wheel
+    DrawCircle (x + 16, y, wheelSize, WheelColor);     // Right wheel
+
+    // Top
+
+    DrawRectangle (x + 5, y + 16, 10, 6, TopColor);
 
     glutPostRedisplay ();
 

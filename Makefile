@@ -4,6 +4,7 @@ SRCS = game.cpp \
        utility/util.cpp \
        world/board.cpp \
        world/game_state.cpp \
+       world/audio.cpp \
        ui/ui_element.cpp \
        ui/ui.cpp \
        ui/main_menu.cpp \
@@ -15,11 +16,15 @@ SRCS = game.cpp \
        entities/entity.cpp \
        entities/actor.cpp \
        entities/player_car.cpp \
-       entities/npc_car.cpp
+       entities/npc_car.cpp \
+       entities/structure.cpp \
+       entities/fuel_station.cpp \
+       entities/mode_station.cpp \
+       entities/building.cpp       
 
 OBJS = $(SRCS:.cpp=.o)
 
-LIBS = 	-L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread
+LIBS = 	-L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread -lSDL2 -lSDL2_mixer
 
 TARGET =	rush_hour
 

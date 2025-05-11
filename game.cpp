@@ -18,6 +18,10 @@
 #include "ui/ui.h"
 #include "entities/player_car.h"
 
+// sudo apt update
+// sudo apt-get install make freeglut3-dev glew-utils libglew-dev libfreeimage-dev libsdl2-mixer-dev libsdl2-dev
+
+
 using namespace std;
 
 //=================================== Game Screen =====================================
@@ -191,6 +195,9 @@ void Timer (int m) {
 
 }
  
+//===================================== Audio =========================================
+
+
 //======================================= Main =======================================
 
 int main (int argc, char*argv []) {
@@ -220,7 +227,15 @@ int main (int argc, char*argv []) {
 	glutPassiveMotionFunc (MouseMoved);
 	glutMotionFunc (MousePressedAndMoved);
 
+	cout << endl << "=============================================================";
+	cout << endl << "                       Starting Program";
+	cout << endl << "=============================================================" << endl << endl;
+
 	glutMainLoop ();
+
+	cout << endl << "=============================================================";
+	cout << endl << "                       Ending Program";
+	cout << endl << "=============================================================" << endl << endl;
 
 	// CleanUp
 
@@ -229,7 +244,7 @@ int main (int argc, char*argv []) {
 	delete gameState;
     delete gameBoard;
 
-	return 1;
+	return 0;
 
 }
 

@@ -12,6 +12,7 @@
 #include "game_over_menu.h"
 #include "hud.h"
 
+#include "../world/audio.h"
 
 class UIElement;
 
@@ -38,8 +39,9 @@ class UI {
         GameState* gameState;
         PlayerCar* playerCar;
         Board* gameBoard;
-        
 
+        Audio* audio;
+        
     public:
 
         // Shared state
@@ -51,6 +53,7 @@ class UI {
         HUD* getHUD () const { return hud; }
         Leaderboard* getLeaderboard () const { return leaderboardMenu; }
         ModeMenu* getModeMenu () const { return modeMenu; }
+        Audio* getAudio () const { return audio; }
 
         // Options
      

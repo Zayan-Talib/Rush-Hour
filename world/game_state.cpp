@@ -33,6 +33,8 @@ void GameState::startGame () {
     gameStarted = true;
     gameUI -> setCurrentMenu (UI::MENU_HUD);
 
+    cout << "The game has started!" << endl;
+
 }
 
 // Game End 
