@@ -16,7 +16,7 @@ class UIElement {
         UIElement (bool isVisible = true);
         virtual ~UIElement () = default;
 
-        // Inerhited Methods
+        // Inerited Methods
         
         virtual void Draw () = 0;
         virtual void PrintKeys (unsigned char key);
