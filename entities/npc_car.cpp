@@ -62,7 +62,7 @@ void NPCCar::Draw () {
     int centerX = x + 10;  // Center of the 20x20 square
     int centerY = y + 20;  // Center of the 20x20 square
     
-    float * ArrowColor = colors [BLACK];
+    float * ArrowColor = colors [RED];
 
     switch (direction) {
         

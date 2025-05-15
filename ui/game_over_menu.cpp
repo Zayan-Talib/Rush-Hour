@@ -58,21 +58,24 @@ void GameOverMenu::Draw () {
 	// R=G=B=0 -> Black
 	// R=G=B=0.5 -> Gray
 
-    // // Draw background
-    // DrawRectangle (0, 0, 1020, 840, colors[WHITE]);
-    
+    glClear (GL_COLOR_BUFFER_BIT);
+
     // Game over text
     string gameOverStr;
+    int gx = 400;
+    
     
     if (gameUI -> getGameState () -> hasWon ()) {
     
         gameOverStr = "CONGRATULATIONS! YOU WON!";
+        gx -= 10;
     
     } 
     
     else if (gameUI -> getGameState () -> isTimeUp ()) {
     
         gameOverStr = "TIME'S UP!";
+        gx += 40;
     
     } 
     
@@ -91,6 +94,7 @@ void GameOverMenu::Draw () {
     else {
 
         gameOverStr = "Forced Game Over";
+        gx += 40;
 
     }
 
@@ -102,7 +106,7 @@ void GameOverMenu::Draw () {
     string timeStr = Num2Str(minutes) + ":" + (seconds < 10 ? "0" : "") + Num2Str(seconds);
     
     // Draw final stats
-    DrawString(440, 700, gameOverStr, colors[RED]);
+    DrawString(gx, 700, gameOverStr, colors[RED]);
     DrawString(450, 550, "Final Score: " + Num2Str(gameUI->getGameState()->getScore()), colors[SILVER]); 
     DrawString(450, 500, "Total Money: $" + Num2Str(gameUI->getPlayerCar()->getMoney()), colors[GREEN]);
     DrawString(440, 450, "Jobs Completed: " + Num2Str(gameUI-> getGameState () -> getJobsCompleted()), colors[WHITE]);

@@ -348,21 +348,21 @@ void PlayerCar::checkCollisions (int newX, int newY) {
         if (gameBoard -> isPassenger (newX, newY)) {
         
             gameState -> addScore (TAXI_PERSON_COLLISION);
-            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
+            gameState -> getUI () -> getAudio () -> SoundEffect ("media/oof.wav");
         
         }
         
         if (gameBoard -> GridCheck (newX, newY, 1)) {
             
             gameState -> addScore (TAXI_OBSTACLE_COLLISION);
-            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
+            gameState -> getUI () -> getAudio () -> SoundEffect ("media/oof.wav");
         
         }
         
         if (gameBoard -> isNPCCar (newX, newY)) {
             
             gameState -> addScore (TAXI_CAR_COLLISION);
-            gameState -> getUI () -> getAudio () -> SoundEffect ("../media/oof.wav");
+            gameState -> getUI () -> getAudio () -> SoundEffect ("media/oof.wav");
         
         }
 

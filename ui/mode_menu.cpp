@@ -42,6 +42,8 @@ void ModeMenu::Draw () {
 	 0, // Blue
      0  // Alpha
     );  
+
+    glClear (GL_COLOR_BUFFER_BIT);
 	
 	// R=G=B=1 -> White
 	// R=G=B=0 -> Black

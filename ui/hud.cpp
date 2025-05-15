@@ -162,6 +162,12 @@ void HUD::PrintKeys (unsigned char key) {
 
 	}
 
+	if (key == 's' || key == 'S') {
+
+		gameUI -> getAudio () -> SoundEffect ("media/oof.wav");
+
+	}
+
 	if (key == 'v' || key == 'V') {
 
 		gameUI -> getAudio () -> ToggleAudio ();

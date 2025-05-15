@@ -8,7 +8,7 @@ Audio::Audio (UI* ui) :
     gameUI (ui), 
     AudioPlaying (false),
     FirstTimeAudio (true),
-    currentVolume (16) {
+    currentVolume (50) {
 
     // Initialize SDL
     
@@ -142,12 +142,24 @@ void Audio::DecreaseVolume () {
 
 void Audio::SoundEffect (const string &soundPath) {
 
-    Mix_Chunk* soundEffect = Mix_LoadWAV (soundPath.c_str ());
+    Mix_Chunk* soundEffect = Mix_LoadWAV(soundPath.c_str());
+    if (!soundEffect) {
+        cerr << "Failed to load sound: " << Mix_GetError() << endl;
+        return;
+    }
 
-    Mix_PlayChannel (-1, soundEffect, 0); // -1 means it plays on first available channel
-	Mix_Volume (-1, currentVolume);
+    int channel = Mix_PlayChannel(-1, soundEffect, 0);
+    if (channel == -1) {
+        cerr << "Failed to play sound: " << Mix_GetError() << endl;
+        Mix_FreeChunk(soundEffect);
+        return;
+    }
 
-    // SDL_Delay (500); // In milliseconds
-    // Mix_FreeChunk (soundEffect);
+    Mix_Volume(channel, currentVolume);
+
+    Mix_ChannelFinished([](int channel) {
+        Mix_Chunk* chunk = Mix_GetChunk(channel);
+        if (chunk) Mix_FreeChunk(chunk);
+    });
 
 }
