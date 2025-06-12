@@ -2,6 +2,8 @@
 
 **Rush Hour** is a 2D time-based taxi and delivery driving game built with OpenGL. Players navigate through a dynamic city grid, picking up passengers or delivering packages while managing fuel, time, and traffic.
 
+![Gameplay GIF](media/gameplay.gif)
+
 ## 🎮 Game Overview
 
 Choose your role and race against the clock:
