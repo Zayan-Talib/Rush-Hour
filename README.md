@@ -1,8 +1,6 @@
 # 🚕 Rush Hour
 
-**Rush Hour** is a 2D time-based taxi and delivery driving game built with OpenGL. Players navigate through a dynamic city grid, picking up passengers or delivering packages—all while managing fuel, time, and traffic.
-
----
+**Rush Hour** is a 2D time-based taxi and delivery driving game built with OpenGL. Players navigate through a dynamic city grid, picking up passengers or delivering packages while managing fuel, time, and traffic.
 
 ## 🎮 Game Overview
 
@@ -11,9 +9,7 @@ Choose your role and race against the clock:
 - **Taxi Driver**: Pick up passengers and drop them at their destinations.
 - **Delivery Driver**: Pick up packages and deliver them to drop-off points.
 
-Earn points and money for each successful job, and use your earnings to refuel. But watch out—collisions, obstacles, and traffic reduce your score!
-
----
+Earn points and money for each successful job, and use your earnings to refuel. Collisions, obstacles, and traffic reduce your score!
 
 ## 🧠 Features
 
@@ -32,9 +28,10 @@ Earn points and money for each successful job, and use your earnings to refuel. 
 - 🚗 **NPC Traffic & Obstacles**:
   - Increasing difficulty as game progresses.
 - 🧱 **Collision Detection**
+  - Avoid accidents to maintain your score
 - 🏁 **Win/Lose Conditions**
-
----
+  - Score 100 points in 3 minutes
+  - Or avoid losing (fuel out, time up, or negative score)
 
 ## 🕹️ Controls
 
@@ -69,8 +66,6 @@ Earn points and money for each successful job, and use your earnings to refuel. 
 
 > 💰 Each job earns money, which is used for refueling.
 
----
-
 ## 🏁 Game End Conditions
 
 - Time runs out (3 minutes).
@@ -78,19 +73,33 @@ Earn points and money for each successful job, and use your earnings to refuel. 
 - Score drops below 0.
 - Score reaches 100 → **You win!** 🎉
 
----
-
-## 🔧 Build Instructions
+## 🛠️ Build Instructions
 
 ### Requirements
-- C++ compiler
-- OpenGL
-- GLUT
-- SDL2
-- FreeImage
 
-### Compile on Linux
+Ensure the following dependencies are installed on your system:
+
+- **g++** (C++ compiler)
+- **make**
+- **OpenGL**
+- **FreeImage**
+- **GLUT**
+- **SDL2**
+
+> 💡 On Debian/Ubuntu, you can install them with:
+> ```bash
+> sudo apt-get install g++ make freeglut3-dev glew-utils libglew-dev libfreeimage-dev libsdl2-mixer-dev libsdl2-dev
+> ```
+
+### 🔧 Compiling the Game
+
+Use the provided **Makefile** to build the project:
+
 ```bash
-g++ -o rush_hour game.cpp util.cpp board.cpp vehicle.cpp menu.cpp \
-    -L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L/usr/sww/bin \
-    -L/usr/sww/pkg/Mesa/lib -lglut -lGLU -lGL -lX11 -lfreeimage -pthread
+make
+```
+Once the game is built, you can run it with:
+
+```bash
+./rush_hour
+```
